@@ -1,0 +1,13 @@
+env
+.git
+.idea
+*.iml
+.vscode
+.coverage
+.pytest_cache
+.mypy_cache
+**/*.pyc
+**/__pycache__
+db_data
+.docker
+target

@@ -1,0 +1,77 @@
+version: "3.9"
+
+volumes:
+  pg_data:
+  cache:
+    driver: local
+
+networks:
+  app-network-2:
+
+services:
+  pg_db-2:
+    image: postgres:15.1
+    container_name: pg_name-2
+    restart: always
+    environment:
+      POSTGRES_DB: "postgres"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+      PGDATA: "/var/lib/postgresql/data/pg_data"
+    volumes:
+      - pg_data:/var/lib/posgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - app-network-2
+
+  cache-redis:
+    image: redis:7.0.7-alpine
+    restart: always
+    ports:
+      - '63790:6379'
+    command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+    volumes:
+      - cache:/data
+    networks:
+      - app-network-2
+  app:
+    build:
+      context: .
+    depends_on:
+      - pg_db-2
+      - cache-redis
+    container_name: app-backend-2
+    command: sh -c "uvicorn main:app --reload --host 0.0.0.0"
+#    command: sh -c "alembic upgrade head && python main.py"
+    volumes:
+      - ./app:/app
+    ports:
+      - "8000:8000"
+    tty: true
+    stdin_open: true
+    restart: always
+    networks:
+      - app-network-2
+    environment:
+      DB_URL: "postgresql+asyncpg://postgres:postgres@pg_db-2/postgres"
+      PORT: 8000
+      PYTHONPATH: "/app"
+      DEBUG: "1"
+      REDIS_HOST: cache-redis
+      REDIS_PORT: 63790
+      REDIS_PASSWORD: eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+
+#  pgadmin:
+#    image: dpage/pgadmin4
+#    container_name: pgadmin4_container
+#    depends_on:
+#      - pg_db-2
+#    restart: always
+#    ports:
+#      - "5050:80"
+#    networks:
+#      - app-network-2
+#    environment:
+#      PGADMIN_DEFAULT_EMAIL: admin@google.com
+#      PGADMIN_DEFAULT_PASSWORD: admin
