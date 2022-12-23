@@ -37,7 +37,7 @@ services:
     depends_on:
       - pg_db-2-test
       - cache-redis-test
-    container_name: app-backend-2
+    container_name: app-backend-2-test
     command: sh -c "alembic upgrade head && uvicorn main:app --reload --host 0.0.0.0"
 #    command: sh -c "alembic upgrade head && python main.py"
     volumes:

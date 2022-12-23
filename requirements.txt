@@ -11,12 +11,8 @@ sqlmodel==0.0.8
 fastapi_amis_admin==0.4.2
 
 # Jinja2==3.1.2
-# aiohttp-jinja2==1.5
-
-# aioreloader==0.4.0
 # pydantic==1.10.2
 
-# pytest-aiohttp==1.0.4
 httpx==0.23.1
 pytest==7.2.0
 pytest-asyncio==0.20.3

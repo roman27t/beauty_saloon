@@ -6,10 +6,11 @@ from typing import Generator
 import pytest
 import pytest_asyncio
 from httpx import AsyncClient
+from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.orm import sessionmaker
 from sqlmodel import SQLModel
 from sqlmodel.ext.asyncio.session import AsyncSession
-from sqlalchemy.ext.asyncio import create_async_engine
+
 from app.main import app
 from config import i_config
 
@@ -26,17 +27,14 @@ def event_loop(request) -> Generator:  # noqa: indirect usage
 @pytest_asyncio.fixture
 async def async_client():
     async with AsyncClient(
-            app=app,
-            base_url=f"http://localhost:8000"  # {settings.api_v1_prefix}
+        app=app, base_url=f"http://localhost:8000"  # {settings.api_v1_prefix}
     ) as client:
         yield client
 
 
 @pytest_asyncio.fixture(scope="function")
 async def async_session() -> AsyncSession:
-    session = sessionmaker(
-        engine, class_=AsyncSession, expire_on_commit=False
-    )
+    session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
     async with session() as s:
         # async with engine.begin() as conn:
@@ -48,6 +46,7 @@ async def async_session() -> AsyncSession:
     #     await conn.run_sync(SQLModel.metadata.drop_all)
 
     await engine.dispose()
+
 
 # @pytest.fixture(scope="function")
 # def test_data() -> dict:

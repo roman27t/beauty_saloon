@@ -1,5 +1,6 @@
 # from sqlalchemy import Column, String, Integer
-from sqlmodel import SQLModel, Field
+from sqlmodel import Field, SQLModel
+
 # from database import Base
 
 
@@ -9,8 +10,6 @@ from sqlmodel import SQLModel, Field
 #     id = Column(Integer, autoincrement=True, primary_key=True, index=True)
 #     name = Column(String, unique=True)
 #     population = Column(Integer)
-
-
 
 
 class CitySchema(SQLModel):

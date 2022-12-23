@@ -1,8 +1,8 @@
 from typing import Union
-from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi import APIRouter
-from fastapi import Depends
+
+from fastapi import APIRouter, Depends
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.exceptions import DuplicatedEntryError
 from database import get_session
@@ -25,7 +25,7 @@ def read_item(item_id: int, q: Union[str, None] = None):
 @router.get("/cities/biggest", response_model=list[CityModel], status_code=201)
 async def get_biggest_cities_view(session: AsyncSession = Depends(get_session)):
     cities = await get_biggest_cities(session)
-    return cities   # [CitySchema(name=c.name, population=c.population) for c in cities]
+    return cities  # [CitySchema(name=c.name, population=c.population) for c in cities]
 
 
 @router.post("/cities/")
