@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from core.exceptions import DuplicatedEntryError
 from database import get_session
 from models import CityModel
-from services.city_service import add_city, get_biggest_cities
+from services.city_service import CityService
 
 router = APIRouter()
 
@@ -19,13 +19,13 @@ def read_item(item_id: int, q: Union[str, None] = None):
 
 @router.get('/cities/biggest', response_model=list[CityModel], status_code=201)
 async def get_biggest_cities_view(session: AsyncSession = Depends(get_session)):
-    cities = await get_biggest_cities(session)
+    cities = await CityService(db_session=session).get_biggest_cities()
     return cities  # [CitySchema(name=c.name, population=c.population) for c in cities]
 
 
 @router.post('/cities/')
 async def add_city_view(city: CityModel, session: AsyncSession = Depends(get_session)):
-    city = add_city(session, city.name, city.population)
+    city = CityService(db_session=session).add_city(name=city.name, population=city.population)
     try:
         await session.commit()
         return city
