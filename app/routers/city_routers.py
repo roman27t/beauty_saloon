@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from core.exceptions import DuplicatedEntryError
 from database import get_session
 from models import CityModel
-from service import get_biggest_cities, add_city
+from services.city_service import add_city, get_biggest_cities
 
 router = APIRouter()
 

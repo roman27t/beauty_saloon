@@ -13,7 +13,7 @@ Run tests:
 http://localhost:8000/
 
 ### Swagger
-http://localhost:8000/api/doc/
+http://localhost:8000/docs#/
 
 ### Миграции
    ```bash

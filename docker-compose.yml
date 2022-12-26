@@ -42,8 +42,7 @@ services:
       - pg_db-2
       - cache-redis
     container_name: app-backend-2
-    command: sh -c "uvicorn main:app --reload --host 0.0.0.0"
-#    command: sh -c "alembic upgrade head && python main.py"
+    command: sh -c "alembic upgrade head && uvicorn main:app --reload --host 0.0.0.0"
     volumes:
       - ./app:/app
     ports:
