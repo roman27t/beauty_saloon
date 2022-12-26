@@ -7,28 +7,23 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from core.exceptions import DuplicatedEntryError
 from database import get_session
 from models import CityModel
-from service import add_city, get_biggest_cities
+from service import get_biggest_cities, add_city
 
 router = APIRouter()
 
 
-@router.get("/")
-def index():
-    return {"ok": True}
-
-
-@router.get("/items/{item_id}")
+@router.get('/items/{item_id}')
 def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
+    return {'item_id': item_id, 'q': q}
 
 
-@router.get("/cities/biggest", response_model=list[CityModel], status_code=201)
+@router.get('/cities/biggest', response_model=list[CityModel], status_code=201)
 async def get_biggest_cities_view(session: AsyncSession = Depends(get_session)):
     cities = await get_biggest_cities(session)
     return cities  # [CitySchema(name=c.name, population=c.population) for c in cities]
 
 
-@router.post("/cities/")
+@router.post('/cities/')
 async def add_city_view(city: CityModel, session: AsyncSession = Depends(get_session)):
     city = add_city(session, city.name, city.population)
     try:
@@ -36,4 +31,4 @@ async def add_city_view(city: CityModel, session: AsyncSession = Depends(get_ses
         return city
     except IntegrityError:
         await session.rollback()
-        raise DuplicatedEntryError("The city is already stored")
+        raise DuplicatedEntryError('The city is already stored')
