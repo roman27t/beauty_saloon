@@ -5,7 +5,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.exceptions import DuplicatedEntryError
-from database import get_session
+from models.database import get_session
 from models import CityModel
 from services.city_service import CityService
 
