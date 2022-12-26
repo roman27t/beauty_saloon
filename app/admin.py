@@ -1,7 +1,7 @@
 from fastapi_amis_admin.admin import admin
 
 from core.site_admin import site
-from models import CityModel
+from models.city_model import CityModel
 
 
 @site.register_admin

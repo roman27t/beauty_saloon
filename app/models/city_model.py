@@ -1,5 +1,7 @@
+from sqlmodel import SQLModel, Field
+
+
 # from sqlalchemy import Column, String, Integer
-from sqlmodel import Field, SQLModel
 
 # from database import Base
 
