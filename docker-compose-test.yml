@@ -1,10 +1,5 @@
 version: "3.9"
 
-#volumes:
-#  pg_data:
-#  cache:
-#    driver: local
-
 networks:
   app-network-2-test:
 
@@ -19,7 +14,7 @@ services:
       POSTGRES_PASSWORD: "postgres"
       PGDATA: "/var/lib/postgresql/data/pg_data"
     ports:
-      - "54320:5432"
+      - "54321:5432"
     networks:
       - app-network-2-test
 
@@ -39,7 +34,6 @@ services:
       - cache-redis-test
     container_name: app-backend-2-test
     command: sh -c "alembic upgrade head && uvicorn main:app --reload --host 0.0.0.0"
-#    command: sh -c "alembic upgrade head && python main.py"
     volumes:
       - ./app:/app
     ports:
