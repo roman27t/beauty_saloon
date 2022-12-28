@@ -1,1 +1,3 @@
-from .city_admin import EmployeeAdmin   # ClientAdmin
+from .city_admin import EmployeeAdmin, ClientAdmin
+
+admin_classes = (EmployeeAdmin, ClientAdmin,)
