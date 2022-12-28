@@ -10,6 +10,7 @@ from models import EmployeeModel
 from services.city_service import EmployeeService
 
 router = APIRouter()
+_route = '/employee/'
 
 
 @router.get('/items/{item_id}')
@@ -17,18 +18,18 @@ def read_item(item_id: int, q: Union[str, None] = None):
     return {'item_id': item_id, 'q': q}
 
 
-@router.get('/employee/', response_model=list[EmployeeModel], status_code=201)
-async def get_client(session: AsyncSession = Depends(get_session)):
-    cities = await EmployeeService(db_session=session).get_biggest_cities()
+@router.get(_route, response_model=list[EmployeeModel], status_code=201)
+async def get_all_employee(session: AsyncSession = Depends(get_session)):
+    cities = await EmployeeService(db_session=session).get_all()
     return cities  # [CitySchema(name=c.name, population=c.population) for c in cities]
 
 
-@router.post('/employee/')
-async def add_client(employee: EmployeeModel, session: AsyncSession = Depends(get_session)):
-    city = EmployeeService(db_session=session).add_city(employee=employee)
+@router.post(_route)
+async def add_employee(employee: EmployeeModel, session: AsyncSession = Depends(get_session)):
+    city = EmployeeService(db_session=session).add(employee=employee)
     try:
         await session.commit()
         return city
     except IntegrityError:
         await session.rollback()
-        raise DuplicatedEntryError('The city is already stored')
+        raise DuplicatedEntryError('The employee is already stored')
