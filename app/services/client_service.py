@@ -10,7 +10,7 @@ class ClientService(BaseService):
             email=employee.email,
             last_name=employee.last_name,
             first_name=employee.first_name,
-            birthday=employee.birthday,
+            birth_date=employee.birth_date,
         )
         self.db_session.add(new_city)
         return new_city

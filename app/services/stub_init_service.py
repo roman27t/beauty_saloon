@@ -20,7 +20,7 @@ class StubInitService(BaseService):
                     email=f'example_{i}@gmail.com',
                     last_name=LAST_NAMES[fio_index],
                     first_name=FIRST_NAMES[fio_index],
-                    birthday=dt.datetime.strptime(f'{i}.09.1976', '%d.%m.%Y'),
+                    birth_date=dt.datetime.strptime(f'{i}.09.1976', '%d.%m.%Y'),
                 )
                 service_class = user_service[user_model]
                 service_class(db_session=self.db_session).add(employee=employee_schema)

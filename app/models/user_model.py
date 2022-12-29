@@ -13,7 +13,7 @@ class UserBase(DateCreatedChangedBase):
     email: EmailStr
     last_name: constr(min_length=2, max_length=50)
     first_name: constr(min_length=2, max_length=50)
-    birthday: dt.date
+    birth_date: dt.date
     is_active: Union[bool, None] = True
 
 
