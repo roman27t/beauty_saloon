@@ -5,19 +5,6 @@ from pydantic import EmailStr, constr
 from sqlmodel import SQLModel, Field, Column, VARCHAR
 
 
-# from sqlalchemy import Column, String, Integer
-
-# from database import Base
-
-
-# class CityModel(Base):
-#     __tablename__ = "city"
-#
-#     id = Column(Integer, autoincrement=True, primary_key=True, index=True)
-#     name = Column(String, unique=True)
-#     population = Column(Integer)
-
-
 class DateCreatedChangedBase(SQLModel):
     created: dt.datetime = Field(default=dt.datetime.utcnow(), nullable=False)
     changed: dt.datetime = Field(default_factory=dt.datetime.utcnow, nullable=False)
@@ -39,7 +26,6 @@ class EmployeeModel(UserBase, table=True):
 
 class ClientModel(UserBase, table=True):
     __tablename__ = 'client'
-
 
 
 # class CityModel(CitySchema, table=True):
