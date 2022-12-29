@@ -1,17 +1,16 @@
 """1_Add model Employee Client
 
-Revision ID: 14c481177e83
+Revision ID: 54d8af806ddd
 Revises: 
-Create Date: 2022-12-29 16:35:54.451527
+Create Date: 2022-12-29 16:51:16.484269
 
 """
 from alembic import op
 import sqlalchemy as sa
 import sqlmodel
 
-
 # revision identifiers, used by Alembic.
-revision = '14c481177e83'
+revision = '54d8af806ddd'
 down_revision = None
 branch_labels = None
 depends_on = None

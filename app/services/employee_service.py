@@ -1,5 +1,6 @@
 from sqlalchemy import select
 from models import EmployeeModel
+from models.user_model import Gender
 from services.base_service import BaseService
 
 
@@ -11,6 +12,7 @@ class EmployeeService(BaseService):
             last_name=employee.last_name,
             first_name=employee.first_name,
             birth_date=employee.birth_date,
+            gender=Gender.MALE,
         )
         self.db_session.add(new_city)
         return new_city
