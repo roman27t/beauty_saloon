@@ -4,7 +4,9 @@ from sqladmin import Admin
 from admin import admin_classes
 from routers.city_routers import router
 from routers.index import router_index
+from routers.stub_init_routers import router_init_stub
 from models.database import engine
+from config import i_config
 
 app = FastAPI()
 
@@ -14,6 +16,8 @@ for admin_class in admin_classes:
 
 app.include_router(router_index)  # , prefix='/api/auth', tags=['auth']
 app.include_router(router)
+if i_config.DEBUG:
+    app.include_router(router_init_stub)
 
 
 @app.on_event('startup')
