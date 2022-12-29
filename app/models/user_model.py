@@ -2,12 +2,9 @@ import datetime as dt
 from typing import Union
 
 from pydantic import EmailStr, constr
-from sqlmodel import SQLModel, Field, Column, VARCHAR
+from sqlmodel import Field, Column, VARCHAR
 
-
-class DateCreatedChangedBase(SQLModel):
-    created: dt.datetime = Field(default=dt.datetime.utcnow(), nullable=False)
-    changed: dt.datetime = Field(default_factory=dt.datetime.utcnow, nullable=False)
+from models.base_models import DateCreatedChangedBase
 
 
 class UserBase(DateCreatedChangedBase):
