@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from core.exceptions import DuplicatedEntryError
 from models.database import get_session
 from models import EmployeeModel
-from services.city_service import EmployeeService
+from services.employee_service import EmployeeService
 
 router = APIRouter()
 _route = '/employee/'
