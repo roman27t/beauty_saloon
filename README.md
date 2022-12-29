@@ -19,7 +19,7 @@ http://localhost:8000/docs#/
    ```bash
    docker-compose exec app sh   
    alembic init -t async migrations # инит
-   alembic revision  --autogenerate -m "Add model" # create migrate
+   alembic revision  --autogenerate -m "X_Add model" # create migrate
    alembic upgrade head # apply
    alembic downgrade 8ac14e223d1  # down
    alembic downgrade base  # This command will undo all migrations
