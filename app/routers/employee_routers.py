@@ -13,7 +13,7 @@ router = APIRouter()
 ROUTE_EMPLOYEE = '/employee/'
 
 
-@router.get(ROUTE_EMPLOYEE, response_model=list[EmployeeModel], status_code=201)
+@router.get(ROUTE_EMPLOYEE, response_model=list[EmployeeModel], status_code=200)
 async def get_all_employee(session: AsyncSession = Depends(get_session)):
     users = await EmployeeService(db_session=session).get_all()
     return users  # [CitySchema(name=c.name, population=c.population) for c in cities]

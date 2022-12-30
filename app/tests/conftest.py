@@ -1,6 +1,4 @@
 import asyncio
-import json
-import os
 from typing import Generator
 
 import pytest
@@ -13,6 +11,8 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.main import app
 from config import i_config
+from models.db_helper import db_commit
+from services.stub_init_service import StubInitService
 
 engine = create_async_engine(i_config.DB_URL, echo=True)
 
@@ -35,15 +35,19 @@ async def async_client():
 @pytest_asyncio.fixture(scope="function")
 async def async_session() -> AsyncSession:
     session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
-
     async with session() as s:
-        # async with engine.begin() as conn:
-        #     await conn.run_sync(SQLModel.metadata.create_all)
+        async with engine.begin() as conn:
+            await conn.run_sync(SQLModel.metadata.create_all)
+
+        await db_commit(
+            service_call=StubInitService(db_session=s).init,
+            db_session=s,
+        )
 
         yield s
 
-    # async with engine.begin() as conn:
-    #     await conn.run_sync(SQLModel.metadata.drop_all)
+    async with engine.begin() as conn:
+        await conn.run_sync(SQLModel.metadata.drop_all)
 
     await engine.dispose()
 
