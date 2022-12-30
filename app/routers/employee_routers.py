@@ -20,16 +20,16 @@ def read_item(item_id: int, q: Union[str, None] = None):
 
 @router.get(_route, response_model=list[EmployeeModel], status_code=201)
 async def get_all_employee(session: AsyncSession = Depends(get_session)):
-    cities = await EmployeeService(db_session=session).get_all()
-    return cities  # [CitySchema(name=c.name, population=c.population) for c in cities]
+    users = await EmployeeService(db_session=session).get_all()
+    return users  # [CitySchema(name=c.name, population=c.population) for c in cities]
 
 
 @router.post(_route)
 async def add_employee(employee: EmployeeModel, session: AsyncSession = Depends(get_session)):
-    city = EmployeeService(db_session=session).add(employee=employee)
+    employee_schema = EmployeeService(db_session=session).add(employee=employee)
     try:
         await session.commit()
-        return city
+        return employee_schema
     except IntegrityError:
         await session.rollback()
         raise DuplicatedEntryError('The employee is already stored')

@@ -6,7 +6,7 @@ from services.base_service import BaseService
 
 class ClientService(BaseService):
     def add(self, employee: ClientModel):
-        new_city = ClientModel(
+        client_schema = ClientModel(
             phone=employee.phone,
             email=employee.email,
             last_name=employee.last_name,
@@ -14,8 +14,8 @@ class ClientService(BaseService):
             birth_date=employee.birth_date,
             gender=Gender.MALE,
         )
-        self.db_session.add(new_city)
-        return new_city
+        self.db_session.add(client_schema)
+        return client_schema
 
     async def get_all(self) -> list[ClientModel]:
         result = await self.db_session.execute(
