@@ -10,21 +10,16 @@ from models import EmployeeModel
 from services.employee_service import EmployeeService
 
 router = APIRouter()
-_route = '/employee/'
+ROUTE_EMPLOYEE = '/employee/'
 
 
-@router.get('/items/{item_id}')
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {'item_id': item_id, 'q': q}
-
-
-@router.get(_route, response_model=list[EmployeeModel], status_code=201)
+@router.get(ROUTE_EMPLOYEE, response_model=list[EmployeeModel], status_code=201)
 async def get_all_employee(session: AsyncSession = Depends(get_session)):
     users = await EmployeeService(db_session=session).get_all()
     return users  # [CitySchema(name=c.name, population=c.population) for c in cities]
 
 
-@router.post(_route)
+@router.post(ROUTE_EMPLOYEE)
 async def add_employee(employee: EmployeeModel, session: AsyncSession = Depends(get_session)):
     employee_schema = EmployeeService(db_session=session).add(employee=employee)
     try:
