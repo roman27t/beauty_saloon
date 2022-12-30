@@ -1,4 +1,4 @@
-from fastapi import Depends, APIRouter
+from fastapi import Depends, APIRouter, HTTPException
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -11,8 +11,16 @@ router = APIRouter()
 ROUTE_EMPLOYEE = '/employee/'
 
 
+@router.get(ROUTE_EMPLOYEE + '{pk}/', response_model=EmployeeModel, status_code=200)
+async def get_employee_by_id(pk: int, session: AsyncSession = Depends(get_session)):
+    user = await EmployeeService(db_session=session).get(pk=pk)
+    if not user:
+        raise HTTPException(status_code=404, detail=f'item with id {pk} not found')
+    return user
+
+
 @router.get(ROUTE_EMPLOYEE, response_model=list[EmployeeModel], status_code=200)
-async def get_all_employee(session: AsyncSession = Depends(get_session)):
+async def get_employee_all(session: AsyncSession = Depends(get_session)):
     users = await EmployeeService(db_session=session).get_all()
     return users  # [CitySchema(name=c.name, population=c.population) for c in cities]
 

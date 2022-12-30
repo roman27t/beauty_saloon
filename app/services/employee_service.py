@@ -21,3 +21,7 @@ class EmployeeService(BaseService):
     async def get_all(self) -> list[EmployeeModel]:
         result = await self.db_session.execute(select(EmployeeModel).order_by(EmployeeModel.last_name.desc()).limit(20))
         return result.scalars().all()
+
+    async def get(self, pk: int) -> EmployeeModel:
+        result = await self.db_session.get(EmployeeModel, pk)
+        return result
