@@ -50,31 +50,15 @@ async def test_post_employee(async_client: AsyncClient, async_session: AsyncSess
 
 @pytest.mark.asyncio
 async def test_patch_employee(async_client: AsyncClient, async_session: AsyncSession):
-    print('1'*80)
-    result = await async_session.execute(select(EmployeeModel).where(EmployeeModel.last_name == LAST_NAMES[2]).limit(1))
-    user = result.scalars().first()
-
     first_name = 'Katerina'
     employee_schema = EmployeeInOptionalSchema(
         first_name=first_name,
     )
-    print('2' * 80)
-    print(f'{ROUTE_EMPLOYEE}{user.id}/')
-    print(employee_schema.json(exclude_unset=True))
-    response = await async_client.patch(f'{ROUTE_EMPLOYEE}{user.id}/', content=employee_schema.json(exclude_unset=True))
-    assert response.status_code == 200
-    print(response.json())
-    print('3' * 80)
-    # breakpoint()
+    response = await async_client.patch(f'{ROUTE_EMPLOYEE}1/', content=employee_schema.json(exclude_unset=True))
     await async_session.commit()
-    # import asyncio
-    # await asyncio.sleep(0.5)
+    assert response.status_code == 200
+    patch_content = response.json()
     session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
     async with session() as s:
-        result2 = await s.execute(select(EmployeeModel).where(EmployeeModel.first_name == 'Katerina'))
-        user2 = result2.scalars().first()
-        print('!'*80)
-        print(user2)
-        print(await s.get(EmployeeModel, user.id))
-        print('!'*80)
-        assert user2.first_name == first_name
+        user = await s.get(EmployeeModel, patch_content['id'])
+        assert user.first_name == first_name
