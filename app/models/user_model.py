@@ -1,4 +1,3 @@
-import enum
 import datetime as dt
 from typing import Union
 
@@ -8,14 +7,10 @@ from sqlalchemy import Column
 from sqlalchemy.sql.sqltypes import Enum as EnumSQL
 
 from models.base_models import DateCreatedChangedBase
+from models.choices import Gender
 
 
-class Gender(str, enum.Enum):
-    MALE = 'M'
-    FEMALE = 'F'
-
-
-class EmployeeInSchema(SQLModel):
+class _UserInSchema(SQLModel):
     phone: constr(min_length=10, max_length=14) = Field(sa_column=Column('phone', VARCHAR, unique=True, index=True))
     email: EmailStr
     gender: Gender = Field(sa_column=Column(EnumSQL(Gender), nullable=False), max_length=1)
@@ -24,7 +19,15 @@ class EmployeeInSchema(SQLModel):
     birth_date: dt.date
 
 
-class _UserBase(DateCreatedChangedBase, EmployeeInSchema):
+class EmployeeInSchema(_UserInSchema):
+    ...
+
+
+class ClientInSchema(_UserInSchema):
+    ...
+
+
+class _UserBase(DateCreatedChangedBase, _UserInSchema):
     id: int = Field(default=None, primary_key=True)
     is_active: Union[bool, None] = True
 

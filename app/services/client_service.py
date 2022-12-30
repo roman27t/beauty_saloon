@@ -1,7 +1,7 @@
 from sqlalchemy import select
 
 from models import ClientModel
-from models.user_model import Gender
+from models.choices import Gender
 from services.base_service import BaseService
 
 

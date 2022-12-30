@@ -5,7 +5,8 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlalchemy import select
 
 from models import EmployeeModel
-from models.user_model import Gender, EmployeeInSchema
+from models.user_model import EmployeeInSchema
+from models.choices import Gender
 from routers.employee_routers import ROUTE_EMPLOYEE
 from services.stub_init_service import LAST_NAMES
 

@@ -1,7 +1,8 @@
 import datetime as dt
 
 from models import ClientModel, EmployeeModel
-from models.user_model import EmployeeInSchema, Gender
+from models.user_model import EmployeeInSchema
+from models.choices import Gender
 from services.base_service import BaseService
 from services.client_service import ClientService
 from services.employee_service import EmployeeService
