@@ -1,12 +1,12 @@
 from sqlalchemy import select
 
 from models import EmployeeModel
-from models.user_model import Gender
+from models.user_model import Gender, EmployeeInSchema
 from services.base_service import BaseService
 
 
 class EmployeeService(BaseService):
-    def add(self, employee: EmployeeModel):
+    def add(self, employee: EmployeeInSchema):
         employee_schema = EmployeeModel(
             phone=employee.phone,
             email=employee.email,

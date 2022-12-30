@@ -5,6 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from models import EmployeeModel
 from core.exceptions import DuplicatedEntryError
 from models.database import get_session
+from models.user_model import EmployeeInSchema
 from services.employee_service import EmployeeService
 
 router = APIRouter()
@@ -26,7 +27,7 @@ async def get_employee_all(session: AsyncSession = Depends(get_session)):
 
 
 @router.post(ROUTE_EMPLOYEE)
-async def add_employee(employee: EmployeeModel, session: AsyncSession = Depends(get_session)):
+async def add_employee(employee: EmployeeInSchema, session: AsyncSession = Depends(get_session)):
     employee_schema = EmployeeService(db_session=session).add(employee=employee)
     try:
         await session.commit()
