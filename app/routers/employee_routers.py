@@ -1,12 +1,10 @@
-from typing import Union
-
-from fastapi import APIRouter, Depends
+from fastapi import Depends, APIRouter
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from models import EmployeeModel
 from core.exceptions import DuplicatedEntryError
 from models.database import get_session
-from models import EmployeeModel
 from services.employee_service import EmployeeService
 
 router = APIRouter()

@@ -1,5 +1,6 @@
-from fastapi import APIRouter, Depends
+from fastapi import Depends, APIRouter
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from models.database import get_session
 from models.db_helper import db_commit
 from services.stub_init_service import StubInitService

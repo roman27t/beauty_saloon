@@ -1,5 +1,6 @@
 from sqladmin import ModelView
-from models import EmployeeModel, ClientModel
+
+from models import ClientModel, EmployeeModel
 
 
 class EmployeeAdmin(ModelView, model=EmployeeModel):

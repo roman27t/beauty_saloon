@@ -1,1 +1,1 @@
-from .user_model import EmployeeModel, ClientModel
+from .user_model import ClientModel, EmployeeModel

@@ -1,4 +1,5 @@
 from sqlalchemy import select
+
 from models import EmployeeModel
 from models.user_model import Gender
 from services.base_service import BaseService
@@ -18,7 +19,5 @@ class EmployeeService(BaseService):
         return employee_schema
 
     async def get_all(self) -> list[EmployeeModel]:
-        result = await self.db_session.execute(
-            select(EmployeeModel).order_by(EmployeeModel.last_name.desc()).limit(20)
-        )
+        result = await self.db_session.execute(select(EmployeeModel).order_by(EmployeeModel.last_name.desc()).limit(20))
         return result.scalars().all()

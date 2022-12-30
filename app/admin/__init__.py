@@ -1,3 +1,6 @@
-from .user_admin import EmployeeAdmin, ClientAdmin
+from .user_admin import ClientAdmin, EmployeeAdmin
 
-admin_classes = (EmployeeAdmin, ClientAdmin,)
+admin_classes = (
+    EmployeeAdmin,
+    ClientAdmin,
+)

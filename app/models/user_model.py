@@ -1,5 +1,5 @@
-import datetime as dt
 import enum
+import datetime as dt
 from typing import Union
 
 from pydantic import EmailStr, constr
@@ -36,14 +36,14 @@ class ClientModel(UserBase, table=True):
 
 # class CityModel(CitySchema, table=True):
 #     id: int = Field(default=None, primary_key=True)
-    # __table_args__ = (
-    #     Index(
-    #         "compound_index_origin_name_version_destination_name", "origin_name", "origin_version", "destination_name"
-    #     ),
-    # )
+# __table_args__ = (
+#     Index(
+#         "compound_index_origin_name_version_destination_name", "origin_name", "origin_version", "destination_name"
+#     ),
+# )
 
 # User [Client, Master] (email)
-#-------------
+# -------------
 # + email
 # + phone
 # + first_name
@@ -52,19 +52,19 @@ class ClientModel(UserBase, table=True):
 # + is_active: Union[bool, None] = True
 
 # Service (type_service, name)
-#-------------
+# -------------
 # name
 # amount
 # description
 # type_service ?
 
-#Master-Service
+# Master-Service
 # Master
 # Service
 
 
 # Order
-#------
+# ------
 # Client
 # Master
 # Log_Order

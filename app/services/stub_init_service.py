@@ -1,7 +1,8 @@
 import datetime as dt
-from services.client_service import ClientService
+
 from models import ClientModel, EmployeeModel
 from services.base_service import BaseService
+from services.client_service import ClientService
 from services.employee_service import EmployeeService
 
 LAST_NAMES = ('Shevchenko', 'Rebrov', 'Zidane', 'Beckham', 'Husin', 'Husiev', 'Golovko', 'Flo', 'Li', 'Voronin')
