@@ -57,8 +57,8 @@ async def test_patch_employee(async_client: AsyncClient, async_session: AsyncSes
     response = await async_client.patch(f'{ROUTE_EMPLOYEE}1/', content=employee_schema.json(exclude_unset=True))
     await async_session.commit()
     assert response.status_code == 200
-    patch_content = response.json()
+    employee = EmployeeModel(**response.json())
     session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
     async with session() as s:
-        user = await s.get(EmployeeModel, patch_content['id'])
+        user = await s.get(EmployeeModel, employee.id)
         assert user.first_name == first_name
