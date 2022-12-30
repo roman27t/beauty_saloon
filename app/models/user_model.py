@@ -1,5 +1,5 @@
 import datetime as dt
-from typing import Union
+from typing import Union, Optional
 
 from pydantic import EmailStr, constr
 from sqlmodel import VARCHAR, Field, SQLModel
@@ -25,6 +25,15 @@ class EmployeeInSchema(_UserInSchema):
 
 class ClientInSchema(_UserInSchema):
     ...
+
+
+class EmployeeInOptionalSchema(EmployeeInSchema):
+    phone: Optional[constr(min_length=10, max_length=14)]
+    email: Optional[EmailStr]
+    gender: Optional[Gender]
+    last_name: Optional[constr(min_length=2, max_length=50)]
+    first_name: Optional[constr(min_length=2, max_length=50)]
+    birth_date: Optional[dt.date]
 
 
 class _UserBase(DateCreatedChangedBase, _UserInSchema):

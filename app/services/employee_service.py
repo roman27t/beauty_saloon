@@ -11,6 +11,11 @@ class EmployeeService(BaseService):
         self.db_session.add(employee_db)
         return employee_db
 
+    def update(self, employee_db: EmployeeModel, schema: EmployeeInSchema):
+        for key, value in schema.dict(exclude_unset=True).items():
+            setattr(employee_db, key, value)
+        self.db_session.add(employee_db)
+
     async def get_all(self) -> list[EmployeeModel]:
         result = await self.db_session.execute(select(EmployeeModel).order_by(EmployeeModel.last_name.desc()).limit(20))
         return result.scalars().all()
