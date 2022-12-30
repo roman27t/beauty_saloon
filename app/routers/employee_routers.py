@@ -44,9 +44,15 @@ async def valid_post_id(pk: int, session: AsyncSession = Depends(get_session)) -
     return user
 
 
+async def valid_schema(schema: EmployeeInOptionalSchema) -> EmployeeInOptionalSchema:
+    if not schema.dict(exclude_unset=True):
+        raise HTTPException(status_code=400, detail='empty data')
+    return schema
+
+
 @router.patch(ROUTE_EMPLOYEE + '{pk}/', response_model=EmployeeModel)
 async def patch_employee(
-    schema: EmployeeInOptionalSchema,
+    schema: EmployeeInOptionalSchema=Depends(valid_schema),
     employee_db: EmployeeModel=Depends(valid_post_id),
     session: AsyncSession = Depends(get_session),
 ):

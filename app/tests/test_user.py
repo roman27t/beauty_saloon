@@ -48,17 +48,23 @@ async def test_post_employee(async_client: AsyncClient, async_session: AsyncSess
     assert user.last_name == last_name
 
 
+@pytest.mark.parametrize(
+    'schema, status_code',
+    [
+        (EmployeeInOptionalSchema(first_name='Katerina'), 200),
+        (EmployeeInOptionalSchema(), 400),
+    ],
+)
 @pytest.mark.asyncio
-async def test_patch_employee(async_client: AsyncClient, async_session: AsyncSession):
-    first_name = 'Katerina'
-    employee_schema = EmployeeInOptionalSchema(
-        first_name=first_name,
-    )
-    response = await async_client.patch(f'{ROUTE_EMPLOYEE}1/', content=employee_schema.json(exclude_unset=True))
+async def test_patch_employee(
+        async_client: AsyncClient, async_session: AsyncSession, schema: EmployeeInOptionalSchema, status_code: int
+):
+    response = await async_client.patch(f'{ROUTE_EMPLOYEE}1/', content=schema.json(exclude_unset=True))
     await async_session.commit()
-    assert response.status_code == 200
+    assert response.status_code == status_code
     employee = EmployeeModel(**response.json())
-    session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
-    async with session() as s:
-        user = await s.get(EmployeeModel, employee.id)
-        assert user.first_name == first_name
+    if status_code == 200:
+        session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+        async with session() as s:
+            user = await s.get(EmployeeModel, employee.id)
+            assert user.first_name == schema.first_name
