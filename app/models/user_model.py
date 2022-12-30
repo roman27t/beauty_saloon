@@ -24,22 +24,16 @@ class EmployeeInSchema(SQLModel):
     birth_date: dt.date
 
 
-class UserBase(DateCreatedChangedBase):
+class _UserBase(DateCreatedChangedBase, EmployeeInSchema):
     id: int = Field(default=None, primary_key=True)
-    phone: constr(min_length=10, max_length=14) = Field(sa_column=Column('phone', VARCHAR, unique=True, index=True))
-    email: EmailStr
-    gender: Gender = Field(sa_column=Column(EnumSQL(Gender), nullable=False), max_length=1)
-    last_name: constr(min_length=2, max_length=50)
-    first_name: constr(min_length=2, max_length=50)
-    birth_date: dt.date
     is_active: Union[bool, None] = True
 
 
-class EmployeeModel(UserBase, table=True):
+class EmployeeModel(_UserBase, table=True):
     __tablename__ = 'employee'
 
 
-class ClientModel(UserBase, table=True):
+class ClientModel(_UserBase, table=True):
     __tablename__ = 'client'
 
 

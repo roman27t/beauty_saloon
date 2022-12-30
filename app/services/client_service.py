@@ -6,13 +6,13 @@ from services.base_service import BaseService
 
 
 class ClientService(BaseService):
-    def add(self, employee: ClientModel):
+    def add(self, schema: ClientModel):
         client_schema = ClientModel(
-            phone=employee.phone,
-            email=employee.email,
-            last_name=employee.last_name,
-            first_name=employee.first_name,
-            birth_date=employee.birth_date,
+            phone=schema.phone,
+            email=schema.email,
+            last_name=schema.last_name,
+            first_name=schema.first_name,
+            birth_date=schema.birth_date,
             gender=Gender.MALE,
         )
         self.db_session.add(client_schema)

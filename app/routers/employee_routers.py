@@ -28,7 +28,7 @@ async def get_employee_all(session: AsyncSession = Depends(get_session)):
 
 @router.post(ROUTE_EMPLOYEE)
 async def add_employee(employee: EmployeeInSchema, session: AsyncSession = Depends(get_session)):
-    employee_schema = EmployeeService(db_session=session).add(employee=employee)
+    employee_schema = EmployeeService(db_session=session).add(schema=employee)
     try:
         await session.commit()
         return employee_schema
