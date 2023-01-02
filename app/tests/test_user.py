@@ -22,12 +22,14 @@ async def test_get_employee_all(async_client: AsyncClient, async_session: AsyncS
     assert EmployeeModel(**content[0])
 
 
+@pytest.mark.parametrize('pk,status_code', [(1, 200), (999, 404)])
 @pytest.mark.asyncio
-async def test_get_employee_by_id(async_client: AsyncClient, async_session: AsyncSession):
-    result = await async_session.execute(select(EmployeeModel).where(EmployeeModel.last_name==LAST_NAMES[0]).limit(1))
-    user = result.scalars().first()
-    response = await async_client.get(f'{ROUTE_EMPLOYEE}{user.id}/')
-    assert response.status_code == 200
+async def test_get_employee_by_id(async_client: AsyncClient, async_session: AsyncSession, pk: int, status_code: int):
+    response = await async_client.get(f'{ROUTE_EMPLOYEE}{pk}/')
+    assert response.status_code == status_code
+    if status_code == 200:
+        employee = EmployeeModel(**response.json())
+        assert employee.last_name == LAST_NAMES[0]
 
 
 @pytest.mark.asyncio
@@ -36,7 +38,7 @@ async def test_post_employee(async_client: AsyncClient, async_session: AsyncSess
     employee_schema = EmployeeInSchema(
         phone='+380983827777',
         email='employee@gmail.com',
-        last_name='Dobruden',
+        last_name=last_name,
         first_name='Hanna',
         birth_date=dt.datetime.strptime('10.02.1989', '%d.%m.%Y'),
         gender=Gender.FEMALE,
