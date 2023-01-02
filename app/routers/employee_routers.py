@@ -2,6 +2,7 @@ from fastapi import Depends, APIRouter, HTTPException
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from dependencies.user_dependency import valid_patch_id, valid_patch_schema
 from models import EmployeeModel
 from core.exceptions import DuplicatedEntryError
 from models.database import get_session
@@ -37,23 +38,10 @@ async def add_employee(employee: EmployeeInSchema, session: AsyncSession = Depen
         raise DuplicatedEntryError('The employee is already stored')
 
 
-async def valid_post_id(pk: int, session: AsyncSession = Depends(get_session)) -> EmployeeModel:
-    user = await EmployeeService(db_session=session).get(pk=pk)
-    if not user:
-        raise HTTPException(status_code=404, detail=f'item with id {pk} not found')
-    return user
-
-
-async def valid_schema(schema: EmployeeInOptionalSchema) -> EmployeeInOptionalSchema:
-    if not schema.dict(exclude_unset=True):
-        raise HTTPException(status_code=400, detail='empty data')
-    return schema
-
-
 @router.patch(ROUTE_EMPLOYEE + '{pk}/', response_model=EmployeeModel)
 async def patch_employee(
-    schema: EmployeeInOptionalSchema=Depends(valid_schema),
-    employee_db: EmployeeModel=Depends(valid_post_id),
+    schema: EmployeeInOptionalSchema=Depends(valid_patch_schema),
+    employee_db: EmployeeModel=Depends(valid_patch_id),
     session: AsyncSession = Depends(get_session),
 ):
     EmployeeService(db_session=session).update(employee_db=employee_db, schema=schema)
