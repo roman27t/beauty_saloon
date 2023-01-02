@@ -4,7 +4,7 @@ from httpx import AsyncClient
 from sqlalchemy.orm import sessionmaker
 from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlalchemy import select
-
+from fastapi import status
 from models import EmployeeModel
 from models.user_model import EmployeeInSchema, EmployeeInOptionalSchema
 from models.choices import Gender
@@ -16,18 +16,18 @@ from tests.utils import url_reverse
 @pytest.mark.asyncio
 async def test_get_employee_all(async_client: AsyncClient, async_session: AsyncSession):
     response = await async_client.get(url_reverse('view_get_employee_all'))
-    assert response.status_code == 200
+    assert response.status_code == status.HTTP_200_OK
     content = response.json()
     assert len(content) == 5
     assert EmployeeModel(**content[0])
 
 
-@pytest.mark.parametrize('pk,status_code', [(1, 200), (999, 404)])
+@pytest.mark.parametrize('pk,status_code', [(1, status.HTTP_200_OK), (999, status.HTTP_404_NOT_FOUND)])
 @pytest.mark.asyncio
 async def test_get_employee_by_id(async_client: AsyncClient, async_session: AsyncSession, pk: int, status_code: int):
     response = await async_client.get(url_reverse('view_get_employee_by_id', pk=pk))
     assert response.status_code == status_code
-    if status_code == 200:
+    if status_code == status.HTTP_200_OK:
         employee = EmployeeModel(**response.json())
         assert employee.last_name == LAST_NAMES[0]
 
@@ -44,7 +44,7 @@ async def test_post_employee(async_client: AsyncClient, async_session: AsyncSess
         gender=Gender.FEMALE,
     )
     response = await async_client.post(url_reverse('view_add_employee'), content=employee_schema.json())
-    assert response.status_code == 200
+    assert response.status_code == status.HTTP_200_OK
     result = await async_session.execute(select(EmployeeModel).where(EmployeeModel.last_name == last_name).limit(1))
     user = result.scalars().first()
     assert user.last_name == last_name
@@ -53,9 +53,9 @@ async def test_post_employee(async_client: AsyncClient, async_session: AsyncSess
 @pytest.mark.parametrize(
     'pk,schema, status_code',
     [
-        (1, EmployeeInOptionalSchema(first_name='Katerina'), 200),
-        (1, EmployeeInOptionalSchema(), 400),
-        (100, EmployeeInOptionalSchema(first_name='Katerina'), 404),
+        (1, EmployeeInOptionalSchema(first_name='Katerina'), status.HTTP_200_OK),
+        (1, EmployeeInOptionalSchema(), status.HTTP_400_BAD_REQUEST),
+        (100, EmployeeInOptionalSchema(first_name='Katerina'), status.HTTP_404_NOT_FOUND),
     ],
 )
 @pytest.mark.asyncio
@@ -71,7 +71,7 @@ async def test_patch_employee(
     await async_session.commit()
     assert response.status_code == status_code
     employee = EmployeeModel(**response.json())
-    if status_code == 200:
+    if status_code == status.HTTP_200_OK:
         session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
         async with session() as s:
             user = await s.get(EmployeeModel, employee.id)
