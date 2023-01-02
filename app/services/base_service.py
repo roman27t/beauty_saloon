@@ -25,10 +25,12 @@ class BaseService2(ABC):
         self.db_session.add(obj_db)
         return obj_db
     
-    def update(self, obj_db, schema: PydanticBaseModel): # : EmployeeModel,  : EmployeeInSchema
+    async def update(self, obj_db, schema: PydanticBaseModel): # : EmployeeModel,  : EmployeeInSchema
         for key, value in schema.dict(exclude_unset=True).items():
             setattr(obj_db, key, value)
         self.db_session.add(obj_db)
+        await self.db_session.commit()
+        await self.db_session.refresh(obj_db)
 
     async def get_all(self) -> list:    # [EmployeeModel]
         result = await self.db_session.execute(
