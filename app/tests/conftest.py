@@ -41,7 +41,6 @@ async def async_session() -> AsyncSession:
             service_call=StubInitService(db_session=s).init,
             db_session=s,
         )
-
         yield s
 
     async with engine.begin() as conn:

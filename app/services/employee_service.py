@@ -1,23 +1,25 @@
 from sqlalchemy import select
 
 from models import EmployeeModel
-from models.user_model import Gender
+from models.user_model import EmployeeInSchema
 from services.base_service import BaseService
 
 
 class EmployeeService(BaseService):
-    def add(self, employee: EmployeeModel):
-        employee_schema = EmployeeModel(
-            phone=employee.phone,
-            email=employee.email,
-            last_name=employee.last_name,
-            first_name=employee.first_name,
-            birth_date=employee.birth_date,
-            gender=Gender.MALE,
-        )
-        self.db_session.add(employee_schema)
-        return employee_schema
+    def add(self, schema: EmployeeInSchema):
+        employee_db = EmployeeModel(**schema.dict())
+        self.db_session.add(employee_db)
+        return employee_db
+
+    def update(self, employee_db: EmployeeModel, schema: EmployeeInSchema):
+        for key, value in schema.dict(exclude_unset=True).items():
+            setattr(employee_db, key, value)
+        self.db_session.add(employee_db)
 
     async def get_all(self) -> list[EmployeeModel]:
         result = await self.db_session.execute(select(EmployeeModel).order_by(EmployeeModel.last_name.desc()).limit(20))
         return result.scalars().all()
+
+    async def get(self, pk: int) -> EmployeeModel:
+        result = await self.db_session.get(EmployeeModel, pk)
+        return result
