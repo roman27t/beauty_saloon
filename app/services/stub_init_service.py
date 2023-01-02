@@ -27,4 +27,4 @@ class StubInitService(BaseService):
                     gender=Gender.MALE,
                 )
                 service_class = user_service[user_model]
-                service_class(db_session=self.db_session).add(schema=employee_schema)
+                service_class(db_session=self.db_session).add_async(schema=employee_schema)

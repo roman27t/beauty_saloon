@@ -30,13 +30,8 @@ async def view_get_client_all(session: AsyncSession = Depends(get_session)):
 
 @router_client.post(ROUTE_CLIENT, response_model=ClientModel)
 async def view_add_client(client: ClientInSchema, session: AsyncSession = Depends(get_session)):
-    user_schema = ClientService(db_session=session).add(schema=client)
-    try:
-        await session.commit()
-        return user_schema
-    except IntegrityError:
-        await session.rollback()
-        raise DuplicatedEntryError('The client is already stored')
+    user_schema = await ClientService(db_session=session).add(schema=client)
+    return user_schema
 
 
 @router_client.patch(ROUTE_CLIENT + '{pk}/', response_model=ClientModel)

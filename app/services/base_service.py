@@ -4,6 +4,9 @@ from pydantic import BaseModel as PydanticBaseModel
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import SQLModel
+from sqlalchemy.exc import IntegrityError
+
+from core.exceptions import DuplicatedEntryError
 
 
 class BaseService:
@@ -20,10 +23,19 @@ class BaseService2(ABC):
     def _table(self) -> Type[SQLModel]:
         pass
 
-    def add(self, schema: PydanticBaseModel):  # : EmployeeInSchema
+    def add_async(self, schema: PydanticBaseModel):  # : EmployeeInSchema
         obj_db = self._table(**schema.dict())
         self.db_session.add(obj_db)
         return obj_db
+
+    async def add(self, schema: PydanticBaseModel):  # : EmployeeInSchema
+        obj_db = self.add_async(schema=schema)
+        try:
+            await self.db_session.commit()
+            return obj_db
+        except IntegrityError:
+            await self.db_session.rollback()
+            raise DuplicatedEntryError('The employee is already stored')
     
     async def update(self, obj_db, schema: PydanticBaseModel): # : EmployeeModel,  : EmployeeInSchema
         for key, value in schema.dict(exclude_unset=True).items():
