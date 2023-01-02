@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from models import ClientModel
 from models.database import get_session
-from models.user_model import EmployeeInOptionalSchema
+from schemas.user_schemas import EmployeeInOptionalSchema
 from services.client_service import ClientService
 
 

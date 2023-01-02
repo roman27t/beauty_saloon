@@ -6,7 +6,7 @@ from dependencies.client_dependency import valid_patch_id, valid_patch_schema
 from models import ClientModel
 from core.exceptions import DuplicatedEntryError
 from models.database import get_session
-from models.user_model import ClientInSchema, ClientInOptionalSchema
+from schemas.user_schemas import ClientInSchema, ClientInOptionalSchema
 from services.client_service import ClientService
 
 router_client = APIRouter()

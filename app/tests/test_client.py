@@ -6,7 +6,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlalchemy import select
 from fastapi import status
 from models import ClientModel
-from models.user_model import ClientInSchema, ClientInOptionalSchema
+from schemas.user_schemas import ClientInSchema, ClientInOptionalSchema
 from models.choices import Gender
 from services.stub_init_service import LAST_NAMES
 from tests.conftest import engine

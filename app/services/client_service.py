@@ -1,7 +1,7 @@
 from sqlalchemy import select
 
 from models import ClientModel
-from models.user_model import ClientInSchema
+from schemas.user_schemas import ClientInSchema
 from services.base_service import BaseService
 
 

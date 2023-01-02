@@ -6,7 +6,7 @@ from dependencies.user_dependency import valid_patch_id, valid_patch_schema
 from models import EmployeeModel
 from core.exceptions import DuplicatedEntryError
 from models.database import get_session
-from models.user_model import EmployeeInSchema, EmployeeInOptionalSchema
+from schemas.user_schemas import EmployeeInSchema, EmployeeInOptionalSchema
 from services.employee_service import EmployeeService
 
 router = APIRouter()

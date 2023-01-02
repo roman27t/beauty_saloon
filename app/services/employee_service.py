@@ -1,7 +1,7 @@
 from sqlalchemy import select
 
 from models import EmployeeModel
-from models.user_model import EmployeeInSchema
+from schemas.user_schemas import EmployeeInSchema
 from services.base_service import BaseService
 
 
