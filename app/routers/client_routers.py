@@ -45,7 +45,7 @@ async def view_patch_client(
     employee_db: ClientModel=Depends(valid_patch_id),
     session: AsyncSession = Depends(get_session),
 ):
-    ClientService(db_session=session).update(employee_db=employee_db, schema=schema)
+    ClientService(db_session=session).update(obj_db=employee_db, schema=schema)
     await session.commit()
     await session.refresh(employee_db)
     return employee_db

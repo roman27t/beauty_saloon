@@ -43,7 +43,7 @@ async def view_patch_employee(
     employee_db: EmployeeModel=Depends(valid_patch_id),
     session: AsyncSession = Depends(get_session),
 ):
-    EmployeeService(db_session=session).update(employee_db=employee_db, schema=schema)
+    EmployeeService(db_session=session).update(obj_db=employee_db, schema=schema)
     await session.commit()
     await session.refresh(employee_db)
     return employee_db
