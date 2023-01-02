@@ -36,6 +36,16 @@ class EmployeeInOptionalSchema(EmployeeInSchema):
     birth_date: Optional[dt.date]
 
 
+#todo duplicate
+class ClientInOptionalSchema(ClientInSchema):
+    phone: Optional[constr(min_length=10, max_length=14)]
+    email: Optional[EmailStr]
+    gender: Optional[Gender]
+    last_name: Optional[constr(min_length=2, max_length=50)]
+    first_name: Optional[constr(min_length=2, max_length=50)]
+    birth_date: Optional[dt.date]
+
+
 class _UserBase(DateCreatedChangedBase, _UserInSchema):
     id: int = Field(default=None, primary_key=True)
     is_active: Union[bool, None] = True
