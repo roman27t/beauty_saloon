@@ -49,17 +49,22 @@ async def test_post_employee(async_client: AsyncClient, async_session: AsyncSess
 
 
 @pytest.mark.parametrize(
-    'schema, status_code',
+    'pk,schema, status_code',
     [
-        (EmployeeInOptionalSchema(first_name='Katerina'), 200),
-        (EmployeeInOptionalSchema(), 400),
+        (1, EmployeeInOptionalSchema(first_name='Katerina'), 200),
+        (1, EmployeeInOptionalSchema(), 400),
+        (100, EmployeeInOptionalSchema(first_name='Katerina'), 404),
     ],
 )
 @pytest.mark.asyncio
 async def test_patch_employee(
-        async_client: AsyncClient, async_session: AsyncSession, schema: EmployeeInOptionalSchema, status_code: int
+        async_client: AsyncClient,
+        async_session: AsyncSession,
+        pk: int,
+        schema: EmployeeInOptionalSchema,
+        status_code: int
 ):
-    response = await async_client.patch(f'{ROUTE_EMPLOYEE}1/', content=schema.json(exclude_unset=True))
+    response = await async_client.patch(f'{ROUTE_EMPLOYEE}{pk}/', content=schema.json(exclude_unset=True))
     await async_session.commit()
     assert response.status_code == status_code
     employee = EmployeeModel(**response.json())
