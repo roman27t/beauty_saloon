@@ -9,7 +9,7 @@ router_init_stub = APIRouter()
 
 
 @router_init_stub.get('/init-stub/', response_model=dict[str, bool], status_code=200)
-async def init_stub_view(session: AsyncSession = Depends(get_session)):
+async def view_init_stub_view(session: AsyncSession = Depends(get_session)):
     return await db_commit(
         service_call=StubInitService(db_session=session).init,
         db_session=session,
