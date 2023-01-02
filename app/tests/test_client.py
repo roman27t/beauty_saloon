@@ -32,22 +32,32 @@ async def test_get_client_by_id(async_client: AsyncClient, async_session: AsyncS
         assert employee.last_name == LAST_NAMES[5]
 
 
+@pytest.mark.parametrize(
+    'is_error, status_code',
+    [
+        (False, status.HTTP_200_OK),
+        (True, status.HTTP_422_UNPROCESSABLE_ENTITY),
+    ],
+)
 @pytest.mark.asyncio
-async def test_post_client(async_client: AsyncClient, async_session: AsyncSession):
-    last_name = 'Dobruden'
+async def test_post_client(async_client: AsyncClient, async_session: AsyncSession, is_error: bool, status_code: int):
     employee_schema = ClientInSchema(
         phone='+380983827777',
         email='employee@gmail.com',
-        last_name=last_name,
+        last_name='Dobruden',
         first_name='Hanna',
         birth_date=dt.datetime.strptime('10.02.1989', '%d.%m.%Y'),
         gender=Gender.FEMALE,
     )
-    response = await async_client.post(url_reverse('view_add_client'), content=employee_schema.json())
-    assert response.status_code == status.HTTP_200_OK
-    result = await async_session.execute(select(ClientModel).where(ClientModel.last_name == last_name).limit(1))
-    user = result.scalars().first()
-    assert user.last_name == last_name
+    content = '{}' if is_error else employee_schema.json()
+    response = await async_client.post(url_reverse('view_add_client'), content=content)
+    assert response.status_code == status_code
+    if status_code == status.HTTP_200_OK:
+        result = await async_session.execute(
+            select(ClientModel).where(ClientModel.last_name == employee_schema.last_name).limit(1)
+        )
+        user = result.scalars().first()
+        assert user.last_name == employee_schema.last_name
 
 
 @pytest.mark.parametrize(
