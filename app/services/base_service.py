@@ -1,12 +1,11 @@
 from abc import ABC, abstractmethod
 from typing import Type
+
+from models.db_helper import db_commit
 from pydantic import BaseModel as PydanticBaseModel
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import SQLModel
-from sqlalchemy.exc import IntegrityError
-
-from core.exceptions import DuplicatedEntryError
 
 
 class BaseService:
@@ -30,12 +29,8 @@ class BaseService2(ABC):
 
     async def add(self, schema: PydanticBaseModel):  # : EmployeeInSchema
         obj_db = self.add_async(schema=schema)
-        try:
-            await self.db_session.commit()
-            return obj_db
-        except IntegrityError:
-            await self.db_session.rollback()
-            raise DuplicatedEntryError('The employee is already stored')
+        await db_commit(db_session=self.db_session, message=f'The {self._table.__class__} is already stored')
+        return obj_db
     
     async def update(self, obj_db, schema: PydanticBaseModel): # : EmployeeModel,  : EmployeeInSchema
         for key, value in schema.dict(exclude_unset=True).items():
