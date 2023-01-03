@@ -19,7 +19,9 @@ async def test_get_service_category_all(async_client: AsyncClient, async_session
 
 @pytest.mark.parametrize('pk,status_code', [(1, status.HTTP_200_OK), (999, status.HTTP_404_NOT_FOUND)])
 @pytest.mark.asyncio
-async def test_get_user_by_id(async_client: AsyncClient, async_session: AsyncSession, pk: int, status_code: int):
+async def test_get_service_category_by_id(
+        async_client: AsyncClient, async_session: AsyncSession, pk: int, status_code: int
+):
     response = await async_client.get(url_reverse('view_get_service_category_by_id', pk=pk))
     assert response.status_code == status_code
     if status_code == status.HTTP_200_OK:

@@ -1,5 +1,5 @@
 from .user_model import ClientModel, EmployeeModel
-from .service_model import ServiceCategoryModel #, ServiceTypeModel
+from .service_model import ServiceCategoryModel, ServiceNameModel
 
 
 
