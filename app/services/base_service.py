@@ -14,10 +14,7 @@ class BaseService:
         self.db_session = db_session
 
 
-class BaseService2(ABC):
-    def __init__(self, db_session: AsyncSession):
-        self.db_session = db_session
-
+class AbstractService(BaseService, ABC):
     @property
     @abstractmethod
     def _table(self) -> Type[SQLModel]:
