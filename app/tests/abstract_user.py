@@ -1,38 +1,43 @@
+from abc import ABC, abstractmethod
 from typing import Type
 
 import pytest
 from httpx import AsyncClient
 from sqlalchemy.orm import sessionmaker
+from sqlmodel import SQLModel
 from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlalchemy import select
 from fastapi import status
-from models import ClientModel
-from schemas.user_schemas import ClientInSchema, ClientInOptionalSchema
-from services.stub_init_service import LAST_NAMES
+from pydantic import BaseModel as PydanticBaseModel
 from tests.conftest import engine
 from tests.utils import url_reverse, user_data
 
 
-class TestUser:
+class UserAbstract(ABC):
     @property
+    @abstractmethod
     def _url_path(self) -> str:
-        return 'client'
+        ...
 
     @property
-    def _model(self) -> Type[ClientModel]:
-        return ClientModel
+    @abstractmethod
+    def _model(self) -> Type[SQLModel]:
+        ...
 
     @property
-    def _in_schema(self) -> Type[ClientInSchema]:
-        return ClientInSchema
+    @abstractmethod
+    def _in_schema(self) -> Type[PydanticBaseModel]:
+        ...
 
     @property
-    def _in_optional_schema(self) -> Type[ClientInOptionalSchema]:
-        return ClientInOptionalSchema
+    @abstractmethod
+    def _in_optional_schema(self) -> Type[PydanticBaseModel]:
+        ...
 
     @property
+    @abstractmethod
     def _last_name(self) -> str:
-        return LAST_NAMES[5]
+        ...
 
     @pytest.mark.asyncio
     async def test_get_user_all(self, async_client: AsyncClient, async_session: AsyncSession):
@@ -67,7 +72,7 @@ class TestUser:
         assert response.status_code == status_code
         if status_code == status.HTTP_200_OK:
             result = await async_session.execute(
-                select(ClientModel).where(ClientModel.last_name == user_schema.last_name).limit(1)
+                select(self._model).where(self._model.last_name == user_schema.last_name).limit(1)
             )
             user_db = result.scalars().first()
             assert user_db.last_name == user_schema.last_name
