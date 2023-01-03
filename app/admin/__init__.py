@@ -1,5 +1,5 @@
 from .user_admin import ClientAdmin, EmployeeAdmin
-from .service_admin import ServiceCategoryAdmin, ServiceNameAdmin
+from .service_admin import ServiceNameAdmin, ServiceCategoryAdmin
 
 admin_classes = (
     EmployeeAdmin,

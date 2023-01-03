@@ -1,6 +1,6 @@
 from sqladmin import ModelView
 
-from models import ServiceCategoryModel, ServiceNameModel
+from models import ServiceNameModel, ServiceCategoryModel
 
 
 class ServiceCategoryAdmin(ModelView, model=ServiceCategoryModel):

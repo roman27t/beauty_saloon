@@ -6,8 +6,8 @@ from config import i_config
 from routers.index import router_index
 from models.database import engine
 from routers.client_routers import router_client
-from routers.employee_routers import router
 from routers.service_routers import router_service
+from routers.employee_routers import router
 from routers.stub_init_routers import router_init_stub
 
 app = FastAPI()

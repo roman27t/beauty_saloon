@@ -1,8 +1,8 @@
-from typing import Union, List
+from typing import List, Union
 
 from pydantic import constr, condecimal
-from sqlalchemy import Column, VARCHAR, UniqueConstraint
-from sqlmodel import SQLModel, Field, Relationship
+from sqlmodel import Field, SQLModel, Relationship
+from sqlalchemy import VARCHAR, Column, UniqueConstraint
 
 
 class ServiceCategoryModel(SQLModel, table=True):
@@ -26,6 +26,4 @@ class ServiceNameModel(SQLModel, table=True):
 
     category: ServiceCategoryModel = Relationship(back_populates='services')
 
-    __table_args__ = (
-        UniqueConstraint('name', 'category_id', name='service_name_unique'),
-    )
+    __table_args__ = (UniqueConstraint('name', 'category_id', name='service_name_unique'),)

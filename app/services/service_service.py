@@ -1,6 +1,6 @@
 from typing import Type
 
-from models import ServiceCategoryModel, ServiceNameModel
+from models import ServiceNameModel, ServiceCategoryModel
 from services.base_service import AbstractService
 
 

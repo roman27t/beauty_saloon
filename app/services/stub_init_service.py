@@ -1,19 +1,19 @@
 import datetime as dt
 from decimal import Decimal
 
-from models import ServiceCategoryModel, ServiceNameModel
+from models import ServiceNameModel, ServiceCategoryModel
 from models.choices import Gender
-from schemas.user_schemas import EmployeeInSchema, ClientInSchema
+from schemas.user_schemas import ClientInSchema, EmployeeInSchema
 from services.base_service import BaseService
 from services.client_service import ClientService
+from services.service_service import ServiceNameService, ServiceCategoryService
 from services.employee_service import EmployeeService
-from services.service_service import ServiceCategoryService, ServiceNameService
 
 LAST_NAMES = ('Shevchenko', 'Rebrov', 'Zidane', 'Beckham', 'Husin', 'Husiev', 'Golovko', 'Flo', 'Li', 'Voronin')
 FIRST_NAMES = ('Andriy', 'Sergei', 'Zineddin', 'David', 'Andriy', 'Oleh', 'Alex', 'Tore Andre', 'Max', 'Andriy')
 
 SERVICE_1 = ('Body', 'Head', 'Face', 'Leg', 'Hand', 'All')
-SERVICE_2 = ('Simple', 'Full',)
+SERVICE_2 = ('Simple', 'Full')
 SERVICE_3 = ('Head haircut', 'Head painting', 'Peeling', 'Beard haircut', 'Beard Coloring', 'Full')
 CATEGORIES_SERVICE = {
     'Massage': SERVICE_1,
