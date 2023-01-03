@@ -42,15 +42,14 @@ class TestUser:
         assert len(content) == 5
         assert self._model(**content[0])
 
-
     @pytest.mark.parametrize('pk,status_code', [(1, status.HTTP_200_OK), (999, status.HTTP_404_NOT_FOUND)])
     @pytest.mark.asyncio
     async def test_get_user_by_id(self, async_client: AsyncClient, async_session: AsyncSession, pk: int, status_code: int):
         response = await async_client.get(url_reverse(f'view_get_{self._url_path}_by_id', pk=pk))
         assert response.status_code == status_code
         if status_code == status.HTTP_200_OK:
-            employee = self._model(**response.json())
-            assert employee.last_name == self._last_name
+            user = self._model(**response.json())
+            assert user.last_name == self._last_name
 
 
     @pytest.mark.parametrize(
@@ -62,16 +61,16 @@ class TestUser:
     )
     @pytest.mark.asyncio
     async def test_post_user(self, async_client: AsyncClient, async_session: AsyncSession, is_error: bool, status_code: int):
-        employee_schema = self._in_schema(**user_data())
-        content = '{}' if is_error else employee_schema.json()
+        user_schema = self._in_schema(**user_data())
+        content = '{}' if is_error else user_schema.json()
         response = await async_client.post(url_reverse(f'view_add_{self._url_path}'), content=content)
         assert response.status_code == status_code
         if status_code == status.HTTP_200_OK:
             result = await async_session.execute(
-                select(ClientModel).where(ClientModel.last_name == employee_schema.last_name).limit(1)
+                select(ClientModel).where(ClientModel.last_name == user_schema.last_name).limit(1)
             )
             user_db = result.scalars().first()
-            assert user_db.last_name == employee_schema.last_name
+            assert user_db.last_name == user_schema.last_name
 
     @pytest.mark.asyncio
     async def test_post_user_duplicate(self, async_client: AsyncClient, async_session: AsyncSession):
@@ -104,9 +103,9 @@ class TestUser:
         response = await async_client.patch(url, content=schema.json(exclude_unset=True))
         await async_session.commit()
         assert response.status_code == status_code
-        employee = self._model(**response.json())
+        user = self._model(**response.json())
         if status_code == status.HTTP_200_OK:
             session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
             async with session() as s:
-                user_db = await s.get(self._model, employee.id)
+                user_db = await s.get(self._model, user.id)
                 assert user_db.first_name == schema.first_name
