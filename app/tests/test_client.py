@@ -1,4 +1,3 @@
-import datetime as dt
 import pytest
 from httpx import AsyncClient
 from sqlalchemy.orm import sessionmaker
@@ -7,10 +6,9 @@ from sqlalchemy import select
 from fastapi import status
 from models import ClientModel
 from schemas.user_schemas import ClientInSchema, ClientInOptionalSchema
-from models.choices import Gender
 from services.stub_init_service import LAST_NAMES
 from tests.conftest import engine
-from tests.utils import url_reverse
+from tests.utils import url_reverse, user_data
 
 
 @pytest.mark.asyncio
@@ -41,14 +39,7 @@ async def test_get_client_by_id(async_client: AsyncClient, async_session: AsyncS
 )
 @pytest.mark.asyncio
 async def test_post_client(async_client: AsyncClient, async_session: AsyncSession, is_error: bool, status_code: int):
-    employee_schema = ClientInSchema(
-        phone='+380983827777',
-        email='employee@gmail.com',
-        last_name='Dobruden',
-        first_name='Hanna',
-        birth_date=dt.datetime.strptime('10.02.1989', '%d.%m.%Y'),
-        gender=Gender.FEMALE,
-    )
+    employee_schema = ClientInSchema(**user_data())
     content = '{}' if is_error else employee_schema.json()
     response = await async_client.post(url_reverse('view_add_client'), content=content)
     assert response.status_code == status_code
@@ -58,6 +49,14 @@ async def test_post_client(async_client: AsyncClient, async_session: AsyncSessio
         )
         user = result.scalars().first()
         assert user.last_name == employee_schema.last_name
+
+
+@pytest.mark.asyncio
+async def test_post_client_duplicate(async_client: AsyncClient, async_session: AsyncSession):
+    for i in range(1,3):
+        response = await async_client.post(url_reverse('view_add_client'), content=ClientInSchema(**user_data()).json())
+        status_code = status.HTTP_200_OK if i == 1 else status.HTTP_422_UNPROCESSABLE_ENTITY
+        assert response.status_code == status_code
 
 
 @pytest.mark.parametrize(

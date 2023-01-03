@@ -22,6 +22,10 @@ class BaseService2(ABC):
     def _table(self) -> Type[SQLModel]:
         pass
 
+    @property
+    def name(self) -> str:
+        return self._table.__table__.name
+
     def add_async(self, schema: PydanticBaseModel):  # : EmployeeInSchema
         obj_db = self._table(**schema.dict())
         self.db_session.add(obj_db)
@@ -29,7 +33,7 @@ class BaseService2(ABC):
 
     async def add(self, schema: PydanticBaseModel):  # : EmployeeInSchema
         obj_db = self.add_async(schema=schema)
-        await db_commit(db_session=self.db_session, message=f'The {self._table.__class__} is already stored')
+        await db_commit(db_session=self.db_session, message=f'The {self.name} is already stored')
         return obj_db
     
     async def update(self, obj_db, schema: PydanticBaseModel): # : EmployeeModel,  : EmployeeInSchema
