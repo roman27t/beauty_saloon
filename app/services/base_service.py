@@ -41,28 +41,21 @@ class AbstractService(BaseService, ABC):
         await self.db_session.commit()
         await self.db_session.refresh(obj_db)
 
-    async def get_all(self) -> list:  # [EmployeeModel]
+    async def get_all(self) -> list:
         result = await self.db_session.execute(
             select(self._table).order_by(getattr(self._table, 'id'))    # .limit(20)  # (ClientModel.last_name.desc())
         )
         return result.scalars().all()
 
-    async def get(self, pk: int):  #  -> EmployeeModel
+    async def get(self, pk: int):
         result = await self.db_session.get(self._table, pk)
         return result
 
-    async def filter(self, params: dict) -> list:  # [EmployeeModel]
-        v = []
-        from sqlalchemy import and_, asc, desc, select, update
-        for key, value in params.items():
-            v.append(getattr(self._table, key) == value)
-
-        print(params)
+    async def filter(self, params: dict) -> list:
         result = await self.db_session.execute(
-            select(self._table).where(*v)
+            select(self._table).where(*self.__parse_params(params=params))
         )
         return result.scalars().all()
 
-    # todo
-    # def __parse_params(self, params: dict):
-    #     return [getattr(self._table, key) == value for key, value in params.items()]
+    def __parse_params(self, params: dict) -> list:
+        return [getattr(self._table, key) == value for key, value in params.items()]
