@@ -70,8 +70,8 @@ class TestUser:
             result = await async_session.execute(
                 select(ClientModel).where(ClientModel.last_name == employee_schema.last_name).limit(1)
             )
-            user = result.scalars().first()
-            assert user.last_name == employee_schema.last_name
+            user_db = result.scalars().first()
+            assert user_db.last_name == employee_schema.last_name
 
     @pytest.mark.asyncio
     async def test_post_user_duplicate(self, async_client: AsyncClient, async_session: AsyncSession):
@@ -108,5 +108,5 @@ class TestUser:
         if status_code == status.HTTP_200_OK:
             session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
             async with session() as s:
-                user = await s.get(self._model, employee.id)
-                assert user.first_name == schema.first_name
+                user_db = await s.get(self._model, employee.id)
+                assert user_db.first_name == schema.first_name
