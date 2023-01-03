@@ -7,6 +7,7 @@ from routers.index import router_index
 from models.database import engine
 from routers.client_routers import router_client
 from routers.employee_routers import router
+from routers.service_routers import router_service
 from routers.stub_init_routers import router_init_stub
 
 app = FastAPI()
@@ -17,6 +18,7 @@ for admin_class in admin_classes:
 
 app.include_router(router_index)  # , prefix='/api/auth', tags=['auth']
 app.include_router(router)
+app.include_router(router_service)
 app.include_router(router_client)
 if i_config.DEBUG:
     app.include_router(router_init_stub)
