@@ -1,13 +1,11 @@
 from fastapi import Depends, APIRouter, HTTPException, status
-from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from dependencies.user_dependency import valid_patch_id, valid_patch_schema
 from models import EmployeeModel
-from core.exceptions import DuplicatedEntryError
 from models.database import get_session
 from schemas.user_schemas import EmployeeInSchema, EmployeeInOptionalSchema
 from services.employee_service import EmployeeService
+from dependencies.user_dependency import valid_patch_id, valid_patch_schema
 
 router = APIRouter()
 ROUTE_EMPLOYEE = '/employee/'
@@ -34,8 +32,8 @@ async def view_add_employee(employee: EmployeeInSchema, session: AsyncSession = 
 
 @router.patch(ROUTE_EMPLOYEE + '{pk}/', response_model=EmployeeModel)
 async def view_patch_employee(
-    schema: EmployeeInOptionalSchema=Depends(valid_patch_schema),
-    employee_db: EmployeeModel=Depends(valid_patch_id),
+    schema: EmployeeInOptionalSchema = Depends(valid_patch_schema),
+    employee_db: EmployeeModel = Depends(valid_patch_id),
     session: AsyncSession = Depends(get_session),
 ):
     await EmployeeService(db_session=session).update(obj_db=employee_db, schema=schema)

@@ -3,14 +3,15 @@ from typing import Type
 
 import pytest
 from httpx import AsyncClient
-from sqlalchemy.orm import sessionmaker
-from sqlmodel import SQLModel
-from sqlmodel.ext.asyncio.session import AsyncSession
-from sqlalchemy import select
 from fastapi import status
 from pydantic import BaseModel as PydanticBaseModel
+from sqlmodel import SQLModel
+from sqlalchemy import select
+from sqlalchemy.orm import sessionmaker
+from sqlmodel.ext.asyncio.session import AsyncSession
+
+from tests.utils import user_data, url_reverse
 from tests.conftest import engine
-from tests.utils import url_reverse, user_data
 
 
 class UserAbstract(ABC):
@@ -49,13 +50,14 @@ class UserAbstract(ABC):
 
     @pytest.mark.parametrize('pk,status_code', [(1, status.HTTP_200_OK), (999, status.HTTP_404_NOT_FOUND)])
     @pytest.mark.asyncio
-    async def test_get_user_by_id(self, async_client: AsyncClient, async_session: AsyncSession, pk: int, status_code: int):
+    async def test_get_user_by_id(
+        self, async_client: AsyncClient, async_session: AsyncSession, pk: int, status_code: int
+    ):
         response = await async_client.get(url_reverse(f'view_get_{self._url_path}_by_id', pk=pk))
         assert response.status_code == status_code
         if status_code == status.HTTP_200_OK:
             user = self._model(**response.json())
             assert user.last_name == self._last_name
-
 
     @pytest.mark.parametrize(
         'is_error, status_code',
@@ -65,7 +67,9 @@ class UserAbstract(ABC):
         ],
     )
     @pytest.mark.asyncio
-    async def test_post_user(self, async_client: AsyncClient, async_session: AsyncSession, is_error: bool, status_code: int):
+    async def test_post_user(
+        self, async_client: AsyncClient, async_session: AsyncSession, is_error: bool, status_code: int
+    ):
         user_schema = self._in_schema(**user_data())
         content = '{}' if is_error else user_schema.json()
         response = await async_client.post(url_reverse(f'view_add_{self._url_path}'), content=content)
@@ -79,12 +83,11 @@ class UserAbstract(ABC):
 
     @pytest.mark.asyncio
     async def test_post_user_duplicate(self, async_client: AsyncClient, async_session: AsyncSession):
-        for i in range(1,3):
+        for i in range(1, 3):
             url = url_reverse(f'view_add_{self._url_path}')
             response = await async_client.post(url, content=self._in_schema(**user_data()).json())
             status_code = status.HTTP_200_OK if i == 1 else status.HTTP_422_UNPROCESSABLE_ENTITY
             assert response.status_code == status_code
-
 
     @pytest.mark.parametrize(
         'pk,data, status_code',
@@ -96,12 +99,7 @@ class UserAbstract(ABC):
     )
     @pytest.mark.asyncio
     async def test_patch_user(
-            self,
-            async_client: AsyncClient,
-            async_session: AsyncSession,
-            pk: int,
-            data: dict,
-            status_code: int
+        self, async_client: AsyncClient, async_session: AsyncSession, pk: int, data: dict, status_code: int
     ):
         schema = self._in_optional_schema(**data)
         url = url_reverse(f'view_patch_{self._url_path}', pk=pk)

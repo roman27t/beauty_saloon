@@ -1,18 +1,16 @@
 from fastapi import Depends, APIRouter, HTTPException, status
-from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from dependencies.client_dependency import valid_patch_id, valid_patch_schema
 from models import ClientModel
-from core.exceptions import DuplicatedEntryError
 from models.database import get_session
 from schemas.user_schemas import ClientInSchema, ClientInOptionalSchema
 from services.client_service import ClientService
+from dependencies.client_dependency import valid_patch_id, valid_patch_schema
 
 router_client = APIRouter()
 ROUTE_CLIENT = '/client/'
 
-#todo common class
+# todo common class
 
 
 @router_client.get(ROUTE_CLIENT + '{pk}/', response_model=ClientModel)
@@ -36,8 +34,8 @@ async def view_add_client(client: ClientInSchema, session: AsyncSession = Depend
 
 @router_client.patch(ROUTE_CLIENT + '{pk}/', response_model=ClientModel)
 async def view_patch_client(
-    schema: ClientInOptionalSchema=Depends(valid_patch_schema),
-    employee_db: ClientModel=Depends(valid_patch_id),
+    schema: ClientInOptionalSchema = Depends(valid_patch_schema),
+    employee_db: ClientModel = Depends(valid_patch_id),
     session: AsyncSession = Depends(get_session),
 ):
     await ClientService(db_session=session).update(obj_db=employee_db, schema=schema)

@@ -1,11 +1,12 @@
 from typing import Type
+
 from models import EmployeeModel
+from tests.abstract_user import UserAbstract
 from schemas.user_schemas import EmployeeInSchema, EmployeeInOptionalSchema
 from services.stub_init_service import LAST_NAMES
-from tests.abstract_user import UserAbstract
 
 
-class TestClient(UserAbstract):
+class TestEmployee(UserAbstract):
     @property
     def _url_path(self) -> str:
         return 'employee'

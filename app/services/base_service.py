@@ -1,11 +1,12 @@
 from abc import ABC, abstractmethod
 from typing import Type
 
-from models.db_helper import db_commit
 from pydantic import BaseModel as PydanticBaseModel
+from sqlmodel import SQLModel
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlmodel import SQLModel
+
+from models.db_helper import db_commit
 
 
 class BaseService:
@@ -35,20 +36,20 @@ class BaseService2(ABC):
         obj_db = self.add_async(schema=schema)
         await db_commit(db_session=self.db_session, message=f'The {self.name} is already stored')
         return obj_db
-    
-    async def update(self, obj_db, schema: PydanticBaseModel): # : EmployeeModel,  : EmployeeInSchema
+
+    async def update(self, obj_db, schema: PydanticBaseModel):  # : EmployeeModel,  : EmployeeInSchema
         for key, value in schema.dict(exclude_unset=True).items():
             setattr(obj_db, key, value)
         self.db_session.add(obj_db)
         await self.db_session.commit()
         await self.db_session.refresh(obj_db)
 
-    async def get_all(self) -> list:    # [EmployeeModel]
+    async def get_all(self) -> list:  # [EmployeeModel]
         result = await self.db_session.execute(
             select(self._table).order_by(getattr(self._table, 'id')).limit(20)  # (ClientModel.last_name.desc())
         )
         return result.scalars().all()
 
-    async def get(self, pk: int):   #  -> EmployeeModel
+    async def get(self, pk: int):  #  -> EmployeeModel
         result = await self.db_session.get(self._table, pk)
         return result

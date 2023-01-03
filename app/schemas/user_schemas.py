@@ -1,7 +1,7 @@
 import datetime as dt
 from typing import Optional
 
-from pydantic import constr, EmailStr
+from pydantic import EmailStr, constr
 
 from models.choices import Gender
 from models.user_model import _UserInSchema

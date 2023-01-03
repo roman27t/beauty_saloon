@@ -1,5 +1,6 @@
-import datetime as dt
 import typing
+import datetime as dt
+
 from main import app
 from models.choices import Gender
 

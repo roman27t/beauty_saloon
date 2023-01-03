@@ -6,8 +6,8 @@ from sqlmodel import VARCHAR, Field, SQLModel
 from sqlalchemy import Column
 from sqlalchemy.sql.sqltypes import Enum as EnumSQL
 
-from models.base_models import DateCreatedChangedBase
 from models.choices import Gender
+from models.base_models import DateCreatedChangedBase
 
 
 class _UserInSchema(SQLModel):

@@ -1,8 +1,7 @@
 import datetime as dt
 
-from models import ClientModel, EmployeeModel
-from schemas.user_schemas import EmployeeInSchema
 from models.choices import Gender
+from schemas.user_schemas import EmployeeInSchema, ClientInSchema
 from services.base_service import BaseService
 from services.client_service import ClientService
 from services.employee_service import EmployeeService
@@ -13,7 +12,7 @@ FIRST_NAMES = ('Andriy', 'Sergei', 'Zineddin', 'David', 'Andriy', 'Oleh', 'Alex'
 
 class StubInitService(BaseService):
     def init(self):
-        user_service = {EmployeeInSchema: EmployeeService, ClientModel: ClientService}
+        user_service = {EmployeeInSchema: EmployeeService, ClientInSchema: ClientService}
         for index_model, user_model in enumerate(user_service.keys()):
             start = 15 if index_model else 10
             for index, i in enumerate(range(start, start + 5)):

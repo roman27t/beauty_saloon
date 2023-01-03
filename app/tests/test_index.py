@@ -1,7 +1,8 @@
 import pytest
 from httpx import AsyncClient
-from sqlmodel.ext.asyncio.session import AsyncSession
 from fastapi import status
+from sqlmodel.ext.asyncio.session import AsyncSession
+
 from tests.utils import url_reverse
 
 
