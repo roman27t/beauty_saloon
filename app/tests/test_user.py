@@ -35,7 +35,7 @@ class TestUser:
         return LAST_NAMES[5]
 
     @pytest.mark.asyncio
-    async def test_get_client_all(self, async_client: AsyncClient, async_session: AsyncSession):
+    async def test_get_user_all(self, async_client: AsyncClient, async_session: AsyncSession):
         response = await async_client.get(url_reverse(f'view_get_{self._url_path}_all'))
         assert response.status_code == status.HTTP_200_OK
         content = response.json()
@@ -45,7 +45,7 @@ class TestUser:
 
     @pytest.mark.parametrize('pk,status_code', [(1, status.HTTP_200_OK), (999, status.HTTP_404_NOT_FOUND)])
     @pytest.mark.asyncio
-    async def test_get_client_by_id(self, async_client: AsyncClient, async_session: AsyncSession, pk: int, status_code: int):
+    async def test_get_user_by_id(self, async_client: AsyncClient, async_session: AsyncSession, pk: int, status_code: int):
         response = await async_client.get(url_reverse(f'view_get_{self._url_path}_by_id', pk=pk))
         assert response.status_code == status_code
         if status_code == status.HTTP_200_OK:
@@ -61,7 +61,7 @@ class TestUser:
         ],
     )
     @pytest.mark.asyncio
-    async def test_post_client(self, async_client: AsyncClient, async_session: AsyncSession, is_error: bool, status_code: int):
+    async def test_post_user(self, async_client: AsyncClient, async_session: AsyncSession, is_error: bool, status_code: int):
         employee_schema = self._in_schema(**user_data())
         content = '{}' if is_error else employee_schema.json()
         response = await async_client.post(url_reverse(f'view_add_{self._url_path}'), content=content)
@@ -74,7 +74,7 @@ class TestUser:
             assert user.last_name == employee_schema.last_name
 
     @pytest.mark.asyncio
-    async def test_post_client_duplicate(self, async_client: AsyncClient, async_session: AsyncSession):
+    async def test_post_user_duplicate(self, async_client: AsyncClient, async_session: AsyncSession):
         for i in range(1,3):
             url = url_reverse(f'view_add_{self._url_path}')
             response = await async_client.post(url, content=self._in_schema(**user_data()).json())
@@ -91,7 +91,7 @@ class TestUser:
         ],
     )
     @pytest.mark.asyncio
-    async def test_patch_client(
+    async def test_patch_user(
             self,
             async_client: AsyncClient,
             async_session: AsyncSession,
