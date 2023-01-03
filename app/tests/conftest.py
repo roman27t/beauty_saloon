@@ -37,10 +37,8 @@ async def async_session() -> AsyncSession:
         async with engine.begin() as conn:
             await conn.run_sync(SQLModel.metadata.create_all)
 
-        await db_commit(
-            service_call=StubInitService(db_session=s).init,
-            db_session=s,
-        )
+        StubInitService(db_session=s).init()
+        await db_commit(db_session=s)
         yield s
 
     async with engine.begin() as conn:

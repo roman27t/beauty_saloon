@@ -1,13 +1,13 @@
 import datetime as dt
-from typing import Union, Optional
+from typing import Union
 
 from pydantic import EmailStr, constr
 from sqlmodel import VARCHAR, Field, SQLModel
 from sqlalchemy import Column
 from sqlalchemy.sql.sqltypes import Enum as EnumSQL
 
-from models.base_models import DateCreatedChangedBase
 from models.choices import Gender
+from models.base_models import DateCreatedChangedBase
 
 
 class _UserInSchema(SQLModel):
@@ -17,23 +17,6 @@ class _UserInSchema(SQLModel):
     last_name: constr(min_length=2, max_length=50)
     first_name: constr(min_length=2, max_length=50)
     birth_date: dt.date
-
-
-class EmployeeInSchema(_UserInSchema):
-    ...
-
-
-class ClientInSchema(_UserInSchema):
-    ...
-
-
-class EmployeeInOptionalSchema(EmployeeInSchema):
-    phone: Optional[constr(min_length=10, max_length=14)]
-    email: Optional[EmailStr]
-    gender: Optional[Gender]
-    last_name: Optional[constr(min_length=2, max_length=50)]
-    first_name: Optional[constr(min_length=2, max_length=50)]
-    birth_date: Optional[dt.date]
 
 
 class _UserBase(DateCreatedChangedBase, _UserInSchema):

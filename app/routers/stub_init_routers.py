@@ -1,4 +1,4 @@
-from fastapi import Depends, APIRouter
+from fastapi import Depends, APIRouter, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from models.database import get_session
@@ -8,9 +8,7 @@ from services.stub_init_service import StubInitService
 router_init_stub = APIRouter()
 
 
-@router_init_stub.get('/init-stub/', response_model=dict[str, bool], status_code=200)
-async def init_stub_view(session: AsyncSession = Depends(get_session)):
-    return await db_commit(
-        service_call=StubInitService(db_session=session).init,
-        db_session=session,
-    )
+@router_init_stub.get('/init-stub/', response_model=dict[str, bool], status_code=status.HTTP_200_OK)
+async def view_init_stub_view(session: AsyncSession = Depends(get_session)):
+    StubInitService(db_session=session).init()
+    return await db_commit(db_session=session)

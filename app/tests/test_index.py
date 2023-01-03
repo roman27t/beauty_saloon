@@ -1,19 +1,20 @@
 import pytest
 from httpx import AsyncClient
+from fastapi import status
 from sqlmodel.ext.asyncio.session import AsyncSession
+
+from tests.utils import url_reverse
 
 
 @pytest.mark.asyncio
 async def test_index(async_client: AsyncClient, async_session: AsyncSession):
-    response = await async_client.get('/')
-    assert response.status_code == 200
+    response = await async_client.get(url_reverse('view_index'))
+    assert response.status_code == status.HTTP_200_OK
     assert response.json() == {'ok': True}
 
 
 @pytest.mark.asyncio
 async def test_1(async_client: AsyncClient, async_session: AsyncSession):
-    # response = await async_client.post("/items/1", json=payload,)
-    response = await async_client.get("/items/1")
-
+    response = await async_client.get(url_reverse('view_read_item', item_id=1))
     assert response.status_code == 200
-    assert response.json() == {"item_id": 1, "q": None}
+    assert response.json() == {'item_id': 1, 'q': None}
