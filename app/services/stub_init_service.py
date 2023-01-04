@@ -63,6 +63,6 @@ class StubInitService(BaseService):
                     category_id=CATEGORIES.index(category) + 1,
                     name=service_name,
                     detail=f'{category} {service_name} detail info',
-                    price=Decimal(10) * Decimal(f'1.{index}'),
+                    price=Decimal(10000) * Decimal(f'1.{index}'),
                 )
                 ServiceNameService(db_session=self.db_session).add_async(schema=category_schema)

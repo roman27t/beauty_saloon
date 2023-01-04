@@ -21,7 +21,7 @@ class ServiceNameModel(SQLModel, table=True):
     category_id: int = Field(foreign_key='service_category.id')
     name: constr(min_length=2, max_length=100)
     is_active: Union[bool, None] = True
-    price: condecimal(max_digits=5, decimal_places=2)
+    price: condecimal(max_digits=7, decimal_places=2)
     detail: constr(max_length=50) = ''
 
     category: ServiceCategoryModel = Relationship(back_populates='services')

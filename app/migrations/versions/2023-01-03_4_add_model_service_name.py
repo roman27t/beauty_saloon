@@ -24,7 +24,7 @@ def upgrade() -> None:
     sa.Column('category_id', sa.Integer(), nullable=False),
     sa.Column('name', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
     sa.Column('is_active', sa.Boolean(), nullable=True),
-    sa.Column('price', sa.Numeric(precision=5, scale=2), nullable=False),
+    sa.Column('price', sa.Numeric(precision=7, scale=2), nullable=False),
     sa.Column('detail', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
     sa.ForeignKeyConstraint(['category_id'], ['service_category.id'], ),
     sa.PrimaryKeyConstraint('id'),
