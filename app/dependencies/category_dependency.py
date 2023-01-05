@@ -1,14 +1,14 @@
 from fastapi import Depends, HTTPException, status
-from services.service_service import ServiceCategoryService
+from services.service_service import CategoryService
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from models import ServiceCategoryModel
+from models import CategoryModel
 from models.database import get_session
 from schemas.category_schema import CategoryOptionalSchema
 
 
-async def valid_patch_id(pk: int, session: AsyncSession = Depends(get_session)) -> ServiceCategoryModel:
-    category = await ServiceCategoryService(db_session=session).get(pk=pk)
+async def valid_patch_id(pk: int, session: AsyncSession = Depends(get_session)) -> CategoryModel:
+    category = await CategoryService(db_session=session).get(pk=pk)
     if not category:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'item with id {pk} not found')
     return category
