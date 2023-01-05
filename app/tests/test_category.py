@@ -34,6 +34,10 @@ async def test_get_category_by_id(
         assert category.name == CATEGORIES[0]
 
 
+def _get_category_schema() -> CategoryInSchema:
+    return CategoryInSchema(**{'name': 'test_category', 'detail': 'detail'})
+
+
 @pytest.mark.parametrize(
     'is_error, status_code',
     [
@@ -45,7 +49,7 @@ async def test_get_category_by_id(
 async def test_post_category(
     async_client: AsyncClient, async_session: AsyncSession, is_error: bool, status_code: int
 ):
-    schema = CategoryInSchema(**{'name': 'test_category', 'detail': 'detail'})
+    schema = _get_category_schema()
     content = '{}' if is_error else schema.json()
     response = await async_client.post(url_reverse('view_add_category'), content=content)
     assert response.status_code == status_code
@@ -59,10 +63,9 @@ async def test_post_category(
 
 @pytest.mark.asyncio
 async def test_post_category_duplicate(async_client: AsyncClient, async_session: AsyncSession):
-    schema = CategoryInSchema(**{'name': 'test_category', 'detail': 'detail'})
     for i in range(1, 3):
         url = url_reverse('view_add_category')
-        response = await async_client.post(url, content=schema.json())
+        response = await async_client.post(url, content=_get_category_schema().json())
         status_code = status.HTTP_200_OK if i == 1 else status.HTTP_422_UNPROCESSABLE_ENTITY
         assert response.status_code == status_code
 
