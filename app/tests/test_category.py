@@ -10,7 +10,7 @@ from services.stub_init_service import CATEGORIES
 
 @pytest.mark.asyncio
 async def test_get_category_all(async_client: AsyncClient, async_session: AsyncSession):
-    response = await async_client.get(url_reverse('view_get_service_category_all'))
+    response = await async_client.get(url_reverse('view_get_category_all'))
     assert response.status_code == status.HTTP_200_OK
     content = response.json()
     assert len(content) == len(CATEGORIES)
@@ -22,7 +22,7 @@ async def test_get_category_all(async_client: AsyncClient, async_session: AsyncS
 async def test_get_category_by_id(
     async_client: AsyncClient, async_session: AsyncSession, pk: int, status_code: int
 ):
-    response = await async_client.get(url_reverse('view_get_service_category_by_id', pk=pk))
+    response = await async_client.get(url_reverse('view_get_category_by_id', pk=pk))
     assert response.status_code == status_code
     if status_code == status.HTTP_200_OK:
         category = CategoryModel(**response.json())
