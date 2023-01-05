@@ -1,13 +1,16 @@
 import pytest
 from httpx import AsyncClient
 from fastapi import status
+from schemas.category_schema import CategoryOptionalSchema
 from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlalchemy import select
+from sqlalchemy.orm import sessionmaker
 
 from models import CategoryModel
 from models.service_model import CategoryInSchema
 from tests.utils import url_reverse
 from services.stub_init_service import CATEGORIES
+from tests.conftest import engine
 
 
 @pytest.mark.asyncio
@@ -62,3 +65,28 @@ async def test_post_category_duplicate(async_client: AsyncClient, async_session:
         response = await async_client.post(url, content=schema.json())
         status_code = status.HTTP_200_OK if i == 1 else status.HTTP_422_UNPROCESSABLE_ENTITY
         assert response.status_code == status_code
+
+
+@pytest.mark.parametrize(
+    'pk,data, status_code',
+    [
+        (1, {'detail': 'detail'}, status.HTTP_200_OK),
+        (1, {}, status.HTTP_400_BAD_REQUEST),
+        (100, {'detail': 'detail'}, status.HTTP_404_NOT_FOUND),
+    ],
+)
+@pytest.mark.asyncio
+async def test_patch_category(
+    async_client: AsyncClient, async_session: AsyncSession, pk: int, data: dict, status_code: int
+):
+    schema = CategoryOptionalSchema(**data)
+    url = url_reverse('view_patch_category', pk=pk)
+    response = await async_client.patch(url, content=schema.json(exclude_unset=True))
+    await async_session.commit()
+    assert response.status_code == status_code
+    user = CategoryModel(**response.json())
+    if status_code == status.HTTP_200_OK:
+        session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+        async with session() as s:
+            user_db = await s.get(CategoryModel, user.id)
+            assert user_db.detail == schema.detail
