@@ -52,3 +52,13 @@ async def test_post_category(
         )
         user_db = result.scalars().first()
         assert user_db.name == schema.name
+
+
+@pytest.mark.asyncio
+async def test_post_category_duplicate(async_client: AsyncClient, async_session: AsyncSession):
+    schema = CategoryInSchema(**{'name': 'test_category', 'detail': 'detail'})
+    for i in range(1, 3):
+        url = url_reverse('view_add_category')
+        response = await async_client.post(url, content=schema.json())
+        status_code = status.HTTP_200_OK if i == 1 else status.HTTP_422_UNPROCESSABLE_ENTITY
+        assert response.status_code == status_code
