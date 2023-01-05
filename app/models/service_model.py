@@ -5,12 +5,15 @@ from sqlmodel import Field, SQLModel, Relationship
 from sqlalchemy import VARCHAR, Column, UniqueConstraint
 
 
-class ServiceCategoryModel(SQLModel, table=True):
-    __tablename__ = 'service_category'
-    id: int = Field(default=None, primary_key=True)
+class CategoryInSchema(SQLModel):
     name: constr(min_length=2, max_length=50) = Field(sa_column=Column('name', VARCHAR, unique=True))
     is_active: Union[bool, None] = True
     detail: constr(max_length=50) = ''
+
+
+class ServiceCategoryModel(CategoryInSchema, table=True):
+    __tablename__ = 'service_category'
+    id: int = Field(default=None, primary_key=True)
 
     services: List['ServiceNameModel'] = Relationship(back_populates='category')
 
