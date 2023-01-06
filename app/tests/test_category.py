@@ -57,8 +57,8 @@ async def test_post_category(
         result = await async_session.execute(
             select(CategoryModel).where(CategoryModel.name == schema.name).limit(1)
         )
-        user_db = result.scalars().first()
-        assert user_db.name == schema.name
+        category_db = result.scalars().first()
+        assert category_db.name == schema.name
 
 
 @pytest.mark.asyncio
@@ -91,5 +91,5 @@ async def test_patch_category(
     if status_code == status.HTTP_200_OK:
         session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
         async with session() as s:
-            user_db = await s.get(CategoryModel, user.id)
-            assert user_db.detail == schema.detail
+            category_db = await s.get(CategoryModel, user.id)
+            assert category_db.detail == schema.detail

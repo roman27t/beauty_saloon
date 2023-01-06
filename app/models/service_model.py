@@ -18,14 +18,17 @@ class CategoryModel(CategoryInSchema, table=True):
     services: List['ServiceNameModel'] = Relationship(back_populates='category')
 
 
-class ServiceNameModel(SQLModel, table=True):
-    __tablename__ = 'service_name'
-    id: int = Field(default=None, primary_key=True)
+class ServiceNameInSchema(SQLModel):
     category_id: int = Field(foreign_key='category.id')
     name: constr(min_length=2, max_length=100)
     is_active: Union[bool, None] = True
     price: condecimal(max_digits=7, decimal_places=2)
     detail: constr(max_length=50) = ''
+
+
+class ServiceNameModel(ServiceNameInSchema, table=True):
+    __tablename__ = 'service_name'
+    id: int = Field(default=None, primary_key=True)
 
     category: CategoryModel = Relationship(back_populates='services')
 
