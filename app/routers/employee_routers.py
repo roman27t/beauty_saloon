@@ -5,7 +5,7 @@ from models import EmployeeModel
 from models.database import get_session
 from schemas.user_schemas import EmployeeInSchema, EmployeeInOptionalSchema
 from services.employee_service import EmployeeService
-from dependencies.user_dependency import valid_patch_id, valid_patch_schema
+from dependencies.employee_dependency import valid_patch_id, valid_patch_schema
 
 router = APIRouter()
 ROUTE_EMPLOYEE = '/employee/'
