@@ -9,9 +9,10 @@ class ServiceCategoryAdmin(ModelView, model=CategoryModel):
         CategoryModel.created_at,
         CategoryModel.changed_at,
         CategoryModel.name,
-        CategoryModel.detail,
+        CategoryModel.is_active,
     ]
     column_searchable_list = [CategoryModel.name]
+    column_details_exclude_list = [CategoryModel.services]
 
 
 class ServiceNameAdmin(ModelView, model=ServiceNameModel):
@@ -24,3 +25,4 @@ class ServiceNameAdmin(ModelView, model=ServiceNameModel):
         ServiceNameModel.price,
     ]
     column_searchable_list = [ServiceNameModel.name]
+    column_details_exclude_list = [ServiceNameModel.category]
