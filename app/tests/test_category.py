@@ -1,16 +1,16 @@
 import pytest
 from httpx import AsyncClient
 from fastapi import status
-from schemas.category_schema import CategoryOptionalSchema
-from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlalchemy import select
 from sqlalchemy.orm import sessionmaker
+from sqlmodel.ext.asyncio.session import AsyncSession
 
 from models import CategoryModel
-from models.service_model import CategoryInSchema
 from tests.utils import url_reverse
-from services.stub_init_service import CATEGORIES
 from tests.conftest import engine
+from models.service_model import CategoryInSchema
+from schemas.category_schema import CategoryOptionalSchema
+from services.stub_init_service import CATEGORIES
 
 
 @pytest.mark.asyncio
@@ -24,9 +24,7 @@ async def test_get_category_all(async_client: AsyncClient, async_session: AsyncS
 
 @pytest.mark.parametrize('pk,status_code', [(1, status.HTTP_200_OK), (999, status.HTTP_404_NOT_FOUND)])
 @pytest.mark.asyncio
-async def test_get_category_by_id(
-    async_client: AsyncClient, async_session: AsyncSession, pk: int, status_code: int
-):
+async def test_get_category_by_id(async_client: AsyncClient, async_session: AsyncSession, pk: int, status_code: int):
     response = await async_client.get(url_reverse('view_get_category_by_id', pk=pk))
     assert response.status_code == status_code
     if status_code == status.HTTP_200_OK:
@@ -46,17 +44,13 @@ def _get_category_schema() -> CategoryInSchema:
     ],
 )
 @pytest.mark.asyncio
-async def test_post_category(
-    async_client: AsyncClient, async_session: AsyncSession, is_error: bool, status_code: int
-):
+async def test_post_category(async_client: AsyncClient, async_session: AsyncSession, is_error: bool, status_code: int):
     schema = _get_category_schema()
     content = '{}' if is_error else schema.json()
     response = await async_client.post(url_reverse('view_add_category'), content=content)
     assert response.status_code == status_code
     if status_code == status.HTTP_200_OK:
-        result = await async_session.execute(
-            select(CategoryModel).where(CategoryModel.name == schema.name).limit(1)
-        )
+        result = await async_session.execute(select(CategoryModel).where(CategoryModel.name == schema.name).limit(1))
         category_db = result.scalars().first()
         assert category_db.name == schema.name
 

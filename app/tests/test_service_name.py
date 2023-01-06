@@ -3,16 +3,16 @@ from typing import Optional
 import pytest
 from httpx import AsyncClient
 from fastapi import status
-from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlalchemy import select
 from sqlalchemy.orm import sessionmaker
+from sqlmodel.ext.asyncio.session import AsyncSession
 
 from models import ServiceNameModel
-from models.service_model import ServiceNameInSchema
-from schemas.service_name_schema import ServiceNameOptionalSchema
 from tests.utils import url_reverse
-from services.stub_init_service import CATEGORIES_SERVICE
 from tests.conftest import engine
+from models.service_model import ServiceNameInSchema
+from services.stub_init_service import CATEGORIES_SERVICE
+from schemas.service_name_schema import ServiceNameOptionalSchema
 
 
 @pytest.mark.asyncio
@@ -49,7 +49,7 @@ async def test_filter_service_name_by_id(
         assert ServiceNameModel(**content[0])
 
 
-def _get_service_name_schema(name: str ='service_1', category_id: int = 1) -> ServiceNameInSchema:
+def _get_service_name_schema(name: str = 'service_1', category_id: int = 1) -> ServiceNameInSchema:
     return ServiceNameInSchema(
         category_id=category_id,
         name=name,
@@ -74,14 +74,15 @@ async def test_post_service_name(
     assert response.status_code == status_code
     if status_code == status.HTTP_200_OK:
         result = await async_session.execute(
-            select(ServiceNameModel).where(
+            select(ServiceNameModel)
+            .where(
                 ServiceNameModel.name == schema.name,
                 ServiceNameModel.category_id == schema.category_id,
-            ).limit(1)
+            )
+            .limit(1)
         )
         service_db = result.scalars().first()
         assert service_db.name == schema.name
-
 
 
 @pytest.mark.asyncio
@@ -91,7 +92,7 @@ async def test_post_service_name_duplicate(async_client: AsyncClient, async_sess
         response = await async_client.post(url, content=_get_service_name_schema().json())
         status_code = status.HTTP_200_OK if i == 1 else status.HTTP_422_UNPROCESSABLE_ENTITY
         assert response.status_code == status_code
-        
+
 
 @pytest.mark.parametrize(
     'pk,data, status_code',

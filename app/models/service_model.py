@@ -1,9 +1,10 @@
 from typing import List, Union
 
-from models.base_models import DateCreatedChangedBase
 from pydantic import constr, condecimal
 from sqlmodel import Field, SQLModel, Relationship
 from sqlalchemy import VARCHAR, Column, UniqueConstraint
+
+from models.base_models import DateCreatedChangedBase
 
 
 class CategoryInSchema(SQLModel):

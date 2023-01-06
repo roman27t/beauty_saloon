@@ -3,11 +3,11 @@ from sqladmin import Admin
 
 from admin import admin_classes
 from config import i_config
-from routers.category_routers import router_category
 from routers.index import router_index
 from models.database import engine
 from routers.client_routers import router_client
 from routers.service_routers import router_service
+from routers.category_routers import router_category
 from routers.employee_routers import router
 from routers.stub_init_routers import router_init_stub
 
