@@ -1,11 +1,10 @@
 from fastapi import Depends, HTTPException, status
-
-from schemas.service_name_schema import ServiceNameOptionalSchema
-from services.service_service import ServiceNameService
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from models import CategoryModel
 from models.database import get_session
+from services.service_service import ServiceNameService
+from schemas.service_name_schema import ServiceNameOptionalSchema
 
 
 async def valid_patch_id(pk: int, session: AsyncSession = Depends(get_session)) -> CategoryModel:
