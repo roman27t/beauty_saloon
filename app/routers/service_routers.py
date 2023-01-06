@@ -30,3 +30,18 @@ async def view_filter_service_name(pk: int, session: AsyncSession = Depends(get_
     if not services:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'item with id {pk} not found')
     return services
+
+
+@router_service.post(ROUTE_SERVICE, response_model=ServiceNameModel)
+async def view_add_service_name(client: ServiceNameModel, session: AsyncSession = Depends(get_session)):
+    return await ServiceNameService(db_session=session).add(schema=client)
+
+
+# @router_service.patch(ROUTE_SERVICE + '{pk}/', response_model=ServiceNameModel)
+# async def view_patch_service_name(
+#     schema: CategoryOptionalSchema = Depends(valid_patch_schema),
+#     obj_db: ServiceNameModel = Depends(valid_patch_id),
+#     session: AsyncSession = Depends(get_session),
+# ):
+#     await ServiceNameService(db_session=session).update(obj_db=obj_db, schema=schema)
+#     return obj_db
