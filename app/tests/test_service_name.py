@@ -5,11 +5,14 @@ from httpx import AsyncClient
 from fastapi import status
 from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlalchemy import select
+from sqlalchemy.orm import sessionmaker
 
 from models import ServiceNameModel
 from models.service_model import ServiceNameInSchema
+from schemas.service_name_schema import ServiceNameOptionalSchema
 from tests.utils import url_reverse
 from services.stub_init_service import CATEGORIES_SERVICE
+from tests.conftest import engine
 
 
 @pytest.mark.asyncio
@@ -88,3 +91,28 @@ async def test_post_service_name_duplicate(async_client: AsyncClient, async_sess
         response = await async_client.post(url, content=_get_service_name_schema().json())
         status_code = status.HTTP_200_OK if i == 1 else status.HTTP_422_UNPROCESSABLE_ENTITY
         assert response.status_code == status_code
+        
+
+@pytest.mark.parametrize(
+    'pk,data, status_code',
+    [
+        (1, {'name': 'new_service', 'category_id': 1}, status.HTTP_200_OK),
+        (1, {}, status.HTTP_400_BAD_REQUEST),
+        (100, {'name': 'new_service', 'category_id': 1}, status.HTTP_404_NOT_FOUND),
+    ],
+)
+@pytest.mark.asyncio
+async def test_patch_service_name(
+    async_client: AsyncClient, async_session: AsyncSession, pk: int, data: dict, status_code: int
+):
+    schema = ServiceNameOptionalSchema(**data)
+    url = url_reverse('view_patch_service_name', pk=pk)
+    response = await async_client.patch(url, content=schema.json(exclude_unset=True))
+    await async_session.commit()
+    assert response.status_code == status_code
+    user = ServiceNameModel(**response.json())
+    if status_code == status.HTTP_200_OK:
+        session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+        async with session() as s:
+            category_db = await s.get(ServiceNameModel, user.id)
+            assert category_db.name == schema.name
