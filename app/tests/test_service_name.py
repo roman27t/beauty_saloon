@@ -1,3 +1,5 @@
+from typing import Optional
+
 import pytest
 from httpx import AsyncClient
 from fastapi import status
@@ -44,28 +46,27 @@ async def test_filter_service_name_by_id(
         assert ServiceNameModel(**content[0])
 
 
-def _get_service_name_schema() -> ServiceNameInSchema:
+def _get_service_name_schema(name: str ='service_1', category_id: int = 1) -> ServiceNameInSchema:
     return ServiceNameInSchema(
-        category_id=1,
-        name='service_1',
+        category_id=category_id,
+        name=name,
         price=10000,
         detail='service_1 detail',
     )
 
 
 @pytest.mark.parametrize(
-    'is_error, status_code',
+    'schema, status_code',
     [
-        (False, status.HTTP_200_OK),
-        (True, status.HTTP_422_UNPROCESSABLE_ENTITY),
+        (_get_service_name_schema('service_1'), status.HTTP_200_OK),
+        (None, status.HTTP_422_UNPROCESSABLE_ENTITY),
     ],
 )
 @pytest.mark.asyncio
 async def test_post_service_name(
-    async_client: AsyncClient, async_session: AsyncSession, is_error: bool, status_code: int
+    async_client: AsyncClient, async_session: AsyncSession, schema: Optional[ServiceNameInSchema], status_code: int
 ):
-    schema = _get_service_name_schema()
-    content = '{}' if is_error else schema.json()
+    content = schema.json() if schema else '{}'
     response = await async_client.post(url_reverse('view_add_service_name'), content=content)
     assert response.status_code == status_code
     if status_code == status.HTTP_200_OK:
@@ -77,3 +78,13 @@ async def test_post_service_name(
         )
         service_db = result.scalars().first()
         assert service_db.name == schema.name
+
+
+
+@pytest.mark.asyncio
+async def test_post_service_name_duplicate(async_client: AsyncClient, async_session: AsyncSession):
+    for i in range(1, 3):
+        url = url_reverse('view_add_service_name')
+        response = await async_client.post(url, content=_get_service_name_schema().json())
+        status_code = status.HTTP_200_OK if i == 1 else status.HTTP_422_UNPROCESSABLE_ENTITY
+        assert response.status_code == status_code
