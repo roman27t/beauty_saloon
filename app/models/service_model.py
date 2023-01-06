@@ -1,5 +1,6 @@
 from typing import List, Union
 
+from models.base_models import DateCreatedChangedBase
 from pydantic import constr, condecimal
 from sqlmodel import Field, SQLModel, Relationship
 from sqlalchemy import VARCHAR, Column, UniqueConstraint
@@ -11,7 +12,7 @@ class CategoryInSchema(SQLModel):
     detail: constr(max_length=50) = ''
 
 
-class CategoryModel(CategoryInSchema, table=True):
+class CategoryModel(DateCreatedChangedBase, CategoryInSchema, table=True):
     __tablename__ = 'category'
     id: int = Field(default=None, primary_key=True)
 
@@ -26,7 +27,7 @@ class ServiceNameInSchema(SQLModel):
     detail: constr(max_length=50) = ''
 
 
-class ServiceNameModel(ServiceNameInSchema, table=True):
+class ServiceNameModel(DateCreatedChangedBase, ServiceNameInSchema, table=True):
     __tablename__ = 'service_name'
     id: int = Field(default=None, primary_key=True)
 
