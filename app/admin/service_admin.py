@@ -1,10 +1,10 @@
 from sqladmin import ModelView
 
-from models import ServiceNameModel, ServiceCategoryModel
+from models import ServiceNameModel, CategoryModel
 
 
-class ServiceCategoryAdmin(ModelView, model=ServiceCategoryModel):
-    column_list = [ServiceCategoryModel.id, ServiceCategoryModel.name, ServiceCategoryModel.detail]
+class ServiceCategoryAdmin(ModelView, model=CategoryModel):
+    column_list = [CategoryModel.id, CategoryModel.name, CategoryModel.detail]
 
 
 class ServiceNameAdmin(ModelView, model=ServiceNameModel):

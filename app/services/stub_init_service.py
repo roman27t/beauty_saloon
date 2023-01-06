@@ -1,12 +1,12 @@
 import datetime as dt
 from decimal import Decimal
 
-from models import ServiceNameModel, ServiceCategoryModel
+from models import ServiceNameModel, CategoryModel
 from models.choices import Gender
 from schemas.user_schemas import ClientInSchema, EmployeeInSchema
 from services.base_service import BaseService
 from services.client_service import ClientService
-from services.service_service import ServiceNameService, ServiceCategoryService
+from services.service_service import ServiceNameService, CategoryService
 from services.employee_service import EmployeeService
 
 LAST_NAMES = ('Shevchenko', 'Rebrov', 'Zidane', 'Beckham', 'Husin', 'Husiev', 'Golovko', 'Flo', 'Li', 'Voronin')
@@ -52,8 +52,8 @@ class StubInitService(BaseService):
 
     def __init_service_category(self):
         for service_name in CATEGORIES:
-            category_schema = ServiceCategoryModel(name=service_name, detail=f'{service_name} detail info')
-            ServiceCategoryService(db_session=self.db_session).add_async(schema=category_schema)
+            category_schema = CategoryModel(name=service_name, detail=f'{service_name} detail info')
+            CategoryService(db_session=self.db_session).add_async(schema=category_schema)
 
     def __init_service_name(self):
         # self.db_session.flush()
@@ -63,6 +63,6 @@ class StubInitService(BaseService):
                     category_id=CATEGORIES.index(category) + 1,
                     name=service_name,
                     detail=f'{category} {service_name} detail info',
-                    price=Decimal(10) * Decimal(f'1.{index}'),
+                    price=Decimal(10000) * Decimal(f'1.{index}'),
                 )
                 ServiceNameService(db_session=self.db_session).add_async(schema=category_schema)

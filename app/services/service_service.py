@@ -1,13 +1,13 @@
 from typing import Type
 
-from models import ServiceNameModel, ServiceCategoryModel
+from models import ServiceNameModel, CategoryModel
 from services.base_service import AbstractService
 
 
-class ServiceCategoryService(AbstractService):
+class CategoryService(AbstractService):
     @property
-    def _table(self) -> Type[ServiceCategoryModel]:
-        return ServiceCategoryModel
+    def _table(self) -> Type[CategoryModel]:
+        return CategoryModel
 
 
 class ServiceNameService(AbstractService):
