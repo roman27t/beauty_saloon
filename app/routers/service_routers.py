@@ -1,12 +1,15 @@
 from fastapi import Depends, APIRouter, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from dependencies.service_name_dependency import valid_patch_schema, valid_patch_id
 from models import ServiceNameModel
 from models.database import get_session
 from routers.category_routers import ROUTE_CATEGORY
-from schemas.service_name_schema import ServiceNameOptionalSchema
 from services.service_service import ServiceNameService
+from schemas.service_name_schema import ServiceNameOptionalSchema
+from dependencies.service_name_dependency import (
+    valid_patch_id,
+    valid_patch_schema,
+)
 
 router_service = APIRouter()
 ROUTE_SERVICE = '/service/'

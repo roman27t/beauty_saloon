@@ -1,5 +1,7 @@
-from pydantic import constr, condecimal
 from typing import Optional
+
+from pydantic import constr, condecimal
+
 from models.service_model import ServiceNameInSchema
 
 

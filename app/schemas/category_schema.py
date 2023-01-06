@@ -1,5 +1,7 @@
-from pydantic import constr
 from typing import Optional
+
+from pydantic import constr
+
 from models.service_model import CategoryInSchema
 
 

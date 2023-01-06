@@ -1,5 +1,5 @@
 from .user_model import ClientModel, EmployeeModel
-from .service_model import ServiceNameModel, CategoryModel
+from .service_model import CategoryModel, ServiceNameModel
 
 # User [Client, Master] (email)
 # -------------
