@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from models import OfferLinkModel
 from models.database import get_session
-from models.service_employee_model import OfferLinkInSchema
+from models.offer_model import OfferLinkInSchema
 from routers.category_routers import ROUTE_CATEGORY
 from services.service_service import OfferLinkService
 from schemas.service_name_schema import ServiceNameOptionalSchema

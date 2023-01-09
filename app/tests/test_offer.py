@@ -4,7 +4,7 @@ import pytest
 from httpx import AsyncClient
 from fastapi import status
 
-from models.service_employee_model import OfferLinkInSchema
+from models.offer_model import OfferLinkInSchema
 from routers.offer_routers import OfferFilter
 from sqlalchemy import select
 from sqlalchemy.orm import sessionmaker
@@ -49,7 +49,7 @@ def _get_offer_schema(employee_id:int, service_name_id) -> OfferLinkInSchema:
     ],
 )
 @pytest.mark.asyncio
-async def test_post_service_name(
+async def test_post_offer(
     async_client: AsyncClient, async_session: AsyncSession, schema: Optional[OfferLinkInSchema], status_code: int
 ):
     content = schema.json() if schema else '{}'
@@ -68,15 +68,15 @@ async def test_post_service_name(
         assert service_db.service_name_id == schema.service_name_id
 
 
-# @pytest.mark.asyncio
-# async def test_post_service_name_duplicate(async_client: AsyncClient, async_session: AsyncSession):
-#     for i in range(1, 3):
-#         url = url_reverse('view_add_service_name')
-#         response = await async_client.post(url, content=_get_offer_schema().json())
-#         status_code = status.HTTP_200_OK if i == 1 else status.HTTP_422_UNPROCESSABLE_ENTITY
-#         assert response.status_code == status_code
-#
-#
+@pytest.mark.asyncio
+async def test_post_offer_duplicate(async_client: AsyncClient, async_session: AsyncSession):
+    for i in range(1, 3):
+        url = url_reverse('view_add_offer')
+        response = await async_client.post(url, content=_get_offer_schema(employee_id=1, service_name_id=20).json())
+        status_code = status.HTTP_200_OK if i == 1 else status.HTTP_422_UNPROCESSABLE_ENTITY
+        assert response.status_code == status_code
+
+
 # @pytest.mark.parametrize(
 #     'pk,data, status_code',
 #     [

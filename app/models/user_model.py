@@ -8,7 +8,7 @@ from sqlalchemy.sql.sqltypes import Enum as EnumSQL
 
 from models.choices import Gender
 from models.base_models import DateCreatedChangedBase
-from models.service_employee_model import OfferLinkModel
+from models.offer_model import OfferLinkModel
 
 
 class _UserInSchema(SQLModel):

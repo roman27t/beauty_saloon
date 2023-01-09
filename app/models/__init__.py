@@ -1,6 +1,6 @@
 from .user_model import ClientModel, EmployeeModel
 from .service_model import CategoryModel, ServiceNameModel
-from .service_employee_model import OfferLinkModel
+from .offer_model import OfferLinkModel
 
 # User [Client, Master] (email)
 # -------------

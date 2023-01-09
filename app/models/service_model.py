@@ -1,11 +1,12 @@
-from typing import List, Union
+from typing import List, Union, TYPE_CHECKING
 
 from pydantic import constr, condecimal
 from sqlmodel import Field, SQLModel, Relationship
 from sqlalchemy import VARCHAR, Column, UniqueConstraint
 
 from models.base_models import DateCreatedChangedBase
-from models.service_employee_model import OfferLinkModel
+if TYPE_CHECKING:
+    from models import OfferLinkModel
 
 
 class CategoryInSchema(SQLModel):
