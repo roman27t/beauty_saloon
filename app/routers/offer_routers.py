@@ -3,6 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from models import OfferLinkModel
 from models.database import get_session
+from models.service_employee_model import OfferLinkInSchema
 from routers.category_routers import ROUTE_CATEGORY
 from services.service_service import OfferLinkService
 from schemas.service_name_schema import ServiceNameOptionalSchema
@@ -35,19 +36,11 @@ async def view_filter_offer(field: OfferFilter, pk: int, session: AsyncSession =
     return offers
 
 
-# @offer_service.get(ROUTE_SERVICE_CATEGORY + '{pk}/', response_model=list[OfferLinkModel])
-# async def view_filter_service_name(pk: int, session: AsyncSession = Depends(get_session)):
-#     services = await OfferLinkService(db_session=session).filter({'category_id': pk})
-#     if not services:
-#         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'item with id {pk} not found')
-#     return services
-# 
-# 
-# @offer_service.post(OFFER_SERVICE, response_model=OfferLinkModel)
-# async def view_add_service_name(client: OfferLinkModel, session: AsyncSession = Depends(get_session)):
-#     return await OfferLinkService(db_session=session).add(schema=client)
-# 
-# 
+@offer_service.post(OFFER_SERVICE, response_model=OfferLinkModel)
+async def view_add_offer(schema: OfferLinkInSchema, session: AsyncSession = Depends(get_session)):
+    return await OfferLinkService(db_session=session).add(schema=schema)
+
+
 # @offer_service.patch(OFFER_SERVICE + '{pk}/', response_model=OfferLinkModel)
 # async def view_patch_service_name(
 #     schema: ServiceNameOptionalSchema = Depends(valid_patch_schema),
