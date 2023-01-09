@@ -1,12 +1,12 @@
+from typing import TYPE_CHECKING, Union
 from decimal import Decimal
 
-from models.base_models import DateCreatedChangedBase
 from pydantic import condecimal
+from sqlmodel import Field, SQLModel, Relationship
 from sqlalchemy import UniqueConstraint
 
-from typing import TYPE_CHECKING, Union
+from models.base_models import DateCreatedChangedBase
 
-from sqlmodel import Field, Relationship, SQLModel
 if TYPE_CHECKING:
     from models import EmployeeModel, ServiceNameModel
 
@@ -26,4 +26,4 @@ class OfferLinkModel(DateCreatedChangedBase, OfferLinkInSchema, table=True):
     employee: 'EmployeeModel' = Relationship(back_populates='service_name_links')
     service_name: 'ServiceNameModel' = Relationship(back_populates='employee_links')
 
-    __table_args__ = (UniqueConstraint('service_name_id','employee_id', name='service_offer_unique'),)
+    __table_args__ = (UniqueConstraint('service_name_id', 'employee_id', name='service_offer_unique'),)

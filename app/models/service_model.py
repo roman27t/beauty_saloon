@@ -1,10 +1,11 @@
-from typing import List, Union, TYPE_CHECKING
+from typing import TYPE_CHECKING, List, Union
 
 from pydantic import constr, condecimal
 from sqlmodel import Field, SQLModel, Relationship
 from sqlalchemy import VARCHAR, Column, UniqueConstraint
 
 from models.base_models import DateCreatedChangedBase
+
 if TYPE_CHECKING:
     from models import OfferLinkModel
 

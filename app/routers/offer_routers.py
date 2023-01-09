@@ -1,15 +1,14 @@
+from enum import Enum
+
 from fastapi import Depends, APIRouter, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
-from enum import Enum
+
 from models import OfferLinkModel
 from models.database import get_session
 from models.offer_model import OfferLinkInSchema
 from schemas.offer_schema import OfferLinkOptionalSchema
 from services.service_service import OfferLinkService
-from dependencies.offer_dependency import (
-    valid_patch_id,
-    valid_patch_schema,
-)
+from dependencies.offer_dependency import valid_patch_id, valid_patch_schema
 
 offer_service = APIRouter()
 OFFER_SERVICE = '/offer/'

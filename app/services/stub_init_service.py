@@ -1,13 +1,17 @@
-import datetime as dt
 import random
+import datetime as dt
 from decimal import Decimal
 
-from models import CategoryModel, ServiceNameModel, OfferLinkModel
+from models import CategoryModel, OfferLinkModel, ServiceNameModel
 from models.choices import Gender
 from schemas.user_schemas import ClientInSchema, EmployeeInSchema
 from services.base_service import BaseService
 from services.client_service import ClientService
-from services.service_service import CategoryService, ServiceNameService, OfferLinkService
+from services.service_service import (
+    CategoryService,
+    OfferLinkService,
+    ServiceNameService,
+)
 from services.employee_service import EmployeeService
 
 LAST_NAMES = ('Shevchenko', 'Rebrov', 'Zidane', 'Beckham', 'Husin', 'Husiev', 'Golovko', 'Flo', 'Li', 'Voronin')

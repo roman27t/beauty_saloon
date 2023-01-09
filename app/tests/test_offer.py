@@ -3,25 +3,27 @@ from typing import Optional
 import pytest
 from httpx import AsyncClient
 from fastapi import status
-
-from models.offer_model import OfferLinkInSchema
-from routers.offer_routers import OfferFilter
 from sqlalchemy import select
 from sqlalchemy.orm import sessionmaker
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from models import OfferLinkModel
-from schemas.offer_schema import OfferLinkOptionalSchema
 from tests.utils import url_reverse
 from tests.conftest import engine
+from models.offer_model import OfferLinkInSchema
+from schemas.offer_schema import OfferLinkOptionalSchema
+from routers.offer_routers import OfferFilter
 
 
-@pytest.mark.parametrize('field, pk, len_content, status_code', [
-    (OfferFilter.employee.value, 1, 9, status.HTTP_200_OK),
-    (OfferFilter.service_name.value, 1, 5, status.HTTP_200_OK),
-    ('qwe', 1, 0, status.HTTP_422_UNPROCESSABLE_ENTITY),
-    (OfferFilter.employee.value, 999, 0, status.HTTP_404_NOT_FOUND),
-])
+@pytest.mark.parametrize(
+    'field, pk, len_content, status_code',
+    [
+        (OfferFilter.employee.value, 1, 9, status.HTTP_200_OK),
+        (OfferFilter.service_name.value, 1, 5, status.HTTP_200_OK),
+        ('qwe', 1, 0, status.HTTP_422_UNPROCESSABLE_ENTITY),
+        (OfferFilter.employee.value, 999, 0, status.HTTP_404_NOT_FOUND),
+    ],
+)
 @pytest.mark.asyncio
 async def test_filter_offer(
     async_client: AsyncClient, async_session: AsyncSession, field, pk: int, len_content: int, status_code: int
@@ -34,7 +36,7 @@ async def test_filter_offer(
         assert OfferLinkModel(**content[0])
 
 
-def _get_offer_schema(employee_id:int, service_name_id) -> OfferLinkInSchema:
+def _get_offer_schema(employee_id: int, service_name_id) -> OfferLinkInSchema:
     return OfferLinkInSchema(
         employee_id=employee_id,
         service_name_id=service_name_id,
@@ -113,9 +115,7 @@ async def test_patch_offer(
     ],
 )
 @pytest.mark.asyncio
-async def test_delete_offer(
-    async_client: AsyncClient, async_session: AsyncSession, pk: int, status_code: int
-):
+async def test_delete_offer(async_client: AsyncClient, async_session: AsyncSession, pk: int, status_code: int):
     url = url_reverse('view_delete_offer', pk=pk)
     response = await async_client.delete(url)
     await async_session.commit()

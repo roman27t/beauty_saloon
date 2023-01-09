@@ -1,8 +1,8 @@
 import datetime as dt
-from typing import Union, List
+from typing import List, Union
 
 from pydantic import EmailStr, constr
-from sqlmodel import Field, SQLModel, Relationship, VARCHAR
+from sqlmodel import VARCHAR, Field, SQLModel, Relationship
 from sqlalchemy import Column
 from sqlalchemy.sql.sqltypes import Enum as EnumSQL
 
@@ -30,6 +30,7 @@ class EmployeeModel(_UserBase, table=True):
 
     # services_name: List['ServiceNameModel'] = Relationship(back_populates="employees", link_model=OfferLinkModel)
     service_name_links: List['OfferLinkModel'] = Relationship(back_populates="employee")
+
 
 class ClientModel(_UserBase, table=True):
     __tablename__ = 'client'
