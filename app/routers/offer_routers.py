@@ -1,6 +1,6 @@
 from fastapi import Depends, APIRouter, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
-
+from enum import Enum
 from models import OfferLinkModel
 from models.database import get_session
 from models.offer_model import OfferLinkInSchema
@@ -16,21 +16,17 @@ offer_service = APIRouter()
 OFFER_SERVICE = '/offer/'
 
 
-# @offer_service.get(OFFER_SERVICE, response_model=list[OfferLinkModel])
-# async def view_get_service_name_all(session: AsyncSession = Depends(get_session)):
-#     return await OfferLinkService(db_session=session).get_all()
-
-from enum import Enum
-
-
 class OfferFilter(str, Enum):
     employee = 'employee'
     service_name = 'service_name'
 
 
-@offer_service.get(OFFER_SERVICE + '{field}/' + '{pk}/', response_model=list[OfferLinkModel])
-async def view_filter_offer(field: OfferFilter, pk: int, session: AsyncSession = Depends(get_session)):
-    offers = await OfferLinkService(db_session=session).filter({f'{field.value}_id': pk})
+@offer_service.get(OFFER_SERVICE + '{ifilter}/' + '{pk}/', response_model=list[OfferLinkModel])
+async def view_filter_offer(ifilter: OfferFilter, pk: int, session: AsyncSession = Depends(get_session)):
+    params = {f'{ifilter.value}_id': pk}
+    if ifilter.value == OfferFilter.service_name.value:
+        params['is_active'] = True
+    offers = await OfferLinkService(db_session=session).filter(params)
     if not offers:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'item with id {pk} not found')
     return offers

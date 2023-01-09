@@ -25,7 +25,7 @@ from tests.conftest import engine
 async def test_filter_offer(
     async_client: AsyncClient, async_session: AsyncSession, field, pk: int, len_content: int, status_code: int
 ):
-    response = await async_client.get(url_reverse('view_filter_offer', field=field, pk=pk))
+    response = await async_client.get(url_reverse('view_filter_offer', ifilter=field, pk=pk))
     assert response.status_code == status_code
     if status_code == status.HTTP_200_OK:
         content = response.json()

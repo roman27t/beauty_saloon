@@ -6,6 +6,9 @@ from models import OfferLinkModel
 class OfferLinkAdmin(ModelView, model=OfferLinkModel):
     column_list = [
         OfferLinkModel.id,
+        OfferLinkModel.created_at,
+        OfferLinkModel.changed_at,
+        OfferLinkModel.is_active,
         OfferLinkModel.employee_id,
         OfferLinkModel.service_name_id,
         OfferLinkModel.rate,
