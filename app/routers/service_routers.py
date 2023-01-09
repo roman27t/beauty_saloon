@@ -4,6 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from models import ServiceNameModel
 from models.database import get_session
 from routers.category_routers import ROUTE_CATEGORY
+from routers.consts import RouteSlug
 from services.service_service import ServiceNameService
 from schemas.service_name_schema import ServiceNameOptionalSchema
 from dependencies.service_name_dependency import (
@@ -21,7 +22,7 @@ async def view_get_service_name_all(session: AsyncSession = Depends(get_session)
     return await ServiceNameService(db_session=session).get_all()
 
 
-@router_service.get(ROUTE_SERVICE + '{pk}/', response_model=ServiceNameModel)
+@router_service.get(ROUTE_SERVICE + RouteSlug.pk, response_model=ServiceNameModel)
 async def view_get_service_name_by_id(pk: int, session: AsyncSession = Depends(get_session)):
     category = await ServiceNameService(db_session=session).get(pk=pk)
     if not category:
@@ -29,7 +30,7 @@ async def view_get_service_name_by_id(pk: int, session: AsyncSession = Depends(g
     return category
 
 
-@router_service.get(ROUTE_SERVICE_CATEGORY + '{pk}/', response_model=list[ServiceNameModel])
+@router_service.get(ROUTE_SERVICE_CATEGORY + RouteSlug.pk, response_model=list[ServiceNameModel])
 async def view_filter_service_name(pk: int, session: AsyncSession = Depends(get_session)):
     services = await ServiceNameService(db_session=session).filter({'category_id': pk})
     if not services:
@@ -42,7 +43,7 @@ async def view_add_service_name(schema: ServiceNameModel, session: AsyncSession 
     return await ServiceNameService(db_session=session).add(schema=schema)
 
 
-@router_service.patch(ROUTE_SERVICE + '{pk}/', response_model=ServiceNameModel)
+@router_service.patch(ROUTE_SERVICE + RouteSlug.pk, response_model=ServiceNameModel)
 async def view_patch_service_name(
     schema: ServiceNameOptionalSchema = Depends(valid_patch_schema),
     obj_db: ServiceNameModel = Depends(valid_patch_id),
