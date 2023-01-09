@@ -4,10 +4,9 @@ from enum import Enum
 from models import OfferLinkModel
 from models.database import get_session
 from models.offer_model import OfferLinkInSchema
-from routers.category_routers import ROUTE_CATEGORY
+from schemas.offer_schema import OfferLinkOptionalSchema
 from services.service_service import OfferLinkService
-from schemas.service_name_schema import ServiceNameOptionalSchema
-from dependencies.service_name_dependency import (
+from dependencies.offer_dependency import (
     valid_patch_id,
     valid_patch_schema,
 )
@@ -37,11 +36,11 @@ async def view_add_offer(schema: OfferLinkInSchema, session: AsyncSession = Depe
     return await OfferLinkService(db_session=session).add(schema=schema)
 
 
-# @offer_service.patch(OFFER_SERVICE + '{pk}/', response_model=OfferLinkModel)
-# async def view_patch_service_name(
-#     schema: ServiceNameOptionalSchema = Depends(valid_patch_schema),
-#     obj_db: OfferLinkModel = Depends(valid_patch_id),
-#     session: AsyncSession = Depends(get_session),
-# ):
-#     await OfferLinkService(db_session=session).update(obj_db=obj_db, schema=schema)
-#     return obj_db
+@offer_service.patch(OFFER_SERVICE + '{pk}/', response_model=OfferLinkModel)
+async def view_patch_offer(
+    schema: OfferLinkOptionalSchema = Depends(valid_patch_schema),
+    obj_db: OfferLinkModel = Depends(valid_patch_id),
+    session: AsyncSession = Depends(get_session),
+):
+    await OfferLinkService(db_session=session).update(obj_db=obj_db, schema=schema)
+    return obj_db

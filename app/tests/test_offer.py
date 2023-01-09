@@ -11,6 +11,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from models import OfferLinkModel
+from schemas.offer_schema import OfferLinkOptionalSchema
 from tests.utils import url_reverse
 from tests.conftest import engine
 
@@ -77,26 +78,28 @@ async def test_post_offer_duplicate(async_client: AsyncClient, async_session: As
         assert response.status_code == status_code
 
 
-# @pytest.mark.parametrize(
-#     'pk,data, status_code',
-#     [
-#         (1, {'name': 'new_service', 'category_id': 1}, status.HTTP_200_OK),
-#         (1, {}, status.HTTP_400_BAD_REQUEST),
-#         (100, {'name': 'new_service', 'category_id': 1}, status.HTTP_404_NOT_FOUND),
-#     ],
-# )
-# @pytest.mark.asyncio
-# async def test_patch_service_name(
-#     async_client: AsyncClient, async_session: AsyncSession, pk: int, data: dict, status_code: int
-# ):
-#     schema = ServiceNameOptionalSchema(**data)
-#     url = url_reverse('view_patch_service_name', pk=pk)
-#     response = await async_client.patch(url, content=schema.json(exclude_unset=True))
-#     await async_session.commit()
-#     assert response.status_code == status_code
-#     user = OfferLinkModel(**response.json())
-#     if status_code == status.HTTP_200_OK:
-#         session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
-#         async with session() as s:
-#             category_db = await s.get(OfferLinkModel, user.id)
-#             assert category_db.name == schema.name
+@pytest.mark.parametrize(
+    'pk,data, status_code',
+    [
+        (1, {'rate': '3.3'}, status.HTTP_200_OK),
+        (1, {'service_name_id': 21}, status.HTTP_200_OK),
+        (1, {}, status.HTTP_400_BAD_REQUEST),
+        (100, {'rate': '3.3'}, status.HTTP_404_NOT_FOUND),
+    ],
+)
+@pytest.mark.asyncio
+async def test_patch_offer(
+    async_client: AsyncClient, async_session: AsyncSession, pk: int, data: dict, status_code: int
+):
+    schema = OfferLinkOptionalSchema(**data)
+    url = url_reverse('view_patch_offer', pk=pk)
+    response = await async_client.patch(url, content=schema.json(exclude_unset=True))
+    await async_session.commit()
+    assert response.status_code == status_code
+    user = OfferLinkModel(**response.json())
+    if status_code == status.HTTP_200_OK:
+        session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+        async with session() as s:
+            obj_db = await s.get(OfferLinkModel, user.id)
+            for key, value in schema.dict(exclude_defaults=True).items():
+                assert getattr(obj_db, key) == value
