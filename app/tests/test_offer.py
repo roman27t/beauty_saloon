@@ -103,3 +103,26 @@ async def test_patch_offer(
             obj_db = await s.get(OfferLinkModel, user.id)
             for key, value in schema.dict(exclude_defaults=True).items():
                 assert getattr(obj_db, key) == value
+
+
+@pytest.mark.parametrize(
+    'pk,status_code',
+    [
+        (1, status.HTTP_200_OK),
+        (100, status.HTTP_404_NOT_FOUND),
+    ],
+)
+@pytest.mark.asyncio
+async def test_delete_offer(
+    async_client: AsyncClient, async_session: AsyncSession, pk: int, status_code: int
+):
+    url = url_reverse('view_delete_offer', pk=pk)
+    response = await async_client.delete(url)
+    await async_session.commit()
+    assert response.status_code == status_code
+    user = OfferLinkModel(**response.json())
+    if status_code == status.HTTP_200_OK:
+        session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+        async with session() as s:
+            obj_db = await s.get(OfferLinkModel, user.id)
+            assert obj_db.is_active is False

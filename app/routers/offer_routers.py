@@ -44,3 +44,13 @@ async def view_patch_offer(
 ):
     await OfferLinkService(db_session=session).update(obj_db=obj_db, schema=schema)
     return obj_db
+
+
+@offer_service.delete(OFFER_SERVICE + '{pk}/', response_model=OfferLinkModel)
+async def view_delete_offer(
+    obj_db: OfferLinkModel = Depends(valid_patch_id),
+    session: AsyncSession = Depends(get_session),
+):
+    schema = OfferLinkOptionalSchema(is_active=False)
+    await OfferLinkService(db_session=session).update(obj_db=obj_db, schema=schema)
+    return obj_db
