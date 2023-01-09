@@ -38,8 +38,8 @@ async def view_filter_service_name(pk: int, session: AsyncSession = Depends(get_
 
 
 @router_service.post(ROUTE_SERVICE, response_model=ServiceNameModel)
-async def view_add_service_name(client: ServiceNameModel, session: AsyncSession = Depends(get_session)):
-    return await ServiceNameService(db_session=session).add(schema=client)
+async def view_add_service_name(schema: ServiceNameModel, session: AsyncSession = Depends(get_session)):
+    return await ServiceNameService(db_session=session).add(schema=schema)
 
 
 @router_service.patch(ROUTE_SERVICE + '{pk}/', response_model=ServiceNameModel)
