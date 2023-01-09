@@ -18,7 +18,7 @@ http://localhost:8000/docs#/
 ### Миграции
    ```bash
    docker-compose exec app sh   
-   alembic init -t async migrations # инит
+   alembic init -t async migrations # init
    alembic revision  --autogenerate -m "X_Add model" # create migrate
    alembic upgrade head # apply
    alembic downgrade 8ac14e223d1  # down

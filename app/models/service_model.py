@@ -5,6 +5,7 @@ from sqlmodel import Field, SQLModel, Relationship
 from sqlalchemy import VARCHAR, Column, UniqueConstraint
 
 from models.base_models import DateCreatedChangedBase
+from models.service_employee_model import OfferLinkModel
 
 
 class CategoryInSchema(SQLModel):
@@ -33,5 +34,7 @@ class ServiceNameModel(DateCreatedChangedBase, ServiceNameInSchema, table=True):
     id: int = Field(default=None, primary_key=True)
 
     category: CategoryModel = Relationship(back_populates='services')
+    # employees: List['EmployeeModel'] = Relationship(back_populates="services_name", link_model=OfferLinkModel)
+    employee_links: List['OfferLinkModel'] = Relationship(back_populates="service_name")
 
     __table_args__ = (UniqueConstraint('name', 'category_id', name='service_name_unique'),)

@@ -1,12 +1,13 @@
 import datetime as dt
+import random
 from decimal import Decimal
 
-from models import CategoryModel, ServiceNameModel
+from models import CategoryModel, ServiceNameModel, OfferLinkModel
 from models.choices import Gender
 from schemas.user_schemas import ClientInSchema, EmployeeInSchema
 from services.base_service import BaseService
 from services.client_service import ClientService
-from services.service_service import CategoryService, ServiceNameService
+from services.service_service import CategoryService, ServiceNameService, OfferLinkService
 from services.employee_service import EmployeeService
 
 LAST_NAMES = ('Shevchenko', 'Rebrov', 'Zidane', 'Beckham', 'Husin', 'Husiev', 'Golovko', 'Flo', 'Li', 'Voronin')
@@ -32,6 +33,7 @@ class StubInitService(BaseService):
         self.__init_user()
         self.__init_service_category()
         self.__init_service_name()
+        self.__init_offers()
 
     def __init_user(self):
         user_service = {EmployeeInSchema: EmployeeService, ClientInSchema: ClientService}
@@ -66,3 +68,13 @@ class StubInitService(BaseService):
                     price=Decimal(10000) * Decimal(f'1.{index}'),
                 )
                 ServiceNameService(db_session=self.db_session).add_async(schema=category_schema)
+
+    def __init_offers(self):
+        for index_employee, _ in enumerate(LAST_NAMES[:5]):
+            for i in range(1, 10):
+                schema = OfferLinkModel(
+                    employee_id=index_employee + 1,
+                    service_name_id=i,
+                    rate=Decimal(1) if random.randint(0, 1) else Decimal(f'1.{random.randint(1,9)}'),
+                )
+                OfferLinkService(db_session=self.db_session).add_async(schema=schema)

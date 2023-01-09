@@ -1,13 +1,14 @@
 import datetime as dt
-from typing import Union
+from typing import Union, List
 
 from pydantic import EmailStr, constr
-from sqlmodel import VARCHAR, Field, SQLModel
+from sqlmodel import Field, SQLModel, Relationship, VARCHAR
 from sqlalchemy import Column
 from sqlalchemy.sql.sqltypes import Enum as EnumSQL
 
 from models.choices import Gender
 from models.base_models import DateCreatedChangedBase
+from models.service_employee_model import OfferLinkModel
 
 
 class _UserInSchema(SQLModel):
@@ -27,6 +28,8 @@ class _UserBase(DateCreatedChangedBase, _UserInSchema):
 class EmployeeModel(_UserBase, table=True):
     __tablename__ = 'employee'
 
+    # services_name: List['ServiceNameModel'] = Relationship(back_populates="employees", link_model=OfferLinkModel)
+    service_name_links: List['OfferLinkModel'] = Relationship(back_populates="employee")
 
 class ClientModel(_UserBase, table=True):
     __tablename__ = 'client'
