@@ -2,11 +2,12 @@ import random
 import datetime as dt
 from decimal import Decimal
 
-from models import CategoryModel, OfferLinkModel, ServiceNameModel
+from models import CategoryModel, OfferLinkModel, ServiceNameModel, OrderModel
 from models.choices import Gender
 from schemas.user_schemas import ClientInSchema, EmployeeInSchema
 from services.base_service import BaseService
 from services.client_service import ClientService
+from services.order_service import OrderService
 from services.service_service import (
     CategoryService,
     OfferLinkService,
@@ -38,6 +39,7 @@ class StubInitService(BaseService):
         self.__init_service_category()
         self.__init_service_name()
         self.__init_offers()
+        self.__init_order()
 
     def __init_user(self):
         user_service = {EmployeeInSchema: EmployeeService, ClientInSchema: ClientService}
@@ -82,3 +84,13 @@ class StubInitService(BaseService):
                     rate=Decimal(1) if random.randint(0, 1) else Decimal(f'1.{random.randint(1,9)}'),
                 )
                 OfferLinkService(db_session=self.db_session).add_async(schema=schema)
+
+    def __init_order(self):
+        schema = OrderModel(
+            employee_id=1,
+            client_id=1,
+            start_at=dt.datetime.strptime('12.06.2023 08:00', '%d.%m.%Y %H:%M'),
+            end_at=dt.datetime.strptime('12.06.2023 09:00', '%d.%m.%Y %H:%M'),
+            expired_at=dt.datetime.now() + dt.timedelta(minutes=15),
+        )
+        OrderService(db_session=self.db_session).add_async(schema=schema)

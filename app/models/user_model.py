@@ -1,5 +1,5 @@
 import datetime as dt
-from typing import List, Union
+from typing import List, Union, TYPE_CHECKING
 
 from pydantic import EmailStr, constr
 from sqlmodel import VARCHAR, Field, SQLModel, Relationship
@@ -9,6 +9,8 @@ from sqlalchemy.sql.sqltypes import Enum as EnumSQL
 from models.choices import Gender
 from models.base_models import DateCreatedChangedBase
 from models.offer_model import OfferLinkModel
+if TYPE_CHECKING:
+    from models import OrderModel
 
 
 class _UserInSchema(SQLModel):
@@ -30,7 +32,10 @@ class EmployeeModel(_UserBase, table=True):
 
     # services_name: List['ServiceNameModel'] = Relationship(back_populates="employees", link_model=OfferLinkModel)
     service_name_links: List['OfferLinkModel'] = Relationship(back_populates="employee")
+    client_orders: List['OrderModel'] = Relationship(back_populates="employee")
 
 
 class ClientModel(_UserBase, table=True):
     __tablename__ = 'client'
+
+    employee_orders: List['OrderModel'] = Relationship(back_populates="client")
