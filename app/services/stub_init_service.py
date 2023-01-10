@@ -2,10 +2,21 @@ import random
 import datetime as dt
 from decimal import Decimal
 
-from models import CategoryModel, OfferLinkModel, ServiceNameModel
+from models import (
+    OrderModel,
+    CategoryModel,
+    OfferLinkModel,
+    OrderDetailModel,
+    ServiceNameModel,
+)
 from models.choices import Gender
 from schemas.user_schemas import ClientInSchema, EmployeeInSchema
 from services.base_service import BaseService
+from services.order_service import (
+    BOOKING_TIME_MINUTES,
+    OrderService,
+    OrderDetailService,
+)
 from services.client_service import ClientService
 from services.service_service import (
     CategoryService,
@@ -34,10 +45,13 @@ CATEGORIES = tuple(CATEGORIES_SERVICE.keys())
 
 class StubInitService(BaseService):
     def init(self):
+        self._categories = []
+        self._services = []
         self.__init_user()
         self.__init_service_category()
         self.__init_service_name()
         self.__init_offers()
+        self.__init_order()
 
     def __init_user(self):
         user_service = {EmployeeInSchema: EmployeeService, ClientInSchema: ClientService}
@@ -59,7 +73,7 @@ class StubInitService(BaseService):
     def __init_service_category(self):
         for service_name in CATEGORIES:
             category_schema = CategoryModel(name=service_name, detail=f'{service_name} detail info')
-            CategoryService(db_session=self.db_session).add_async(schema=category_schema)
+            self._categories.append(CategoryService(db_session=self.db_session).add_async(schema=category_schema))
 
     def __init_service_name(self):
         # self.db_session.flush()
@@ -71,7 +85,7 @@ class StubInitService(BaseService):
                     detail=f'{category} {service_name} detail info',
                     price=Decimal(10000) * Decimal(f'1.{index}'),
                 )
-                ServiceNameService(db_session=self.db_session).add_async(schema=category_schema)
+                self._services.append(ServiceNameService(db_session=self.db_session).add_async(schema=category_schema))
 
     def __init_offers(self):
         for index_employee, _ in enumerate(LAST_NAMES[:5]):
@@ -82,3 +96,30 @@ class StubInitService(BaseService):
                     rate=Decimal(1) if random.randint(0, 1) else Decimal(f'1.{random.randint(1,9)}'),
                 )
                 OfferLinkService(db_session=self.db_session).add_async(schema=schema)
+
+    def __init_order(self):
+        index = 0
+        for j in range(1, 6):  # by 5
+            for hour in range(7, 23):
+                if hour == 12:
+                    continue
+                index += 1
+                index_service = index % len(self._services) - 1
+                service: ServiceNameModel = self._services[index_service]
+                schema = OrderModel(
+                    service_id=self._services.index(service) + 1,
+                    employee_id=j,
+                    client_id=hour % 5 + 1,
+                    start_at=dt.datetime.strptime(f'12.06.2023 {hour}:00', '%d.%m.%Y %H:%M'),
+                    end_at=dt.datetime.strptime(f'12.06.2023 {hour+1}:00', '%d.%m.%Y %H:%M'),
+                    expired_at=dt.datetime.now() + dt.timedelta(minutes=BOOKING_TIME_MINUTES),
+                )
+                OrderService(db_session=self.db_session).add_async(schema=schema)
+                schema_detail = OrderDetailModel(
+                    order_id=index,
+                    price=service.price,  # todo * rate
+                    category=self._categories[service.category_id - 1].name,
+                    name=service.name,
+                    detail=service.name,
+                )
+                OrderDetailService(db_session=self.db_session).add_async(schema=schema_detail)

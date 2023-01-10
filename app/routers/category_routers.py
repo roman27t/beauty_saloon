@@ -2,8 +2,8 @@ from fastapi import Depends, APIRouter, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from models import CategoryModel
-from models.database import get_session
 from routers.consts import RouteSlug
+from models.database import get_session
 from schemas.category_schema import CategoryOptionalSchema
 from services.service_service import CategoryService
 from dependencies.category_dependency import valid_patch_id, valid_patch_schema
