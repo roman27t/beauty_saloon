@@ -93,18 +93,18 @@ class StubInitService(BaseService):
             for i in range(7, 23):
                 if i == 12:
                     continue
+                index += 1
+                index_service = index % len(self._services) - 1
+                service: ServiceNameModel = self._services[index_service]
                 schema = OrderModel(
-                    service_id=1,
+                    service_id=self._services.index(service) + 1,
                     employee_id=j,
                     client_id=i % 5 + 1,
                     start_at=dt.datetime.strptime(f'12.06.2023 {i}:00', '%d.%m.%Y %H:%M'),
                     end_at=dt.datetime.strptime(f'12.06.2023 {i+1}:00', '%d.%m.%Y %H:%M'),
                     expired_at=dt.datetime.now() + dt.timedelta(minutes=BOOKING_TIME_MINUTES),
                 )
-                index += 1
                 OrderService(db_session=self.db_session).add_async(schema=schema)
-                index_service = index % len(self._services) - 1
-                service: ServiceNameModel = self._services[index_service]
                 schema_detail = OrderDetailModel(
                     order_id=index,
                     price=service.price,    # todo * rate

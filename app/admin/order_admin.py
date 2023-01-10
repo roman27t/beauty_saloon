@@ -13,7 +13,7 @@ class OrderAdmin(ModelView, model=OrderModel):
         OrderModel.employee_id,
         OrderModel.client_id,
     ]
-    column_details_exclude_list = [OrderModel.employee, OrderModel.client]
+    column_details_exclude_list = [OrderModel.employee, OrderModel.client, OrderModel.service, OrderModel.order_detail]
 
 
 
