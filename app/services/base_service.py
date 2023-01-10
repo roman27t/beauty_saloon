@@ -24,17 +24,17 @@ class AbstractService(BaseService, ABC):
     def name(self) -> str:
         return self._table.__table__.name
 
-    def add_async(self, schema: PydanticBaseModel):  # : EmployeeInSchema
+    def add_async(self, schema: PydanticBaseModel):  # todo rename
         obj_db = self._table(**schema.dict())
         self.db_session.add(obj_db)
         return obj_db
 
-    async def add(self, schema: PydanticBaseModel):  # : EmployeeInSchema
+    async def add(self, schema: PydanticBaseModel):
         obj_db = self.add_async(schema=schema)
         await db_commit(db_session=self.db_session, message=f'The {self.name} is already stored')
         return obj_db
 
-    async def update(self, obj_db, schema: PydanticBaseModel):  # : EmployeeModel,  : EmployeeInSchema
+    async def update(self, obj_db, schema: PydanticBaseModel):
         for key, value in schema.dict(exclude_unset=True).items():
             setattr(obj_db, key, value)
         self.db_session.add(obj_db)

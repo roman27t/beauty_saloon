@@ -35,6 +35,8 @@ CATEGORIES = tuple(CATEGORIES_SERVICE.keys())
 
 class StubInitService(BaseService):
     def init(self):
+        self._categories = []
+        self._services = []
         self.__init_user()
         self.__init_service_category()
         self.__init_service_name()
@@ -61,7 +63,7 @@ class StubInitService(BaseService):
     def __init_service_category(self):
         for service_name in CATEGORIES:
             category_schema = CategoryModel(name=service_name, detail=f'{service_name} detail info')
-            CategoryService(db_session=self.db_session).add_async(schema=category_schema)
+            self._categories.append(CategoryService(db_session=self.db_session).add_async(schema=category_schema))
 
     def __init_service_name(self):
         # self.db_session.flush()
@@ -73,7 +75,7 @@ class StubInitService(BaseService):
                     detail=f'{category} {service_name} detail info',
                     price=Decimal(10000) * Decimal(f'1.{index}'),
                 )
-                ServiceNameService(db_session=self.db_session).add_async(schema=category_schema)
+                self._services.append(ServiceNameService(db_session=self.db_session).add_async(schema=category_schema))
 
     def __init_offers(self):
         for index_employee, _ in enumerate(LAST_NAMES[:5]):
@@ -101,11 +103,13 @@ class StubInitService(BaseService):
                 )
                 index += 1
                 OrderService(db_session=self.db_session).add_async(schema=schema)
+                index_service = index % len(self._services) - 1
+                service: ServiceNameModel = self._services[index_service]
                 schema_detail = OrderDetailModel(
                     order_id=index,
-                    price=1000,
-                    category='category',
-                    name='name',
-                    detail='detail',
+                    price=service.price,    # todo * rate
+                    category=self._categories[service.category_id - 1].name,
+                    name=service.name,
+                    detail=service.name,
                 )
                 OrderDetailService(db_session=self.db_session).add_async(schema=schema_detail)
