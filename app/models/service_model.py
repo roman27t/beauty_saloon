@@ -38,6 +38,6 @@ class ServiceNameModel(DateCreatedChangedBase, ServiceNameInSchema, table=True):
     category: CategoryModel = Relationship(back_populates='services')
     # employees: List['EmployeeModel'] = Relationship(back_populates="services_name", link_model=OfferLinkModel)
     employee_links: List['OfferLinkModel'] = Relationship(back_populates="service_name")
-    # orders: List['OrderModel'] = Relationship(back_populates='service_order')
+    orders: List['OrderModel'] = Relationship(back_populates='service')
 
     __table_args__ = (UniqueConstraint('name', 'category_id', name='service_name_unique'),)

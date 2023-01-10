@@ -1,6 +1,5 @@
 import datetime as dt
-from typing import TYPE_CHECKING, Union
-from decimal import Decimal
+from typing import TYPE_CHECKING
 
 from pydantic import condecimal, constr
 from sqlmodel import Field, SQLModel, Relationship
@@ -18,7 +17,7 @@ if TYPE_CHECKING:
 class OrderInSchema(SQLModel):
     employee_id: int = Field(foreign_key='employee.id')
     client_id: int = Field(foreign_key='client.id', index=True)
-    # service_name_id: int = Field(foreign_key='service_name.id', index=True)
+    service_id: int = Field(default=None, foreign_key='service_name.id')
     start_at: dt.datetime
     end_at: dt.datetime
     comment: constr(max_length=255) = ''
@@ -38,7 +37,7 @@ class OrderModel(DateCreatedChangedBase, OrderInSchema, table=True):
     order_detail: 'OrderDetailModel' = Relationship(
         sa_relationship_kwargs={'uselist': False} , back_populates='order'
     )
-    # service_order: 'ServiceNameModel' = Relationship(back_populates='orders')
+    service: 'ServiceNameModel' = Relationship(back_populates='orders')
 
     __table_args__ = (UniqueConstraint('employee_id', 'start_at', 'end_at', name='order_unique'),)
 

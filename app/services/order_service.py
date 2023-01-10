@@ -1,7 +1,7 @@
 from typing import Type
 
 from core.exceptions import ConflictError
-from models import OrderModel
+from models import OrderModel, OrderDetailModel
 from services.base_service import AbstractService
 
 BOOKING_TIME_MINUTES = 15
@@ -19,3 +19,9 @@ class OrderService(AbstractService):
 
     async def __check_allow_times(self, schema) -> bool:
         return True
+
+
+class OrderDetailService(AbstractService):
+    @property
+    def _table(self) -> Type[OrderDetailModel]:
+        return OrderDetailModel

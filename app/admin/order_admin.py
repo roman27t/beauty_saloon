@@ -1,6 +1,6 @@
 from sqladmin import ModelView
 
-from models import OrderModel
+from models import OrderModel, OrderDetailModel
 
 
 class OrderAdmin(ModelView, model=OrderModel):
@@ -14,3 +14,15 @@ class OrderAdmin(ModelView, model=OrderModel):
         OrderModel.client_id,
     ]
     column_details_exclude_list = [OrderModel.employee, OrderModel.client]
+
+
+
+class OrderDetailAdmin(ModelView, model=OrderDetailModel):
+    column_list = [
+        OrderDetailModel.id,
+        OrderDetailModel.created_at,
+        OrderDetailModel.changed_at,
+        OrderDetailModel.name,
+        OrderDetailModel.price,
+    ]
+    column_details_exclude_list = [OrderDetailModel.order]
