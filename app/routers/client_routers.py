@@ -3,6 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from models import ClientModel
 from models.database import get_session
+from routers.consts import RouteSlug
 from schemas.user_schemas import ClientInSchema, ClientInOptionalSchema
 from services.client_service import ClientService
 from dependencies.client_dependency import valid_patch_id, valid_patch_schema
@@ -13,7 +14,7 @@ ROUTE_CLIENT = '/client/'
 # todo common class
 
 
-@router_client.get(ROUTE_CLIENT + '{pk}/', response_model=ClientModel)
+@router_client.get(ROUTE_CLIENT + RouteSlug.pk, response_model=ClientModel)
 async def view_get_client_by_id(pk: int, session: AsyncSession = Depends(get_session)):
     user = await ClientService(db_session=session).get(pk=pk)
     if not user:
@@ -32,7 +33,7 @@ async def view_add_client(client: ClientInSchema, session: AsyncSession = Depend
     return user_schema
 
 
-@router_client.patch(ROUTE_CLIENT + '{pk}/', response_model=ClientModel)
+@router_client.patch(ROUTE_CLIENT + RouteSlug.pk, response_model=ClientModel)
 async def view_patch_client(
     schema: ClientInOptionalSchema = Depends(valid_patch_schema),
     employee_db: ClientModel = Depends(valid_patch_id),
