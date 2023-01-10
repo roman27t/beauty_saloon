@@ -90,8 +90,8 @@ class StubInitService(BaseService):
     def __init_order(self):
         index = 0
         for j in range(1, 6):
-            for i in range(7, 23):
-                if i == 12:
+            for hour in range(7, 23):
+                if hour == 12:
                     continue
                 index += 1
                 index_service = index % len(self._services) - 1
@@ -99,9 +99,9 @@ class StubInitService(BaseService):
                 schema = OrderModel(
                     service_id=self._services.index(service) + 1,
                     employee_id=j,
-                    client_id=i % 5 + 1,
-                    start_at=dt.datetime.strptime(f'12.06.2023 {i}:00', '%d.%m.%Y %H:%M'),
-                    end_at=dt.datetime.strptime(f'12.06.2023 {i+1}:00', '%d.%m.%Y %H:%M'),
+                    client_id=hour % 5 + 1,
+                    start_at=dt.datetime.strptime(f'12.06.2023 {hour}:00', '%d.%m.%Y %H:%M'),
+                    end_at=dt.datetime.strptime(f'12.06.2023 {hour+1}:00', '%d.%m.%Y %H:%M'),
                     expired_at=dt.datetime.now() + dt.timedelta(minutes=BOOKING_TIME_MINUTES),
                 )
                 OrderService(db_session=self.db_session).add_async(schema=schema)
