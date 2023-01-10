@@ -8,6 +8,8 @@ class OrderAdmin(ModelView, model=OrderModel):
         OrderModel.id,
         OrderModel.created_at,
         OrderModel.changed_at,
+        OrderModel.start_at,
+        OrderModel.end_at,
         OrderModel.employee_id,
         OrderModel.client_id,
     ]

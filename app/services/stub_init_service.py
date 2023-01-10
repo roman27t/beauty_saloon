@@ -7,7 +7,7 @@ from models.choices import Gender
 from schemas.user_schemas import ClientInSchema, EmployeeInSchema
 from services.base_service import BaseService
 from services.client_service import ClientService
-from services.order_service import OrderService
+from services.order_service import OrderService, BOOKING_TIME_MINUTES
 from services.service_service import (
     CategoryService,
     OfferLinkService,
@@ -86,11 +86,15 @@ class StubInitService(BaseService):
                 OfferLinkService(db_session=self.db_session).add_async(schema=schema)
 
     def __init_order(self):
-        schema = OrderModel(
-            employee_id=1,
-            client_id=1,
-            start_at=dt.datetime.strptime('12.06.2023 08:00', '%d.%m.%Y %H:%M'),
-            end_at=dt.datetime.strptime('12.06.2023 09:00', '%d.%m.%Y %H:%M'),
-            expired_at=dt.datetime.now() + dt.timedelta(minutes=15),
-        )
-        OrderService(db_session=self.db_session).add_async(schema=schema)
+        for j in range(1, 6):
+            for i in range(7, 23):
+                if i == 12:
+                    continue
+                schema = OrderModel(
+                    employee_id=j,
+                    client_id=i % 5 + 1,
+                    start_at=dt.datetime.strptime(f'12.06.2023 {i}:00', '%d.%m.%Y %H:%M'),
+                    end_at=dt.datetime.strptime(f'12.06.2023 {i+1}:00', '%d.%m.%Y %H:%M'),
+                    expired_at=dt.datetime.now() + dt.timedelta(minutes=BOOKING_TIME_MINUTES),
+                )
+                OrderService(db_session=self.db_session).add_async(schema=schema)
