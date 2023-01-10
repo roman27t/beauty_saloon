@@ -1,7 +1,7 @@
 from typing import Type
 
-from core.exceptions import ConflictError
 from models import OrderModel, OrderDetailModel
+from core.exceptions import ConflictError
 from services.base_service import AbstractService
 
 BOOKING_TIME_MINUTES = 15
@@ -12,7 +12,7 @@ class OrderService(AbstractService):
     def _table(self) -> Type[OrderModel]:
         return OrderModel
 
-    async def add(self, schema):    # todo schema
+    async def add(self, schema):  # todo schema
         if not await self.__check_allow_times(schema=schema):
             raise ConflictError('already busy')
         await super().add(schema=schema)

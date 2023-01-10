@@ -1,5 +1,5 @@
 import datetime as dt
-from typing import List, Union, TYPE_CHECKING
+from typing import TYPE_CHECKING, List, Union
 
 from pydantic import EmailStr, constr
 from sqlmodel import VARCHAR, Field, SQLModel, Relationship
@@ -9,6 +9,7 @@ from sqlalchemy.sql.sqltypes import Enum as EnumSQL
 from models.choices import Gender
 from models.base_models import DateCreatedChangedBase
 from models.offer_model import OfferLinkModel
+
 if TYPE_CHECKING:
     from models import OrderModel
 

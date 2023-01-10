@@ -4,9 +4,9 @@ from fastapi import Depends, APIRouter, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from models import OfferLinkModel
+from routers.consts import RouteSlug
 from models.database import get_session
 from models.offer_model import OfferLinkInSchema
-from routers.consts import RouteSlug
 from schemas.offer_schema import OfferLinkOptionalSchema
 from services.service_service import OfferLinkService
 from dependencies.offer_dependency import valid_patch_id, valid_patch_schema

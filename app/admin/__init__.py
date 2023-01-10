@@ -1,6 +1,6 @@
-from .order_admin import OrderAdmin, OrderDetailAdmin
 from .user_admin import ClientAdmin, EmployeeAdmin
 from .offer_admin import OfferLinkAdmin
+from .order_admin import OrderAdmin, OrderDetailAdmin
 from .service_admin import ServiceNameAdmin, ServiceCategoryAdmin
 
 admin_classes = (

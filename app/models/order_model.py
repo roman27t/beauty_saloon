@@ -1,17 +1,16 @@
 import datetime as dt
 from typing import TYPE_CHECKING
 
-from pydantic import condecimal, constr
+from pydantic import constr, condecimal
 from sqlmodel import Field, SQLModel, Relationship
-from sqlalchemy import UniqueConstraint
-from sqlalchemy import Column
+from sqlalchemy import Column, UniqueConstraint
 from sqlalchemy.sql.sqltypes import Enum as EnumSQL
 
-from models.base_models import DateCreatedChangedBase
 from models.choices import StatusOrder
+from models.base_models import DateCreatedChangedBase
 
 if TYPE_CHECKING:
-    from models import EmployeeModel, ClientModel, ServiceNameModel
+    from models import ClientModel, EmployeeModel, ServiceNameModel
 
 
 class OrderInSchema(SQLModel):
@@ -34,9 +33,7 @@ class OrderModel(DateCreatedChangedBase, OrderInSchema, table=True):
 
     employee: 'EmployeeModel' = Relationship(back_populates='client_orders')
     client: 'ClientModel' = Relationship(back_populates='employee_orders')
-    order_detail: 'OrderDetailModel' = Relationship(
-        sa_relationship_kwargs={'uselist': False} , back_populates='order'
-    )
+    order_detail: 'OrderDetailModel' = Relationship(sa_relationship_kwargs={'uselist': False}, back_populates='order')
     service: 'ServiceNameModel' = Relationship(back_populates='orders')
 
     __table_args__ = (UniqueConstraint('employee_id', 'start_at', 'end_at', name='order_unique'),)

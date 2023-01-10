@@ -7,7 +7,7 @@ from sqlalchemy import VARCHAR, Column, UniqueConstraint
 from models.base_models import DateCreatedChangedBase
 
 if TYPE_CHECKING:
-    from models import OfferLinkModel, OrderModel
+    from models import OrderModel, OfferLinkModel
 
 
 class CategoryInSchema(SQLModel):

@@ -2,12 +2,22 @@ import random
 import datetime as dt
 from decimal import Decimal
 
-from models import CategoryModel, OfferLinkModel, ServiceNameModel, OrderModel, OrderDetailModel
+from models import (
+    OrderModel,
+    CategoryModel,
+    OfferLinkModel,
+    OrderDetailModel,
+    ServiceNameModel,
+)
 from models.choices import Gender
 from schemas.user_schemas import ClientInSchema, EmployeeInSchema
 from services.base_service import BaseService
+from services.order_service import (
+    BOOKING_TIME_MINUTES,
+    OrderService,
+    OrderDetailService,
+)
 from services.client_service import ClientService
-from services.order_service import OrderService, BOOKING_TIME_MINUTES, OrderDetailService
 from services.service_service import (
     CategoryService,
     OfferLinkService,
@@ -89,7 +99,7 @@ class StubInitService(BaseService):
 
     def __init_order(self):
         index = 0
-        for j in range(1, 6):
+        for j in range(1, 6):  # by 5
             for hour in range(7, 23):
                 if hour == 12:
                     continue
@@ -107,7 +117,7 @@ class StubInitService(BaseService):
                 OrderService(db_session=self.db_session).add_async(schema=schema)
                 schema_detail = OrderDetailModel(
                     order_id=index,
-                    price=service.price,    # todo * rate
+                    price=service.price,  # todo * rate
                     category=self._categories[service.category_id - 1].name,
                     name=service.name,
                     detail=service.name,

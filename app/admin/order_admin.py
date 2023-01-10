@@ -16,7 +16,6 @@ class OrderAdmin(ModelView, model=OrderModel):
     column_details_exclude_list = [OrderModel.employee, OrderModel.client, OrderModel.service, OrderModel.order_detail]
 
 
-
 class OrderDetailAdmin(ModelView, model=OrderDetailModel):
     column_list = [
         OrderDetailModel.id,

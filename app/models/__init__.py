@@ -1,7 +1,7 @@
 from .user_model import ClientModel, EmployeeModel
 from .offer_model import OfferLinkModel
-from .service_model import CategoryModel, ServiceNameModel
 from .order_model import OrderModel, OrderDetailModel
+from .service_model import CategoryModel, ServiceNameModel
 
 # User [Client, Master] (email)
 # -------------
