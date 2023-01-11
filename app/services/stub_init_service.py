@@ -68,12 +68,12 @@ class StubInitService(BaseService):
                     gender=Gender.MALE,
                 )
                 service_class = user_service[user_model]
-                service_class(db_session=self.db_session).add_async(schema=employee_schema)
+                service_class(db_session=self.db_session).pre_add(schema=employee_schema)
 
     def __init_service_category(self):
         for service_name in CATEGORIES:
             category_schema = CategoryModel(name=service_name, detail=f'{service_name} detail info')
-            self._categories.append(CategoryService(db_session=self.db_session).add_async(schema=category_schema))
+            self._categories.append(CategoryService(db_session=self.db_session).pre_add(schema=category_schema))
 
     def __init_service_name(self):
         # self.db_session.flush()
@@ -85,7 +85,7 @@ class StubInitService(BaseService):
                     detail=f'{category} {service_name} detail info',
                     price=Decimal(10000) * Decimal(f'1.{index}'),
                 )
-                self._services.append(ServiceNameService(db_session=self.db_session).add_async(schema=category_schema))
+                self._services.append(ServiceNameService(db_session=self.db_session).pre_add(schema=category_schema))
 
     def __init_offers(self):
         for index_employee, _ in enumerate(LAST_NAMES[:5]):
@@ -95,7 +95,7 @@ class StubInitService(BaseService):
                     service_name_id=i,
                     rate=Decimal(1) if random.randint(0, 1) else Decimal(f'1.{random.randint(1,9)}'),
                 )
-                OfferLinkService(db_session=self.db_session).add_async(schema=schema)
+                OfferLinkService(db_session=self.db_session).pre_add(schema=schema)
 
     def __init_order(self):
         index = 0
@@ -115,11 +115,11 @@ class StubInitService(BaseService):
                     expired_at=dt.datetime.now() + dt.timedelta(minutes=BOOKING_TIME_MINUTES),
                     price=service.price,  # todo * rate
                 )
-                OrderService(db_session=self.db_session).add_async(schema=schema)
+                OrderService(db_session=self.db_session).pre_add(schema=schema)
                 schema_detail = OrderDetailModel(
                     order_id=index,
                     category=self._categories[service.category_id - 1].name,
                     name=service.name,
                     detail=service.name,
                 )
-                OrderDetailService(db_session=self.db_session).add_async(schema=schema_detail)
+                OrderDetailService(db_session=self.db_session).pre_add(schema=schema_detail)
