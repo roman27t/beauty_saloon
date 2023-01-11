@@ -11,7 +11,7 @@ from schemas.offer_schema import OfferLinkOptionalSchema
 from services.service_service import OfferLinkService
 from dependencies.offer_dependency import valid_patch_id, valid_patch_schema
 
-offer_service = APIRouter()
+router_offer = APIRouter()
 OFFER_SERVICE = '/offer/'
 
 
@@ -20,7 +20,7 @@ class OfferFilter(str, Enum):
     service_name = 'service_name'
 
 
-@offer_service.get(OFFER_SERVICE + RouteSlug.ifilter + RouteSlug.pk, response_model=list[OfferLinkModel])
+@router_offer.get(OFFER_SERVICE + RouteSlug.ifilter + RouteSlug.pk, response_model=list[OfferLinkModel])
 async def view_filter_offer(ifilter: OfferFilter, pk: int, session: AsyncSession = Depends(get_session)):
     params = {f'{ifilter.value}_id': pk}
     if ifilter.value == OfferFilter.service_name.value:
@@ -31,12 +31,12 @@ async def view_filter_offer(ifilter: OfferFilter, pk: int, session: AsyncSession
     return offers
 
 
-@offer_service.post(OFFER_SERVICE, response_model=OfferLinkModel)
+@router_offer.post(OFFER_SERVICE, response_model=OfferLinkModel)
 async def view_add_offer(schema: OfferLinkInSchema, session: AsyncSession = Depends(get_session)):
     return await OfferLinkService(db_session=session).add(schema=schema)
 
 
-@offer_service.patch(OFFER_SERVICE + RouteSlug.pk, response_model=OfferLinkModel)
+@router_offer.patch(OFFER_SERVICE + RouteSlug.pk, response_model=OfferLinkModel)
 async def view_patch_offer(
     schema: OfferLinkOptionalSchema = Depends(valid_patch_schema),
     obj_db: OfferLinkModel = Depends(valid_patch_id),
@@ -46,7 +46,7 @@ async def view_patch_offer(
     return obj_db
 
 
-@offer_service.delete(OFFER_SERVICE + RouteSlug.pk, response_model=OfferLinkModel)
+@router_offer.delete(OFFER_SERVICE + RouteSlug.pk, response_model=OfferLinkModel)
 async def view_delete_offer(
     obj_db: OfferLinkModel = Depends(valid_patch_id),
     session: AsyncSession = Depends(get_session),

@@ -1,3 +1,4 @@
+import datetime as dt
 from typing import Type
 
 from models.order_model import OrderInSchema
@@ -14,10 +15,12 @@ class OrderService(AbstractService):
     def _table(self) -> Type[OrderModel]:
         return OrderModel
 
-    async def add(self, schema: OrderInSchema):
+    async def add(self, schema: OrderInSchema) -> OrderModel:
         if not await self.__check_allow_times(schema=schema):
             raise ConflictError('already busy')
-        await super().add(schema=schema)
+        schema_order = OrderModel.parse_obj(schema)
+        schema_order.expired_at = dt.datetime.now() + dt.timedelta(minutes=BOOKING_TIME_MINUTES)
+        return await super().add(schema=schema_order)
 
     async def __check_allow_times(self, schema: OrderInSchema) -> bool:
         return True
