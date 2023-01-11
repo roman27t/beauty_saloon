@@ -29,6 +29,7 @@ def upgrade() -> None:
     sa.Column('client_id', sa.Integer(), nullable=False),
     sa.Column('start_at', sa.DateTime(), nullable=False),
     sa.Column('end_at', sa.DateTime(), nullable=False),
+    sa.Column('price', sa.Numeric(precision=7, scale=2), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('changed_at', sa.DateTime(), nullable=False),
     sa.Column('id', sa.Integer(), nullable=False),

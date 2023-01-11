@@ -24,7 +24,6 @@ def upgrade() -> None:
     sa.Column('changed_at', sa.DateTime(), nullable=False),
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('order_id', sa.Integer(), nullable=False),
-    sa.Column('price', sa.Numeric(precision=7, scale=2), nullable=False),
     sa.Column('category', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
     sa.Column('name', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
     sa.Column('detail', sqlmodel.sql.sqltypes.AutoString(), nullable=False),

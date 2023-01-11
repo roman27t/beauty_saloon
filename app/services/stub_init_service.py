@@ -113,11 +113,11 @@ class StubInitService(BaseService):
                     start_at=dt.datetime.strptime(f'12.06.2023 {hour}:00', '%d.%m.%Y %H:%M'),
                     end_at=dt.datetime.strptime(f'12.06.2023 {hour+1}:00', '%d.%m.%Y %H:%M'),
                     expired_at=dt.datetime.now() + dt.timedelta(minutes=BOOKING_TIME_MINUTES),
+                    price=service.price,  # todo * rate
                 )
                 OrderService(db_session=self.db_session).add_async(schema=schema)
                 schema_detail = OrderDetailModel(
                     order_id=index,
-                    price=service.price,  # todo * rate
                     category=self._categories[service.category_id - 1].name,
                     name=service.name,
                     detail=service.name,

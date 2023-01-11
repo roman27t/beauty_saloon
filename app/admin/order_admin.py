@@ -12,6 +12,7 @@ class OrderAdmin(ModelView, model=OrderModel):
         OrderModel.end_at,
         OrderModel.employee_id,
         OrderModel.client_id,
+        OrderModel.price,
     ]
     column_details_exclude_list = [OrderModel.employee, OrderModel.client, OrderModel.service, OrderModel.order_detail]
 
@@ -22,6 +23,5 @@ class OrderDetailAdmin(ModelView, model=OrderDetailModel):
         OrderDetailModel.created_at,
         OrderDetailModel.changed_at,
         OrderDetailModel.name,
-        OrderDetailModel.price,
     ]
     column_details_exclude_list = [OrderDetailModel.order]

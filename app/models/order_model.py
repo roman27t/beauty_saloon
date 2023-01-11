@@ -19,6 +19,7 @@ class OrderInSchema(SQLModel):
     service_id: int = Field(default=None, foreign_key='service_name.id')
     start_at: dt.datetime
     end_at: dt.datetime
+    price: condecimal(max_digits=7, decimal_places=2)
     comment: constr(max_length=255) = ''
 
 
@@ -44,7 +45,6 @@ class OrderDetailModel(DateCreatedChangedBase, table=True):
 
     id: int = Field(default=None, primary_key=True)
     order_id: int = Field(foreign_key='order.id', unique=True)
-    price: condecimal(max_digits=7, decimal_places=2)
     category: constr(min_length=2, max_length=50)
     name: constr(min_length=2, max_length=100)
     detail: constr(max_length=50) = ''
