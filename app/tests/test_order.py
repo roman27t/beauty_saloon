@@ -4,6 +4,8 @@ import datetime as dt
 import pytest
 from httpx import AsyncClient
 from fastapi import status
+
+from models.choices import StatusOrder
 from models.order_model import OrderInSchema
 from sqlalchemy import select
 from sqlalchemy.orm import sessionmaker
@@ -73,3 +75,24 @@ async def test_post_order_duplicate(async_client: AsyncClient, async_session: As
         response = await async_client.post(url, content=schema.json())
         status_code = status.HTTP_200_OK if i == 1 else status.HTTP_422_UNPROCESSABLE_ENTITY
         assert response.status_code == status_code
+
+
+# sqlalchemy.exc.NotSupportedError: (sqlalchemy.dialects.postgresql.asyncpg.InvalidCachedStatementError) <class 'asyncpg.exceptions.InvalidCachedStatementError'>: cached statement plan is inv
+@pytest.mark.parametrize(
+    'pk,status_code',
+    [
+        (1, status.HTTP_200_OK),
+        # (100, status.HTTP_404_NOT_FOUND), # todo
+    ],
+)
+@pytest.mark.asyncio
+async def test_delete_order(async_client: AsyncClient, async_session: AsyncSession, pk: int, status_code: int):
+    response = await async_client.delete(url_reverse('view_delete_order', pk=pk))
+    await async_session.commit()
+    assert response.status_code == status_code
+    obj_response = OrderModel(**response.json())
+    if status_code == status.HTTP_200_OK:
+        session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+        async with session() as s:
+            obj_db: OrderModel = await s.get(OrderModel, obj_response.id)
+            assert obj_db.status == StatusOrder.CANCEL.value

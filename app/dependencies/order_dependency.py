@@ -1,4 +1,8 @@
 from fastapi import Depends, HTTPException, status
+from services.order_service import OrderService
+
+from models import OrderModel
+
 from services.service_service import ServiceNameService
 
 from services.client_service import ClientService
@@ -22,3 +26,10 @@ async def valid_post_schema(schema: OrderInSchema, session: AsyncSession = Depen
             message = f'item with id {service_helper.name}.{pk} not found'
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=message)
     return schema
+
+
+async def valid_patch_id(pk: int, session: AsyncSession = Depends(get_session)) -> OrderModel:
+    obj_db = await OrderService(db_session=session).get(pk=pk)
+    if not obj_db:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'item with id {pk} not found')
+    return obj_db
