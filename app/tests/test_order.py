@@ -55,23 +55,22 @@ async def test_post_order(
         obj_db: OrderModel = result.scalars().first()
         assert obj_db.comment == schema.comment
 
-# InternalError("(sqlalchemy.dialects.postgresql.asyncpg.InternalServerError)
-# <class 'asyncpg.exceptions.InternalServerError'>: cache lookup failed for type 56340")
-@pytest.mark.skip('todo')
 @pytest.mark.asyncio
 async def test_post_order_duplicate(async_client: AsyncClient, async_session: AsyncSession):
     for i in range(1, 3):
         url = url_reverse('view_add_order')
         schema = _get_order_schema(employee_id=3, service_id=1)
-        # result = await async_session.execute(
-        #     select(OrderModel)
-        #         .where(
-        #         OrderModel.employee_id == schema.employee_id,
-        #         OrderModel.start_at == schema.start_at,
-        #         OrderModel.end_at == schema.end_at,
-        #     )
-        # )
-        # obj_db = result.scalars().all()
+        result = await async_session.execute(
+            select(OrderModel)
+                .where(
+                OrderModel.employee_id == schema.employee_id,
+                OrderModel.start_at == schema.start_at,
+                OrderModel.end_at == schema.end_at,
+            )
+        )
+        obj_db = result.scalars().all()
+        count_result = 0 if i == 1 else 1
+        assert len(obj_db) == count_result
         response = await async_client.post(url, content=schema.json())
         status_code = status.HTTP_200_OK if i == 1 else status.HTTP_422_UNPROCESSABLE_ENTITY
         assert response.status_code == status_code
@@ -81,7 +80,7 @@ async def test_post_order_duplicate(async_client: AsyncClient, async_session: As
     'pk,status_code',
     [
         (1, status.HTTP_200_OK),
-        # (100, status.HTTP_404_NOT_FOUND), # todo NotSupportedError - InvalidCachedStatementError
+        (100, status.HTTP_404_NOT_FOUND),
     ],
 )
 @pytest.mark.asyncio

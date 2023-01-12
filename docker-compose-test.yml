@@ -44,7 +44,7 @@ services:
     networks:
       - app-network-2-test
     environment:
-      DB_URL: "postgresql+asyncpg://postgres:postgres@pg_db-2-test/postgres_test"
+      DB_URL: "postgresql+asyncpg://postgres:postgres@pg_db-2-test/postgres_test?prepared_statement_cache_size=0"
       PORT: 9000
       PYTHONPATH: "/app"
       DEBUG: "1"
