@@ -12,19 +12,27 @@ from sqlalchemy.orm import sessionmaker
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from models import OrderModel
+from services.stub_init_service import T_BOOK_DATE
 from tests.utils import url_reverse
 from tests.conftest import engine
 
 
-def  _get_order_schema(employee_id: int, service_id, time_start='10:00', time_end='11:00') -> OrderInSchema:
+def  _get_order_schema(
+        employee_id: int,
+        service_id,
+        date_start='22.08.2023',
+        date_end='22.08.2023',
+        time_start='10:00',
+        time_end='11:00'
+) -> OrderInSchema:
     return OrderInSchema(
         employee_id=employee_id,
         service_id=service_id,
         client_id=1,
         price='1000',
         comment=f'comment_{dt.datetime.now().isoformat()}',
-        start_at=dt.datetime.strptime(f'22.08.2023 {time_start}', '%d.%m.%Y %H:%M'),
-        end_at=dt.datetime.strptime(f'22.08.2023 {time_end}', '%d.%m.%Y %H:%M'),
+        start_at=dt.datetime.strptime(f'{date_start} {time_start}', '%d.%m.%Y %H:%M'),
+        end_at=dt.datetime.strptime(f'{date_end} {time_end}', '%d.%m.%Y %H:%M'),
     )
 
 
@@ -73,6 +81,41 @@ async def test_post_order_duplicate(async_client: AsyncClient, async_session: As
         response = await async_client.post(url_reverse('view_add_order'), content=schema.json())
         status_code = status.HTTP_200_OK if i == 1 else status.HTTP_409_CONFLICT
         assert response.status_code == status_code
+
+@pytest.mark.parametrize(
+    'd_date, d_end, t_date, t_end, status_code',
+    [
+        (T_BOOK_DATE, T_BOOK_DATE, '10:00', '11:00', status.HTTP_409_CONFLICT),
+        (T_BOOK_DATE, T_BOOK_DATE, '11:00', '12:00', status.HTTP_409_CONFLICT),
+        (T_BOOK_DATE, T_BOOK_DATE, '11:00', '12:30', status.HTTP_409_CONFLICT),
+        (T_BOOK_DATE, T_BOOK_DATE, '11:00', '15:00', status.HTTP_409_CONFLICT),
+        (T_BOOK_DATE, T_BOOK_DATE, '13:00', '15:00', status.HTTP_409_CONFLICT),
+        (T_BOOK_DATE, T_BOOK_DATE, '13:30', '15:00', status.HTTP_409_CONFLICT),
+        (T_BOOK_DATE, T_BOOK_DATE, '12:00', '13:00', status.HTTP_200_OK),
+        (T_BOOK_DATE, T_BOOK_DATE, '12:00', '14:00', status.HTTP_200_OK),
+        (T_BOOK_DATE, T_BOOK_DATE, '13:00', '14:00', status.HTTP_200_OK),
+        # (T_BOOK_DATE, T_BOOK_DATE, '13:30', '14:30', status.HTTP_409_CONFLICT),   # todo ERROR
+    ],
+)
+@pytest.mark.asyncio
+async def test_post_order_validate(
+        async_client: AsyncClient, async_session: AsyncSession, d_date, d_end, t_date, t_end, status_code: int
+):
+    schema = _get_order_schema(
+        employee_id=3, service_id=1, date_start=d_date, date_end=d_end, time_start=t_date, time_end=t_end
+    )
+    result = await async_session.execute(
+        select(OrderModel)
+            .where(
+            OrderModel.employee_id == schema.employee_id,
+            OrderModel.start_at == schema.start_at,
+            OrderModel.end_at == schema.end_at,
+        )
+    )
+    obj_db = result.scalars().all()
+    # breakpoint()
+    response = await async_client.post(url_reverse('view_add_order'), content=schema.json())
+    assert response.status_code == status_code
 
 
 @pytest.mark.parametrize(

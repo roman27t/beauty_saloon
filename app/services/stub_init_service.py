@@ -41,6 +41,7 @@ CATEGORIES_SERVICE = {
     'SPA': SERVICE_2,
 }
 CATEGORIES = tuple(CATEGORIES_SERVICE.keys())
+T_BOOK_DATE = '12.06.2023'
 
 
 class StubInitService(BaseService):
@@ -101,7 +102,7 @@ class StubInitService(BaseService):
         index = 0
         for j in range(1, 6):  # by 5
             for hour in range(7, 23):
-                if hour == 12:
+                if hour in (12, 13):
                     continue
                 index += 1
                 index_service = index % len(self._services) - 1
@@ -110,10 +111,11 @@ class StubInitService(BaseService):
                     service_id=self._services.index(service) + 1,
                     employee_id=j,
                     client_id=hour % 5 + 1,
-                    start_at=dt.datetime.strptime(f'12.06.2023 {hour}:00', '%d.%m.%Y %H:%M'),
-                    end_at=dt.datetime.strptime(f'12.06.2023 {hour+1}:00', '%d.%m.%Y %H:%M'),
+                    start_at=dt.datetime.strptime(f'{T_BOOK_DATE} {hour}:00', '%d.%m.%Y %H:%M'),
+                    end_at=dt.datetime.strptime(f'{T_BOOK_DATE} {hour+1}:00', '%d.%m.%Y %H:%M'),
                     expired_at=dt.datetime.now() + dt.timedelta(minutes=BOOKING_TIME_MINUTES),
                     price=service.price,  # todo * rate
+                    comment=f'comment {hour}:00 - {hour+1}:00',
                 )
                 OrderService(db_session=self.db_session).pre_add(schema=schema)
                 schema_detail = OrderDetailModel(
