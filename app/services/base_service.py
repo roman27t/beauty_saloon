@@ -1,12 +1,14 @@
 from abc import ABC, abstractmethod
-from typing import Type
-
+from typing import Type, TypeVar
 from pydantic import BaseModel as PydanticBaseModel
 from sqlmodel import SQLModel
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from models.db_helper import db_commit
+
+MODEL = TypeVar('MODEL', bound=SQLModel)
+SCHEMA = TypeVar('SCHEMA', bound=PydanticBaseModel)
 
 
 class BaseService:
@@ -24,17 +26,17 @@ class AbstractService(BaseService, ABC):
     def name(self) -> str:
         return self._table.__table__.name
 
-    def pre_add(self, schema: PydanticBaseModel):
+    def pre_add(self, schema: SCHEMA):
         obj_db = self._table(**schema.dict())
         self.db_session.add(obj_db)
         return obj_db
 
-    async def add(self, schema: PydanticBaseModel) -> SQLModel:
+    async def add(self, schema: SCHEMA) -> MODEL:
         obj_db = self.pre_add(schema=schema)
         await db_commit(db_session=self.db_session, message=f'The {self.name} is already stored')
         return obj_db
 
-    async def update(self, obj_db, schema: PydanticBaseModel):
+    async def update(self, obj_db, schema: SCHEMA):
         for key, value in schema.dict(exclude_unset=True).items():
             setattr(obj_db, key, value)
         self.db_session.add(obj_db)
