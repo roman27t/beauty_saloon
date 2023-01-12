@@ -72,7 +72,7 @@ async def test_post_order_duplicate(async_client: AsyncClient, async_session: As
         count_result = 0 if i == 1 else 1
         assert len(obj_db) == count_result
         response = await async_client.post(url, content=schema.json())
-        status_code = status.HTTP_200_OK if i == 1 else status.HTTP_422_UNPROCESSABLE_ENTITY
+        status_code = status.HTTP_200_OK if i == 1 else status.HTTP_409_CONFLICT
         assert response.status_code == status_code
 
 

@@ -24,16 +24,6 @@ async def view_add_order(
     return await OrderService(db_session=session).add(schema=schema)
 
 
-# @router_order.patch(ORDER_SERVICE + RouteSlug.pk, response_model=OfferLinkModel)
-# async def view_patch_offer(
-#     schema: OfferLinkOptionalSchema = Depends(valid_patch_schema),
-#     obj_db: OfferLinkModel = Depends(valid_patch_id),
-#     session: AsyncSession = Depends(get_session),
-# ):
-#     await OfferLinkService(db_session=session).update(obj_db=obj_db, schema=schema)
-#     return obj_db
-
-
 @router_order.delete(ORDER_SERVICE + RouteSlug.pk, response_model=OrderModel)
 async def view_delete_order(
     obj_db: OrderModel = Depends(valid_patch_id),

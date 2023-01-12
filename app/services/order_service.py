@@ -23,7 +23,17 @@ class OrderService(AbstractService):
         return await super().add(schema=schema_order)
 
     async def __check_allow_times(self, schema: OrderInSchema) -> bool:
-        return True
+        # todo --> exists()
+        from sqlalchemy import select
+        from sqlalchemy import and_
+
+        where_conditions = and_(
+            OrderModel.employee_id==schema.employee_id,
+            OrderModel.start_at >= schema.start_at,
+            OrderModel.end_at <= schema.end_at,
+        )
+        result = await self.db_session.execute(select(self._table.id).where(where_conditions).limit(1))
+        return not bool(result.scalar())
 
 
 class OrderDetailService(AbstractService):
