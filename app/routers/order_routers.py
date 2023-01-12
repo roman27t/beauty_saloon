@@ -39,6 +39,6 @@ async def view_delete_order(
     obj_db: OrderModel = Depends(valid_patch_id),
     session: AsyncSession = Depends(get_session),
 ):
-    schema = OrderOptionalSchema(status=StatusOrder.CANCEL.value)
+    schema = OrderOptionalSchema(status=StatusOrder.CANCEL)
     await OrderService(db_session=session).update(obj_db=obj_db, schema=schema)
     return obj_db

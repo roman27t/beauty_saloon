@@ -55,7 +55,8 @@ async def test_post_order(
         obj_db: OrderModel = result.scalars().first()
         assert obj_db.comment == schema.comment
 
-# InternalError("(sqlalchemy.dialects.postgresql.asyncpg.InternalServerError) <class 'asyncpg.exceptions.InternalServerError'>: cache lookup failed for type 56340")
+# InternalError("(sqlalchemy.dialects.postgresql.asyncpg.InternalServerError)
+# <class 'asyncpg.exceptions.InternalServerError'>: cache lookup failed for type 56340")
 @pytest.mark.skip('todo')
 @pytest.mark.asyncio
 async def test_post_order_duplicate(async_client: AsyncClient, async_session: AsyncSession):
@@ -71,18 +72,16 @@ async def test_post_order_duplicate(async_client: AsyncClient, async_session: As
         #     )
         # )
         # obj_db = result.scalars().all()
-
         response = await async_client.post(url, content=schema.json())
         status_code = status.HTTP_200_OK if i == 1 else status.HTTP_422_UNPROCESSABLE_ENTITY
         assert response.status_code == status_code
 
 
-# sqlalchemy.exc.NotSupportedError: (sqlalchemy.dialects.postgresql.asyncpg.InvalidCachedStatementError) <class 'asyncpg.exceptions.InvalidCachedStatementError'>: cached statement plan is inv
 @pytest.mark.parametrize(
     'pk,status_code',
     [
         (1, status.HTTP_200_OK),
-        # (100, status.HTTP_404_NOT_FOUND), # todo
+        # (100, status.HTTP_404_NOT_FOUND), # todo NotSupportedError - InvalidCachedStatementError
     ],
 )
 @pytest.mark.asyncio
@@ -95,4 +94,4 @@ async def test_delete_order(async_client: AsyncClient, async_session: AsyncSessi
         session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
         async with session() as s:
             obj_db: OrderModel = await s.get(OrderModel, obj_response.id)
-            assert obj_db.status == StatusOrder.CANCEL.value
+            assert obj_db.status == StatusOrder.CANCEL

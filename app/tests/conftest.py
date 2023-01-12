@@ -14,7 +14,8 @@ from app.main import app
 from models.db_helper import db_commit
 from services.stub_init_service import StubInitService
 
-engine = create_async_engine(i_config.DB_URL, echo=False)
+engine = create_async_engine(f'{i_config.DB_URL}', echo=False)
+# engine = create_async_engine(f'{i_config.DB_URL}?prepared_statement_cache_size=0', echo=False)
 
 
 @pytest.fixture(scope='session')
