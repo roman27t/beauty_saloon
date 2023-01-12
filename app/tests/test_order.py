@@ -16,15 +16,15 @@ from tests.utils import url_reverse
 from tests.conftest import engine
 
 
-def  _get_order_schema(employee_id: int, service_id) -> OrderInSchema:
+def  _get_order_schema(employee_id: int, service_id, time_start='10:00', time_end='11:00') -> OrderInSchema:
     return OrderInSchema(
         employee_id=employee_id,
         service_id=service_id,
         client_id=1,
         price='1000',
         comment=f'comment_{dt.datetime.now().isoformat()}',
-        start_at=dt.datetime.strptime('22.08.2023 10:00', '%d.%m.%Y %H:%M'),
-        end_at=dt.datetime.strptime('22.08.2023 11:00', '%d.%m.%Y %H:%M'),
+        start_at=dt.datetime.strptime(f'22.08.2023 {time_start}', '%d.%m.%Y %H:%M'),
+        end_at=dt.datetime.strptime(f'22.08.2023 {time_end}', '%d.%m.%Y %H:%M'),
     )
 
 
@@ -58,7 +58,6 @@ async def test_post_order(
 @pytest.mark.asyncio
 async def test_post_order_duplicate(async_client: AsyncClient, async_session: AsyncSession):
     for i in range(1, 3):
-        url = url_reverse('view_add_order')
         schema = _get_order_schema(employee_id=3, service_id=1)
         result = await async_session.execute(
             select(OrderModel)
@@ -71,7 +70,7 @@ async def test_post_order_duplicate(async_client: AsyncClient, async_session: As
         obj_db = result.scalars().all()
         count_result = 0 if i == 1 else 1
         assert len(obj_db) == count_result
-        response = await async_client.post(url, content=schema.json())
+        response = await async_client.post(url_reverse('view_add_order'), content=schema.json())
         status_code = status.HTTP_200_OK if i == 1 else status.HTTP_409_CONFLICT
         assert response.status_code == status_code
 
