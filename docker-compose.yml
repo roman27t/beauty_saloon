@@ -20,6 +20,7 @@ services:
       PGDATA: "/var/lib/postgresql/data/pg_data"
     volumes:
       - pg_data:/var/lib/posgresql/data
+      - ./extension.sql:/docker-entrypoint-initdb.d/extension.sql
     ports:
       - "5432:5432"
     networks:
