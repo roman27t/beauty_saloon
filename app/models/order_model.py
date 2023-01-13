@@ -5,14 +5,14 @@ from pydantic import constr, condecimal, validator
 from sqlmodel import Field, SQLModel, Relationship
 from sqlalchemy import Column, UniqueConstraint
 from sqlalchemy.sql.sqltypes import Enum as EnumSQL
-
+from dateutil.relativedelta import relativedelta
 from models.choices import StatusOrder
 from models.base_models import DateCreatedChangedBase
 
 if TYPE_CHECKING:
     from models import ClientModel, EmployeeModel, ServiceNameModel
 
-MAX_PERIOD = 300
+MAX_PERIOD = 1
 
 
 class OrderInSchema(SQLModel):
@@ -32,8 +32,8 @@ class OrderInSchema(SQLModel):
         date_today = dt.datetime.now()
         if date_today > v:
             raise ValueError('data in past')
-        if v > date_today + dt.timedelta(days=MAX_PERIOD):  # todo 1 year
-            raise ValueError(f'max period {MAX_PERIOD} days - {v}')
+        if v > date_today + relativedelta(years=MAX_PERIOD):
+            raise ValueError(f'max period {MAX_PERIOD} years - {v}')
         return v
 
     @validator('end_at')
