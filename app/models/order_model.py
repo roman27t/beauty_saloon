@@ -1,7 +1,7 @@
 import datetime as dt
 from typing import TYPE_CHECKING
 
-from pydantic import constr, condecimal
+from pydantic import constr, condecimal, validator
 from sqlmodel import Field, SQLModel, Relationship
 from sqlalchemy import Column, UniqueConstraint
 from sqlalchemy.sql.sqltypes import Enum as EnumSQL
@@ -12,6 +12,8 @@ from models.base_models import DateCreatedChangedBase
 if TYPE_CHECKING:
     from models import ClientModel, EmployeeModel, ServiceNameModel
 
+MAX_PERIOD = 180
+
 
 class OrderInSchema(SQLModel):
     employee_id: int = Field(foreign_key='employee.id')
@@ -21,6 +23,15 @@ class OrderInSchema(SQLModel):
     end_at: dt.datetime
     price: condecimal(max_digits=7, decimal_places=2)
     comment: constr(max_length=255) = ''
+
+    @validator('start_at', 'end_at')
+    def exclude_old_date(cls, v: dt.datetime) -> dt.datetime:
+        date_today = dt.datetime.now()
+        if date_today > v:
+            raise ValueError('data in past')
+        if v > date_today + dt.timedelta(days=MAX_PERIOD):
+            raise ValueError(f'max period {MAX_PERIOD} days - {v}')
+        return v
 
 
 class OrderModel(DateCreatedChangedBase, OrderInSchema, table=True):
