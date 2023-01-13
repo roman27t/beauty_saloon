@@ -26,12 +26,14 @@ class OrderInSchema(SQLModel):
 
     @validator('start_at', 'end_at')
     def validate_dates(cls, v: dt.datetime) -> dt.datetime:
+        v = v.replace(second=0, microsecond=0)
+        if v.minute not in (0, 30):
+            raise ValueError('time must be 1 hour or 30 minutes')
         date_today = dt.datetime.now()
         if date_today > v:
             raise ValueError('data in past')
         if v > date_today + dt.timedelta(days=MAX_PERIOD):  # todo 1 year
             raise ValueError(f'max period {MAX_PERIOD} days - {v}')
-        # todo кратное 30 минут
         return v
 
     @validator('end_at')

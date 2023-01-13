@@ -20,6 +20,7 @@ from tests.conftest import engine
 def  _get_order_schema(
         employee_id: int,
         service_id,
+        price: int,
         date_start='22.08.2023',
         date_end='22.08.2023',
         time_start='10:00',
@@ -29,7 +30,7 @@ def  _get_order_schema(
         employee_id=employee_id,
         service_id=service_id,
         client_id=1,
-        price='1000',
+        price=price,
         comment=f'comment_{dt.datetime.now().isoformat()}',
         start_at=dt.datetime.strptime(f'{date_start} {time_start}', '%d.%m.%Y %H:%M'),
         end_at=dt.datetime.strptime(f'{date_end} {time_end}', '%d.%m.%Y %H:%M'),
@@ -39,7 +40,7 @@ def  _get_order_schema(
 @pytest.mark.parametrize(
     'schema, status_code',
     [
-        ( _get_order_schema(employee_id=1, service_id=1), status.HTTP_200_OK),
+        ( _get_order_schema(employee_id=1, service_id=1, price=10000), status.HTTP_200_OK),
         (None, status.HTTP_422_UNPROCESSABLE_ENTITY),
     ],
 )
@@ -66,7 +67,7 @@ async def test_post_order(
 @pytest.mark.asyncio
 async def test_post_order_duplicate(async_client: AsyncClient, async_session: AsyncSession):
     for i in range(1, 3):
-        schema = _get_order_schema(employee_id=3, service_id=1)
+        schema = _get_order_schema(employee_id=3, service_id=1, price=12000)
         result = await async_session.execute(
             select(OrderModel)
                 .where(
@@ -104,17 +105,8 @@ async def test_post_order_validate(
         async_client: AsyncClient, async_session: AsyncSession, d_date, d_end, t_date, t_end, status_code: int
 ):
     schema = _get_order_schema(
-        employee_id=3, service_id=1, date_start=d_date, date_end=d_end, time_start=t_date, time_end=t_end
+        employee_id=3, service_id=1, date_start=d_date, date_end=d_end, time_start=t_date, time_end=t_end, price=12000
     )
-    # result = await async_session.execute(
-    #     select(OrderModel)
-    #         .where(
-    #         OrderModel.employee_id == schema.employee_id,
-    #         OrderModel.start_at == schema.start_at,
-    #         OrderModel.end_at == schema.end_at,
-    #     )
-    # )
-    # obj_db = result.scalars().all()
     response = await async_client.post(url_reverse('view_add_order'), content=schema.json())
     assert response.status_code == status_code
 

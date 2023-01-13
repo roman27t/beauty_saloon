@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Type, TypeVar
+from typing import Type, TypeVar, List
 from pydantic import BaseModel as PydanticBaseModel
 from sqlmodel import SQLModel
 from sqlalchemy import select
@@ -53,7 +53,7 @@ class AbstractService(BaseService, ABC):
         result = await self.db_session.get(self._table, pk)
         return result
 
-    async def filter(self, params: dict) -> list:
+    async def filter(self, params: dict) -> List[MODEL]:
         result = await self.db_session.execute(select(self._table).where(*self.__parse_params(params=params)))
         return result.scalars().all()
 

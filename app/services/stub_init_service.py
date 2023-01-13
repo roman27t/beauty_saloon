@@ -1,4 +1,3 @@
-import random
 import datetime as dt
 from decimal import Decimal
 
@@ -94,7 +93,7 @@ class StubInitService(BaseService):
                 schema = OfferLinkModel(
                     employee_id=index_employee + 1,
                     service_name_id=i,
-                    rate=Decimal(1) if random.randint(0, 1) else Decimal(f'1.{random.randint(1,9)}'),
+                    rate=Decimal(f'1.{index_employee}'),
                 )
                 OfferLinkService(db_session=self.db_session).pre_add(schema=schema)
 
