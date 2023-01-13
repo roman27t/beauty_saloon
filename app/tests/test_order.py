@@ -93,8 +93,10 @@ async def test_post_order_duplicate(async_client: AsyncClient, async_session: As
         (T_BOOK_DATE, T_BOOK_DATE, '13:30', '15:00', status.HTTP_409_CONFLICT),
         (T_BOOK_DATE, T_BOOK_DATE, '12:00', '13:00', status.HTTP_200_OK),
         (T_BOOK_DATE, T_BOOK_DATE, '12:00', '14:00', status.HTTP_200_OK),
+        (T_BOOK_DATE, T_BOOK_DATE, '12:00', '16:00', status.HTTP_409_CONFLICT),
         (T_BOOK_DATE, T_BOOK_DATE, '13:00', '14:00', status.HTTP_200_OK),
-        # (T_BOOK_DATE, T_BOOK_DATE, '13:30', '14:30', status.HTTP_409_CONFLICT),   # todo ERROR
+        (T_BOOK_DATE, T_BOOK_DATE, '13:30', '14:30', status.HTTP_409_CONFLICT),
+        (T_BOOK_DATE, T_BOOK_DATE, '14:00', '15:00', status.HTTP_409_CONFLICT),
     ],
 )
 @pytest.mark.asyncio
@@ -104,16 +106,15 @@ async def test_post_order_validate(
     schema = _get_order_schema(
         employee_id=3, service_id=1, date_start=d_date, date_end=d_end, time_start=t_date, time_end=t_end
     )
-    result = await async_session.execute(
-        select(OrderModel)
-            .where(
-            OrderModel.employee_id == schema.employee_id,
-            OrderModel.start_at == schema.start_at,
-            OrderModel.end_at == schema.end_at,
-        )
-    )
-    obj_db = result.scalars().all()
-    # breakpoint()
+    # result = await async_session.execute(
+    #     select(OrderModel)
+    #         .where(
+    #         OrderModel.employee_id == schema.employee_id,
+    #         OrderModel.start_at == schema.start_at,
+    #         OrderModel.end_at == schema.end_at,
+    #     )
+    # )
+    # obj_db = result.scalars().all()
     response = await async_client.post(url_reverse('view_add_order'), content=schema.json())
     assert response.status_code == status_code
 

@@ -1,5 +1,5 @@
 import datetime as dt
-from typing import Type
+from typing import Type, Optional
 
 from models.order_model import OrderInSchema
 
@@ -25,15 +25,23 @@ class OrderService(AbstractService):
     async def __check_allow_times(self, schema: OrderInSchema) -> bool:
         # todo --> exists()
         from sqlalchemy import select
-        from sqlalchemy import and_
+        from sqlalchemy import and_, or_
 
-        where_conditions = and_(
+        _conditions_1 = and_(
             OrderModel.employee_id==schema.employee_id,
             OrderModel.start_at >= schema.start_at,
             OrderModel.end_at <= schema.end_at,
         )
-        result = await self.db_session.execute(select(self._table.id).where(where_conditions).limit(1))
-        return not bool(result.scalar())
+        _conditions_2 = and_(
+            OrderModel.employee_id == schema.employee_id,
+            OrderModel.start_at < schema.end_at,
+            OrderModel.end_at > schema.end_at,
+        )
+        result = await self.db_session.execute(select(self._table.id).where(
+            or_(_conditions_1, _conditions_2)
+        ).limit(1))
+        data: Optional[int] = result.scalar()
+        return not bool(data)
 
 
 class OrderDetailService(AbstractService):
