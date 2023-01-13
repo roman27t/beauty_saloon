@@ -12,7 +12,7 @@ from models.base_models import DateCreatedChangedBase
 if TYPE_CHECKING:
     from models import ClientModel, EmployeeModel, ServiceNameModel
 
-MAX_PERIOD = 180
+MAX_PERIOD = 300
 
 
 class OrderInSchema(SQLModel):
@@ -25,11 +25,11 @@ class OrderInSchema(SQLModel):
     comment: constr(max_length=255) = ''
 
     @validator('start_at', 'end_at')
-    def exclude_old_date(cls, v: dt.datetime) -> dt.datetime:
+    def validate_dates(cls, v: dt.datetime) -> dt.datetime:
         date_today = dt.datetime.now()
         if date_today > v:
             raise ValueError('data in past')
-        if v > date_today + dt.timedelta(days=MAX_PERIOD):
+        if v > date_today + dt.timedelta(days=MAX_PERIOD):  # todo 1 year
             raise ValueError(f'max period {MAX_PERIOD} days - {v}')
         return v
 
