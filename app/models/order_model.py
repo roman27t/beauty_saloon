@@ -31,6 +31,13 @@ class OrderInSchema(SQLModel):
             raise ValueError('data in past')
         if v > date_today + dt.timedelta(days=MAX_PERIOD):  # todo 1 year
             raise ValueError(f'max period {MAX_PERIOD} days - {v}')
+        # todo кратное 30 минут
+        return v
+
+    @validator('end_at')
+    def validate_end_at(cls, v: str, values) -> str:
+        if values['start_at'] >= v:
+            raise ValueError('end_at must be more start_at')
         return v
 
 
