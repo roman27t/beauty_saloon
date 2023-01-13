@@ -1,11 +1,12 @@
 import datetime as dt
 from typing import TYPE_CHECKING
 
-from pydantic import constr, condecimal, validator
+from pydantic import constr, validator, condecimal
 from sqlmodel import Field, SQLModel, Relationship
 from sqlalchemy import Column, UniqueConstraint
-from sqlalchemy.sql.sqltypes import Enum as EnumSQL
 from dateutil.relativedelta import relativedelta
+from sqlalchemy.sql.sqltypes import Enum as EnumSQL
+
 from models.choices import StatusOrder
 from models.base_models import DateCreatedChangedBase
 

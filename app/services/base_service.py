@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
-from typing import Type, TypeVar, List
+from typing import List, Type, TypeVar
+
 from pydantic import BaseModel as PydanticBaseModel
 from sqlmodel import SQLModel
 from sqlalchemy import select

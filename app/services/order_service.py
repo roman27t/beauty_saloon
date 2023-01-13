@@ -1,10 +1,9 @@
 import datetime as dt
 from typing import Type, Optional
 
-from models.order_model import OrderInSchema
-
 from models import OrderModel, OrderDetailModel
 from core.exceptions import ConflictException
+from models.order_model import OrderInSchema
 from services.base_service import AbstractService
 
 BOOKING_TIME_MINUTES = 15
@@ -26,11 +25,10 @@ class OrderService(AbstractService):
 
     async def __check_allow_times(self, schema: OrderInSchema):
         # todo --> exists()
-        from sqlalchemy import select
-        from sqlalchemy import and_, or_
+        from sqlalchemy import or_, and_, select
 
         _conditions_1 = and_(
-            OrderModel.employee_id==schema.employee_id,
+            OrderModel.employee_id == schema.employee_id,
             OrderModel.start_at >= schema.start_at,
             OrderModel.end_at <= schema.end_at,
         )
@@ -39,9 +37,7 @@ class OrderService(AbstractService):
             OrderModel.start_at < schema.end_at,
             OrderModel.end_at > schema.end_at,
         )
-        result = await self.db_session.execute(select(self._table.id).where(
-            or_(_conditions_1, _conditions_2)
-        ).limit(1))
+        result = await self.db_session.execute(select(self._table.id).where(or_(_conditions_1, _conditions_2)).limit(1))
         data: Optional[int] = result.scalar()
         if bool(data):
             raise ConflictException('already busy')

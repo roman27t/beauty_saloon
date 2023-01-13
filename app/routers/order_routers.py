@@ -1,17 +1,14 @@
 from fastapi import Depends, APIRouter
-
-from models.choices import StatusOrder
-from schemas.order_schema import OrderOptionalSchema
-from services.order_service import OrderService
-
-from dependencies.order_dependency import valid_post_schema, valid_patch_id
-
-from models.order_model import OrderInSchema
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from models import OrderModel
+from models.choices import StatusOrder
 from routers.consts import RouteSlug
 from models.database import get_session
+from models.order_model import OrderInSchema
+from schemas.order_schema import OrderOptionalSchema
+from services.order_service import OrderService
+from dependencies.order_dependency import valid_patch_id, valid_post_schema
 
 router_order = APIRouter()
 ORDER_SERVICE = '/order/'

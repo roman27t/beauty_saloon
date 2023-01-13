@@ -1,30 +1,29 @@
+import datetime as dt
 from typing import Optional
 
-import datetime as dt
 import pytest
 from httpx import AsyncClient
 from fastapi import status
-
-from models.choices import StatusOrder
-from models.order_model import OrderInSchema
 from sqlalchemy import select
 from sqlalchemy.orm import sessionmaker
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from models import OrderModel
-from services.stub_init_service import T_BOOK_DATE
 from tests.utils import url_reverse
+from models.choices import StatusOrder
 from tests.conftest import engine
+from models.order_model import OrderInSchema
+from services.stub_init_service import T_BOOK_DATE
 
 
-def  _get_order_schema(
-        employee_id: int,
-        service_id,
-        price: int,
-        date_start='22.08.2023',
-        date_end='22.08.2023',
-        time_start='10:00',
-        time_end='11:00'
+def _get_order_schema(
+    employee_id: int,
+    service_id,
+    price: int,
+    date_start='22.08.2023',
+    date_end='22.08.2023',
+    time_start='10:00',
+    time_end='11:00',
 ) -> OrderInSchema:
     return OrderInSchema(
         employee_id=employee_id,
@@ -40,7 +39,7 @@ def  _get_order_schema(
 @pytest.mark.parametrize(
     'schema, status_code',
     [
-        ( _get_order_schema(employee_id=1, service_id=1, price=10000), status.HTTP_200_OK),
+        (_get_order_schema(employee_id=1, service_id=1, price=10000), status.HTTP_200_OK),
         (None, status.HTTP_422_UNPROCESSABLE_ENTITY),
     ],
 )
@@ -64,13 +63,13 @@ async def test_post_order(
         obj_db: OrderModel = result.scalars().first()
         assert obj_db.comment == schema.comment
 
+
 @pytest.mark.asyncio
 async def test_post_order_duplicate(async_client: AsyncClient, async_session: AsyncSession):
     for i in range(1, 3):
         schema = _get_order_schema(employee_id=3, service_id=1, price=12000)
         result = await async_session.execute(
-            select(OrderModel)
-                .where(
+            select(OrderModel).where(
                 OrderModel.employee_id == schema.employee_id,
                 OrderModel.start_at == schema.start_at,
                 OrderModel.end_at == schema.end_at,
@@ -82,6 +81,7 @@ async def test_post_order_duplicate(async_client: AsyncClient, async_session: As
         response = await async_client.post(url_reverse('view_add_order'), content=schema.json())
         status_code = status.HTTP_200_OK if i == 1 else status.HTTP_409_CONFLICT
         assert response.status_code == status_code
+
 
 @pytest.mark.parametrize(
     'd_date, d_end, t_date, t_end, status_code',
@@ -102,7 +102,7 @@ async def test_post_order_duplicate(async_client: AsyncClient, async_session: As
 )
 @pytest.mark.asyncio
 async def test_post_order_validate(
-        async_client: AsyncClient, async_session: AsyncSession, d_date, d_end, t_date, t_end, status_code: int
+    async_client: AsyncClient, async_session: AsyncSession, d_date, d_end, t_date, t_end, status_code: int
 ):
     schema = _get_order_schema(
         employee_id=3, service_id=1, date_start=d_date, date_end=d_end, time_start=t_date, time_end=t_end, price=12000
