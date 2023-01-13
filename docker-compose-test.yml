@@ -13,6 +13,8 @@ services:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "postgres"
       PGDATA: "/var/lib/postgresql/data/pg_data"
+    volumes:
+      - ./extension.sql:/docker-entrypoint-initdb.d/extension.sql
     ports:
       - "54321:5432"
     networks:
@@ -47,7 +49,7 @@ services:
       DB_URL: "postgresql+asyncpg://postgres:postgres@pg_db-2-test/postgres_test?prepared_statement_cache_size=0"
       PORT: 9000
       PYTHONPATH: "/app"
-      DEBUG: "1"
+      DEBUG: "0"
       REDIS_HOST: cache-redis-test
       REDIS_PORT: 63791
       REDIS_PASSWORD: eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81

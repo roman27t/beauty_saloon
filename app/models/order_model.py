@@ -57,7 +57,12 @@ class OrderModel(DateCreatedChangedBase, OrderInSchema, table=True):
     order_detail: 'OrderDetailModel' = Relationship(sa_relationship_kwargs={'uselist': False}, back_populates='order')
     service: 'ServiceNameModel' = Relationship(back_populates='orders')
 
-    __table_args__ = (UniqueConstraint('employee_id', 'start_at', 'end_at', name='order_unique'),)
+    __table_args__ = (
+        UniqueConstraint('employee_id', 'start_at', 'end_at', name='order_unique'),
+        # Index(
+        #     "employee_id_start_at_end_at_index", 'employee_id', 'start_at', 'end_at', postgresql_using='gist',
+        # ),
+    )
 
 
 class OrderDetailModel(DateCreatedChangedBase, table=True):

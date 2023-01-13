@@ -4,8 +4,9 @@ from sqladmin import Admin
 from admin import admin_classes
 from routers import routers_all
 from models.database import engine
+from config import i_config
 
-app = FastAPI()
+app = FastAPI(debug=i_config.DEBUG)
 
 admin = Admin(app, engine)
 for admin_class in admin_classes:
@@ -13,6 +14,15 @@ for admin_class in admin_classes:
 
 for route in routers_all:
     app.include_router(route)  # , prefix='/api/auth', tags=['auth']
+
+
+if i_config.DEBUG and i_config.DEBUG_TOOLBAR:
+    from debug_toolbar.middleware import DebugToolbarMiddleware
+
+    app.add_middleware(
+        DebugToolbarMiddleware,
+        panels=["debug_toolbar.panels.sqlalchemy.SQLAlchemyPanel"],
+    )
 
 
 @app.on_event('startup')
