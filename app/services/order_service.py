@@ -16,13 +16,15 @@ class OrderService(AbstractService):
         return OrderModel
 
     async def add(self, schema: OrderInSchema) -> OrderModel:
-        if not await self.__check_allow_times(schema=schema):
-            raise ConflictException('already busy')
+        await self.__validations(schema=schema)
         schema_order = OrderModel.parse_obj(schema)
         schema_order.expired_at = dt.datetime.now() + dt.timedelta(minutes=BOOKING_TIME_MINUTES)
         return await super().add(schema=schema_order)
 
-    async def __check_allow_times(self, schema: OrderInSchema) -> bool:
+    async def __validations(self, schema: OrderInSchema):
+        await self.__check_allow_times(schema=schema)
+
+    async def __check_allow_times(self, schema: OrderInSchema):
         # todo --> exists()
         from sqlalchemy import select
         from sqlalchemy import and_, or_
@@ -41,7 +43,8 @@ class OrderService(AbstractService):
             or_(_conditions_1, _conditions_2)
         ).limit(1))
         data: Optional[int] = result.scalar()
-        return not bool(data)
+        if bool(data):
+            raise ConflictException('already busy')
 
 
 class OrderDetailService(AbstractService):
