@@ -60,9 +60,7 @@ class OrderModel(DateCreatedChangedBase, OrderInSchema, table=True):
 
     __table_args__ = (
         UniqueConstraint('employee_id', 'start_at', 'end_at', name='order_unique'),
-        # Index(
-        #     "employee_id_start_at_end_at_index", 'employee_id', 'start_at', 'end_at', postgresql_using='gist',
-        # ),
+        # Index('employee_id_start_at_end_at_index', 'employee_id', 'start_at', 'end_at', postgresql_using='gist'),
     )
 
 
