@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List, Type, TypeVar
+from typing import List, Type, TypeVar, Optional
 
 from pydantic import BaseModel as PydanticBaseModel
 from sqlmodel import SQLModel
@@ -44,15 +44,18 @@ class AbstractService(BaseService, ABC):
         await self.db_session.commit()
         await self.db_session.refresh(obj_db)
 
-    async def get_all(self) -> list:
-        result = await self.db_session.execute(
-            select(self._table).order_by(getattr(self._table, 'id'))  # .limit(20)  # (ClientModel.last_name.desc())
-        )
+    async def get_all(self) -> list[MODEL]:
+        result = await self.db_session.execute(select(self._table).order_by(getattr(self._table, 'id')))
         return result.scalars().all()
 
     async def get(self, pk: int):
         result = await self.db_session.get(self._table, pk)
         return result
+
+    async def exists(self, conditions) -> Optional[int]:
+        result = await self.db_session.execute(select(self._table.id).where(conditions).limit(1))
+        data: Optional[int] = result.scalar()
+        return data
 
     async def filter(self, params: dict) -> List[MODEL]:
         result = await self.db_session.execute(select(self._table).where(*self.__parse_params(params=params)))
