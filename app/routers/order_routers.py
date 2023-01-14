@@ -1,4 +1,5 @@
-from fastapi import Depends, APIRouter
+from enum import Enum
+from fastapi import Depends, APIRouter, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from models import OrderModel
@@ -12,6 +13,20 @@ from dependencies.order_dependency import valid_patch_id, valid_post_schema
 
 router_order = APIRouter()
 ORDER_SERVICE = '/order/'
+
+
+class OrderFilter(str, Enum):
+    employee = 'employee'
+    client = 'client'
+
+
+@router_order.get(ORDER_SERVICE + RouteSlug.ifilter + RouteSlug.pk, response_model=list[OrderModel])
+async def view_filter_order(ifilter: OrderFilter, pk: int, session: AsyncSession = Depends(get_session)):
+    params = {f'{ifilter.value}_id': pk}
+    orders = await OrderService(db_session=session).filter(params)
+    if not orders:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'item with id {pk} not found')
+    return orders
 
 
 @router_order.post(ORDER_SERVICE, response_model=OrderModel)
