@@ -27,7 +27,7 @@ class AbstractService(BaseService, ABC):
     def name(self) -> str:
         return self._table.__table__.name
 
-    def pre_add(self, schema: SCHEMA):
+    def pre_add(self, schema: SCHEMA) -> MODEL:
         obj_db = self._table(**schema.dict())
         self.db_session.add(obj_db)
         return obj_db
@@ -48,7 +48,7 @@ class AbstractService(BaseService, ABC):
         result = await self.db_session.execute(select(self._table).order_by(getattr(self._table, 'id')))
         return result.scalars().all()
 
-    async def get(self, pk: int):
+    async def get(self, pk: int) -> Optional[MODEL]:
         result = await self.db_session.get(self._table, pk)
         return result
 
