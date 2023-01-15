@@ -1,17 +1,17 @@
 from abc import ABC, abstractmethod
 from typing import List, Type, TypeVar, TYPE_CHECKING, Optional, Union
 
-from sqlmodel import SQLModel
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from models.base_models import BaseSQLModel
 from models.db_helper import db_commit
 from schemas.base_schema import BasePydanticSchema
 
 if TYPE_CHECKING:
     from sqlalchemy.sql.elements import BinaryExpression, BooleanClauseList
 
-MODEL = TypeVar('MODEL', bound=SQLModel)
+MODEL = TypeVar('MODEL', bound=BaseSQLModel)
 SCHEMA = TypeVar('SCHEMA', bound=BasePydanticSchema)
 
 
@@ -23,7 +23,7 @@ class BaseService:
 class AbstractService(BaseService, ABC):
     @property
     @abstractmethod
-    def _table(self) -> Type[SQLModel]:
+    def _table(self) -> Type[BaseSQLModel]:
         pass
 
     @property

@@ -2,12 +2,12 @@ import datetime as dt
 from typing import TYPE_CHECKING, List, Union
 
 from pydantic import EmailStr, constr
-from sqlmodel import VARCHAR, Field, SQLModel, Relationship
+from sqlmodel import VARCHAR, Field, Relationship
 from sqlalchemy import Column
 from sqlalchemy.sql.sqltypes import Enum as EnumSQL
 
 from models.choices import Gender
-from models.base_models import DateCreatedChangedBase
+from models.base_models import DateCreatedChangedBase, BaseSQLModel
 from models.offer_model import OfferLinkModel
 
 if TYPE_CHECKING:
@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 _REGEX_NAME = '^[A-Za-z- ]+$'
 
 
-class _UserInSchema(SQLModel):
+class _UserInSchema(BaseSQLModel):
     phone: constr(min_length=10, max_length=14) = Field(sa_column=Column('phone', VARCHAR, unique=True, index=True))
     email: EmailStr
     gender: Gender = Field(sa_column=Column(EnumSQL(Gender), nullable=False), max_length=1)

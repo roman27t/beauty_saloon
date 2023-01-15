@@ -2,13 +2,13 @@ import datetime as dt
 from typing import TYPE_CHECKING
 
 from pydantic import constr, validator, condecimal
-from sqlmodel import Field, SQLModel, Relationship
+from sqlmodel import Field, Relationship
 from sqlalchemy import Column, UniqueConstraint
 from dateutil.relativedelta import relativedelta
 from sqlalchemy.sql.sqltypes import Enum as EnumSQL
 
 from models.choices import StatusOrder
-from models.base_models import DateCreatedChangedBase
+from models.base_models import DateCreatedChangedBase, BaseSQLModel
 
 if TYPE_CHECKING:
     from models import ClientModel, EmployeeModel, ServiceNameModel
@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 MAX_PERIOD = 1
 
 
-class OrderInSchema(SQLModel):
+class OrderInSchema(BaseSQLModel):
     employee_id: int = Field(foreign_key='employee.id')
     client_id: int = Field(foreign_key='client.id', index=True)
     service_id: int = Field(default=None, foreign_key='service_name.id')

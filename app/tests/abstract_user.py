@@ -4,12 +4,12 @@ from typing import Type, Union
 import pytest
 from httpx import AsyncClient
 from fastapi import status
-from sqlmodel import SQLModel
 from sqlalchemy import select
 from sqlalchemy.orm import sessionmaker
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from models import EmployeeModel, ClientModel
+from models.base_models import BaseSQLModel
 from schemas.base_schema import BasePydanticSchema
 from tests.utils import user_data, url_reverse
 from tests.conftest import engine
@@ -23,7 +23,7 @@ class UserAbstract(ABC):
 
     @property
     @abstractmethod
-    def _model(self) -> Type[SQLModel]:
+    def _model(self) -> Type[BaseSQLModel]:
         ...
 
     @property
