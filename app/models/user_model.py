@@ -13,13 +13,15 @@ from models.offer_model import OfferLinkModel
 if TYPE_CHECKING:
     from models import OrderModel
 
+_REGEX_NAME = '^[A-Za-z- ]+$'
+
 
 class _UserInSchema(SQLModel):
     phone: constr(min_length=10, max_length=14) = Field(sa_column=Column('phone', VARCHAR, unique=True, index=True))
     email: EmailStr
     gender: Gender = Field(sa_column=Column(EnumSQL(Gender), nullable=False), max_length=1)
-    last_name: constr(min_length=2, max_length=50)
-    first_name: constr(min_length=2, max_length=50)
+    last_name: constr(regex=_REGEX_NAME, min_length=2, max_length=50, to_lower=True)
+    first_name: constr(regex=_REGEX_NAME,min_length=2, max_length=50, to_lower=True)
     birth_date: dt.date
 
 
