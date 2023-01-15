@@ -1,16 +1,17 @@
 from typing import Union
 
-from pydantic import BaseModel as PydanticBaseModel, condecimal
+from pydantic import condecimal
 
 from models.choices import StatusOrder
+from schemas.base_schema import BasePydanticSchema
 from schemas.payment_schema import PaymentType, CardSchema
 
 
-class OrderOptionalSchema(PydanticBaseModel):
+class OrderOptionalSchema(BasePydanticSchema):
     status: StatusOrder
 
 
-class OrderPaymentSchema(PydanticBaseModel):
+class OrderPaymentSchema(BasePydanticSchema):
     p_type: PaymentType
     item: Union[CardSchema]
     price: condecimal(max_digits=7, decimal_places=2)

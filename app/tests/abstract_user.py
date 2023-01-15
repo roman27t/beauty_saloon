@@ -4,13 +4,13 @@ from typing import Type, Union
 import pytest
 from httpx import AsyncClient
 from fastapi import status
-from pydantic import BaseModel as PydanticBaseModel
 from sqlmodel import SQLModel
 from sqlalchemy import select
 from sqlalchemy.orm import sessionmaker
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from models import EmployeeModel, ClientModel
+from schemas.base_schema import BasePydanticSchema
 from tests.utils import user_data, url_reverse
 from tests.conftest import engine
 
@@ -28,12 +28,12 @@ class UserAbstract(ABC):
 
     @property
     @abstractmethod
-    def _in_schema(self) -> Type[PydanticBaseModel]:
+    def _in_schema(self) -> Type[BasePydanticSchema]:
         ...
 
     @property
     @abstractmethod
-    def _in_optional_schema(self) -> Type[PydanticBaseModel]:
+    def _in_optional_schema(self) -> Type[BasePydanticSchema]:
         ...
 
     @property
