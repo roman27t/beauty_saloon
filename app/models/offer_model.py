@@ -2,16 +2,16 @@ from typing import TYPE_CHECKING, Union
 from decimal import Decimal
 
 from pydantic import condecimal
-from sqlmodel import Field, SQLModel, Relationship
+from sqlmodel import Field, Relationship
 from sqlalchemy import UniqueConstraint
 
-from models.base_models import DateCreatedChangedBase
+from models.base_models import DateCreatedChangedBase, BaseSQLModel
 
 if TYPE_CHECKING:
     from models import EmployeeModel, ServiceNameModel
 
 
-class OfferLinkInSchema(SQLModel):
+class OfferLinkInSchema(BaseSQLModel):
     employee_id: int = Field(foreign_key='employee.id')
     service_name_id: int = Field(foreign_key='service_name.id', index=True)
     rate: condecimal(max_digits=3, decimal_places=2, ge=Decimal(1), le=Decimal(5)) = Decimal(1)

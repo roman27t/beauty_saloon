@@ -2,13 +2,13 @@ import datetime as dt
 from typing import TYPE_CHECKING
 
 from pydantic import constr, validator, condecimal
-from sqlmodel import Field, SQLModel, Relationship
+from sqlmodel import Field, Relationship
 from sqlalchemy import Column, UniqueConstraint
 from dateutil.relativedelta import relativedelta
 from sqlalchemy.sql.sqltypes import Enum as EnumSQL
 
 from models.choices import StatusOrder
-from models.base_models import DateCreatedChangedBase
+from models.base_models import DateCreatedChangedBase, BaseSQLModel
 
 if TYPE_CHECKING:
     from models import ClientModel, EmployeeModel, ServiceNameModel
@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 MAX_PERIOD = 1
 
 
-class OrderInSchema(SQLModel):
+class OrderInSchema(BaseSQLModel):
     employee_id: int = Field(foreign_key='employee.id')
     client_id: int = Field(foreign_key='client.id', index=True)
     service_id: int = Field(default=None, foreign_key='service_name.id')
@@ -50,7 +50,7 @@ class OrderModel(DateCreatedChangedBase, OrderInSchema, table=True):
     id: int = Field(default=None, primary_key=True)
     expired_at: dt.datetime
     status: StatusOrder = Field(
-        sa_column=Column(EnumSQL(StatusOrder), nullable=False, default=StatusOrder.WAIT.value), max_length=1
+        sa_column=Column(EnumSQL(StatusOrder), nullable=False, default=StatusOrder.WAIT.value), max_length=2
     )
 
     employee: 'EmployeeModel' = Relationship(back_populates='client_orders')
@@ -60,9 +60,7 @@ class OrderModel(DateCreatedChangedBase, OrderInSchema, table=True):
 
     __table_args__ = (
         UniqueConstraint('employee_id', 'start_at', 'end_at', name='order_unique'),
-        # Index(
-        #     "employee_id_start_at_end_at_index", 'employee_id', 'start_at', 'end_at', postgresql_using='gist',
-        # ),
+        # Index('employee_id_start_at_end_at_index', 'employee_id', 'start_at', 'end_at', postgresql_using='gist'),
     )
 
 

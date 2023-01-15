@@ -1,15 +1,16 @@
 from abc import ABC, abstractmethod
-from typing import Type
+from typing import Type, Union
 
 import pytest
 from httpx import AsyncClient
 from fastapi import status
-from pydantic import BaseModel as PydanticBaseModel
-from sqlmodel import SQLModel
 from sqlalchemy import select
 from sqlalchemy.orm import sessionmaker
 from sqlmodel.ext.asyncio.session import AsyncSession
 
+from models import EmployeeModel, ClientModel
+from models.base_models import BaseSQLModel
+from schemas.base_schema import BasePydanticSchema
 from tests.utils import user_data, url_reverse
 from tests.conftest import engine
 
@@ -22,17 +23,17 @@ class UserAbstract(ABC):
 
     @property
     @abstractmethod
-    def _model(self) -> Type[SQLModel]:
+    def _model(self) -> Type[BaseSQLModel]:
         ...
 
     @property
     @abstractmethod
-    def _in_schema(self) -> Type[PydanticBaseModel]:
+    def _in_schema(self) -> Type[BasePydanticSchema]:
         ...
 
     @property
     @abstractmethod
-    def _in_optional_schema(self) -> Type[PydanticBaseModel]:
+    def _in_optional_schema(self) -> Type[BasePydanticSchema]:
         ...
 
     @property
@@ -56,8 +57,8 @@ class UserAbstract(ABC):
         response = await async_client.get(url_reverse(f'view_get_{self._url_path}_by_id', pk=pk))
         assert response.status_code == status_code
         if status_code == status.HTTP_200_OK:
-            user = self._model(**response.json())
-            assert user.last_name == self._last_name
+            user: Union[EmployeeModel, ClientModel] = self._model(**response.json())
+            assert user.last_name == self._last_name.lower()
 
     @pytest.mark.parametrize(
         'is_error, status_code',

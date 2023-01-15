@@ -1,15 +1,18 @@
 from abc import ABC, abstractmethod
-from typing import List, Type, TypeVar
+from typing import List, Type, TypeVar, TYPE_CHECKING, Optional, Union
 
-from pydantic import BaseModel as PydanticBaseModel
-from sqlmodel import SQLModel
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from models.base_models import BaseSQLModel
 from models.db_helper import db_commit
+from schemas.base_schema import BasePydanticSchema
 
-MODEL = TypeVar('MODEL', bound=SQLModel)
-SCHEMA = TypeVar('SCHEMA', bound=PydanticBaseModel)
+if TYPE_CHECKING:
+    from sqlalchemy.sql.elements import BinaryExpression, BooleanClauseList
+
+MODEL = TypeVar('MODEL', bound=BaseSQLModel)
+SCHEMA = TypeVar('SCHEMA', bound=BasePydanticSchema)
 
 
 class BaseService:
@@ -20,14 +23,14 @@ class BaseService:
 class AbstractService(BaseService, ABC):
     @property
     @abstractmethod
-    def _table(self) -> Type[SQLModel]:
+    def _table(self) -> Type[BaseSQLModel]:
         pass
 
     @property
     def name(self) -> str:
         return self._table.__table__.name
 
-    def pre_add(self, schema: SCHEMA):
+    def pre_add(self, schema: SCHEMA) -> MODEL:
         obj_db = self._table(**schema.dict())
         self.db_session.add(obj_db)
         return obj_db
@@ -44,15 +47,18 @@ class AbstractService(BaseService, ABC):
         await self.db_session.commit()
         await self.db_session.refresh(obj_db)
 
-    async def get_all(self) -> list:
-        result = await self.db_session.execute(
-            select(self._table).order_by(getattr(self._table, 'id'))  # .limit(20)  # (ClientModel.last_name.desc())
-        )
+    async def get_all(self) -> list[MODEL]:
+        result = await self.db_session.execute(select(self._table).order_by(getattr(self._table, 'id')))
         return result.scalars().all()
 
-    async def get(self, pk: int):
+    async def get(self, pk: int) -> Optional[MODEL]:
         result = await self.db_session.get(self._table, pk)
         return result
+
+    async def exists(self, conditions: Union['BinaryExpression', 'BooleanClauseList']) -> Optional[int]:
+        result = await self.db_session.execute(select(self._table.id).where(conditions).limit(1))
+        data: Optional[int] = result.scalar()
+        return data
 
     async def filter(self, params: dict) -> List[MODEL]:
         result = await self.db_session.execute(select(self._table).where(*self.__parse_params(params=params)))
