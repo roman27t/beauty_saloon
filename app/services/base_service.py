@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List, Type, TypeVar, Optional
+from typing import List, Type, TypeVar, TYPE_CHECKING, Optional, Union
 
 from pydantic import BaseModel as PydanticBaseModel
 from sqlmodel import SQLModel
@@ -7,6 +7,9 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from models.db_helper import db_commit
+
+if TYPE_CHECKING:
+    from sqlalchemy.sql.elements import BinaryExpression, BooleanClauseList
 
 MODEL = TypeVar('MODEL', bound=SQLModel)
 SCHEMA = TypeVar('SCHEMA', bound=PydanticBaseModel)
@@ -52,7 +55,7 @@ class AbstractService(BaseService, ABC):
         result = await self.db_session.get(self._table, pk)
         return result
 
-    async def exists(self, conditions) -> Optional[int]:
+    async def exists(self, conditions: Union['BinaryExpression', 'BooleanClauseList']) -> Optional[int]:
         result = await self.db_session.execute(select(self._table.id).where(conditions).limit(1))
         data: Optional[int] = result.scalar()
         return data
