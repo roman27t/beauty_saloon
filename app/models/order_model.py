@@ -50,7 +50,7 @@ class OrderModel(DateCreatedChangedBase, OrderInSchema, table=True):
     id: int = Field(default=None, primary_key=True)
     expired_at: dt.datetime
     status: StatusOrder = Field(
-        sa_column=Column(EnumSQL(StatusOrder), nullable=False, default=StatusOrder.WAIT.value), max_length=1
+        sa_column=Column(EnumSQL(StatusOrder), nullable=False, default=StatusOrder.WAIT.value), max_length=2
     )
 
     employee: 'EmployeeModel' = Relationship(back_populates='client_orders')
