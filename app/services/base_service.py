@@ -1,11 +1,11 @@
 from abc import ABC, abstractmethod
-from typing import List, Type, TypeVar, TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING, List, Type, Union, TypeVar, Optional
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from models.base_models import BaseSQLModel
 from models.db_helper import db_commit
+from models.base_models import BaseSQLModel
 from schemas.base_schema import BasePydanticSchema
 
 if TYPE_CHECKING:

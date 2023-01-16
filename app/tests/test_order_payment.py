@@ -6,12 +6,12 @@ from fastapi import status
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from models import OrderModel
-from schemas.order_schema import OrderPaymentSchema
-from schemas.payment_schema import PaymentType, CardSchema
-from services.order_service import OrderService
 from tests.utils import url_reverse
 from models.choices import StatusOrder
 from models.order_model import OrderInSchema
+from schemas.order_schema import OrderPaymentSchema
+from schemas.payment_schema import CardSchema, PaymentType
+from services.order_service import OrderService
 
 
 def _get_order_schema(price: int, cvv: str) -> OrderPaymentSchema:
@@ -26,7 +26,7 @@ def _get_order_schema(price: int, cvv: str) -> OrderPaymentSchema:
 @pytest.mark.parametrize(
     'schema, status_code',
     [
-        (_get_order_schema(price=10000, cvv='777'), status.HTTP_200_OK),    # success payment
+        (_get_order_schema(price=10000, cvv='777'), status.HTTP_200_OK),  # success payment
         (_get_order_schema(price=10000, cvv='111'), status.HTTP_409_CONFLICT),  # error payment
         (None, status.HTTP_422_UNPROCESSABLE_ENTITY),
     ],

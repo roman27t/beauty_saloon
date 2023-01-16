@@ -4,17 +4,17 @@ from typing import Optional
 import pytest
 from httpx import AsyncClient
 from fastapi import status
+from freezegun import freeze_time
 from sqlalchemy import select
 from sqlalchemy.orm import sessionmaker
 from sqlmodel.ext.asyncio.session import AsyncSession
-from freezegun import freeze_time
 
 from models import OrderModel
-from routers.order_routers import OrderFilter
 from tests.utils import url_reverse
 from models.choices import StatusOrder
-from tests.conftest import engine, MOCK_FREEZE_TIME
+from tests.conftest import MOCK_FREEZE_TIME, engine
 from models.order_model import OrderInSchema
+from routers.order_routers import OrderFilter
 from services.stub_init_service import T_BOOK_DATE
 
 

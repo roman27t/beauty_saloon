@@ -1,5 +1,10 @@
 from dataclasses import dataclass
-from schemas.payment_schema import CardSchema, PaymentContentSchema, ResponsePaymentSchema
+
+from schemas.payment_schema import (
+    CardSchema,
+    PaymentContentSchema,
+    ResponsePaymentSchema,
+)
 
 
 @dataclass

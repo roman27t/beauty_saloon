@@ -8,7 +8,7 @@ from dateutil.relativedelta import relativedelta
 from sqlalchemy.sql.sqltypes import Enum as EnumSQL
 
 from models.choices import StatusOrder
-from models.base_models import DateCreatedChangedBase, BaseSQLModel
+from models.base_models import BaseSQLModel, DateCreatedChangedBase
 
 if TYPE_CHECKING:
     from models import ClientModel, EmployeeModel, ServiceNameModel

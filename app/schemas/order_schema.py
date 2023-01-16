@@ -4,7 +4,7 @@ from pydantic import condecimal
 
 from models.choices import StatusOrder
 from schemas.base_schema import BasePydanticSchema
-from schemas.payment_schema import PaymentType, CardSchema
+from schemas.payment_schema import CardSchema, PaymentType
 
 
 class OrderOptionalSchema(BasePydanticSchema):
