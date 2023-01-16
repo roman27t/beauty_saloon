@@ -7,12 +7,13 @@ from fastapi import status
 from sqlalchemy import select
 from sqlalchemy.orm import sessionmaker
 from sqlmodel.ext.asyncio.session import AsyncSession
+from freezegun import freeze_time
 
 from models import OrderModel
 from routers.order_routers import OrderFilter
 from tests.utils import url_reverse
 from models.choices import StatusOrder
-from tests.conftest import engine
+from tests.conftest import engine, MOCK_FREEZE_TIME
 from models.order_model import OrderInSchema
 from services.stub_init_service import T_BOOK_DATE
 
@@ -58,6 +59,7 @@ def _get_order_schema(
     )
 
 
+@freeze_time(MOCK_FREEZE_TIME)
 @pytest.mark.parametrize(
     'schema, status_code',
     [
@@ -86,6 +88,7 @@ async def test_post_order(
         assert obj_db.comment == schema.comment
 
 
+@freeze_time(MOCK_FREEZE_TIME)
 @pytest.mark.asyncio
 async def test_post_order_duplicate(async_client: AsyncClient, async_session: AsyncSession):
     for i in range(1, 3):
@@ -105,6 +108,7 @@ async def test_post_order_duplicate(async_client: AsyncClient, async_session: As
         assert response.status_code == status_code
 
 
+@freeze_time(MOCK_FREEZE_TIME)
 @pytest.mark.parametrize(
     'd_date, d_end, t_date, t_end, status_code',
     [

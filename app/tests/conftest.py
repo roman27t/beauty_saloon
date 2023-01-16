@@ -15,6 +15,7 @@ from models.db_helper import db_commit
 from services.stub_init_service import StubInitService
 
 engine = create_async_engine(f'{i_config.DB_URL}', echo=False)
+MOCK_FREEZE_TIME = '2023-1-16 09:30:00'
 
 
 @pytest.fixture(scope='session')
