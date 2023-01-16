@@ -54,10 +54,9 @@ async def view_order_payment(
         obj_db: OrderModel = Depends(valid_patch_id),
     session: AsyncSession = Depends(get_session),
 ):
+    if obj_db.status != StatusOrder.WAIT:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail='status order already expired')
     content_payment = PaymentContentSchema(purpose=f'payment for order {obj_db.id}', price=obj_db.price)
-
-    # todo validate order
-
     payment = ApiPay(card=schema.item, content=content_payment).pay()
     if not payment.status:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=payment.message)
