@@ -5,7 +5,7 @@ from pydantic import condecimal
 from sqlmodel import Field, Relationship
 from sqlalchemy import UniqueConstraint
 
-from models.base_models import DateCreatedChangedBase, BaseSQLModel
+from models.base_models import BaseSQLModel, DateCreatedChangedBase
 
 if TYPE_CHECKING:
     from models import EmployeeModel, ServiceNameModel

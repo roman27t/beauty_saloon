@@ -4,7 +4,7 @@ from pydantic import constr, condecimal
 from sqlmodel import Field, Relationship
 from sqlalchemy import VARCHAR, Column, UniqueConstraint
 
-from models.base_models import DateCreatedChangedBase, BaseSQLModel
+from models.base_models import BaseSQLModel, DateCreatedChangedBase
 
 if TYPE_CHECKING:
     from models import OrderModel, OfferLinkModel
