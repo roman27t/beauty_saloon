@@ -2,6 +2,7 @@ from fastapi import Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from models import OrderModel, OfferLinkModel
+from models.choices import StatusOrder
 from models.database import get_session
 from models.order_model import OrderInSchema
 from services.order_service import OrderService
@@ -39,4 +40,10 @@ async def valid_patch_id(pk: int, session: AsyncSession = Depends(get_session)) 
     obj_db = await OrderService(db_session=session).get(pk=pk)
     if not obj_db:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'item with id {pk} not found')
+    return obj_db
+
+
+async def valid_status_wait(obj_db: OrderModel = Depends(valid_patch_id)) -> OrderModel:
+    if obj_db.status != StatusOrder.WAIT:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail='status order already expired')
     return obj_db

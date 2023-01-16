@@ -11,7 +11,7 @@ from models.order_model import OrderInSchema
 from schemas.order_schema import OrderOptionalSchema, OrderPaymentSchema
 from schemas.payment_schema import PaymentContentSchema
 from services.order_service import OrderService
-from dependencies.order_dependency import valid_patch_id, valid_post_schema
+from dependencies.order_dependency import valid_post_schema, valid_status_wait
 
 router_order = APIRouter()
 ORDER_SERVICE = '/order/'
@@ -40,7 +40,7 @@ async def view_add_order(
 
 @router_order.delete(ORDER_SERVICE + RouteSlug.pk, response_model=OrderModel)
 async def view_delete_order(
-    obj_db: OrderModel = Depends(valid_patch_id),
+    obj_db: OrderModel = Depends(valid_status_wait),
     session: AsyncSession = Depends(get_session),
 ):
     schema = OrderOptionalSchema(status=StatusOrder.CANCEL)
@@ -51,11 +51,9 @@ async def view_delete_order(
 @router_order.post(ORDER_SERVICE + 'payment/' + RouteSlug.pk, response_model=OrderModel)
 async def view_order_payment(
         schema: OrderPaymentSchema,
-        obj_db: OrderModel = Depends(valid_patch_id),
+        obj_db: OrderModel = Depends(valid_status_wait),
     session: AsyncSession = Depends(get_session),
 ):
-    if obj_db.status != StatusOrder.WAIT:
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail='status order already expired')
     content_payment = PaymentContentSchema(purpose=f'payment for order {obj_db.id}', price=obj_db.price)
     payment = ApiPay(card=schema.item, content=content_payment).pay()
     if not payment.status:
