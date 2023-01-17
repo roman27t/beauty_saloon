@@ -1,17 +1,10 @@
-from typing import Optional
-
 import pytest
 from httpx import AsyncClient
 from fastapi import status
-from sqlalchemy import select
-from sqlalchemy.orm import sessionmaker
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from models import OfferLinkModel
 from tests.utils import url_reverse
-from tests.conftest import engine
-from models.offer_model import OfferLinkInSchema
-from schemas.offer_schema import OfferLinkOptionalSchema, OfferFullResponseSchema
+from schemas.offer_schema import OfferFullResponseSchema
 from routers.offer_routers import OfferFilter
 
 

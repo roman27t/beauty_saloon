@@ -63,9 +63,7 @@ class AbstractService(BaseService, ABC):
     async def filter(self, params: dict, options: Optional[List] = None) -> List[MODEL]:
         options = options or []
         result = await self.db_session.execute(
-            select(self._table)
-                .where(*self.__parse_params(params=params))
-                .options(*options)
+            select(self._table).where(*self.__parse_params(params=params)).options(*options)
         )
         return result.scalars().all()
 

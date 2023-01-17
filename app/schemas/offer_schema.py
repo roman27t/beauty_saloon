@@ -1,12 +1,12 @@
+from typing import Dict, List, Optional
 from decimal import Decimal
-from typing import Optional, List, Dict
 
-from pydantic import condecimal, Field, validator
+from pydantic import Field, validator, condecimal
 
-from models import ServiceNameModel, EmployeeModel, OfferLinkModel
+from models import EmployeeModel, OfferLinkModel, ServiceNameModel
 from models.offer_model import OfferLinkInSchema
-from models.service_model import CategoryInSchema
 from schemas.base_schema import BasePydanticSchema
+from models.service_model import CategoryInSchema
 
 
 class OfferLinkOptionalSchema(OfferLinkInSchema):
