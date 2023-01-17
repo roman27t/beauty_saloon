@@ -15,7 +15,7 @@ from dependencies.order_dependency import valid_post_schema, valid_status_wait
 from core.payment.api_pay.interface import ApiPay
 
 router_order = APIRouter()
-ORDER_SERVICE = '/order/'
+R_ORDER = '/order/'
 
 
 class OrderFilter(str, Enum):
@@ -23,7 +23,7 @@ class OrderFilter(str, Enum):
     client = 'client'
 
 
-@router_order.get(ORDER_SERVICE + RouteSlug.ifilter + RouteSlug.pk, response_model=list[OrderModel])
+@router_order.get(R_ORDER + RouteSlug.ifilter + RouteSlug.pk, response_model=list[OrderModel])
 async def view_filter_order(ifilter: OrderFilter, pk: int, session: AsyncSession = Depends(get_session)):
     params = {f'{ifilter.value}_id': pk}
     orders = await OrderService(db_session=session).filter(params)
@@ -32,14 +32,14 @@ async def view_filter_order(ifilter: OrderFilter, pk: int, session: AsyncSession
     return orders
 
 
-@router_order.post(ORDER_SERVICE, response_model=OrderModel)
+@router_order.post(R_ORDER, response_model=OrderModel)
 async def view_add_order(
     schema: OrderInSchema = Depends(valid_post_schema), session: AsyncSession = Depends(get_session)
 ):
     return await OrderService(db_session=session).add(schema=schema)
 
 
-@router_order.delete(ORDER_SERVICE + RouteSlug.pk, response_model=OrderModel)
+@router_order.delete(R_ORDER + RouteSlug.pk, response_model=OrderModel)
 async def view_delete_order(
     obj_db: OrderModel = Depends(valid_status_wait),
     session: AsyncSession = Depends(get_session),
@@ -49,7 +49,7 @@ async def view_delete_order(
     return obj_db
 
 
-@router_order.post(ORDER_SERVICE + 'payment/' + RouteSlug.pk, response_model=OrderModel)
+@router_order.post(R_ORDER + 'payment/' + RouteSlug.pk, response_model=OrderModel)
 async def view_order_payment(
     schema: OrderPaymentSchema,
     obj_db: OrderModel = Depends(valid_status_wait),

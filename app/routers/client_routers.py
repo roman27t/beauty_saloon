@@ -11,8 +11,6 @@ from dependencies.client_dependency import valid_patch_id, valid_patch_schema
 router_client = APIRouter()
 ROUTE_CLIENT = '/client/'
 
-# todo common class
-
 
 @router_client.get(ROUTE_CLIENT + RouteSlug.pk, response_model=ClientModel)
 async def view_get_client_by_id(pk: int, session: AsyncSession = Depends(get_session)):

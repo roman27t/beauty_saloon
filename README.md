@@ -15,7 +15,7 @@ http://localhost:8000/
 ### Swagger
 http://localhost:8000/docs#/
 
-### Миграции
+### Migrations
    ```bash
    docker-compose exec app sh   
    alembic init -t async migrations # init
