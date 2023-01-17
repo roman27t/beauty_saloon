@@ -30,11 +30,11 @@ class OfferFullResponseSchema(BasePydanticSchema):
     categories: Dict[int, CategoryInSchema] = {}
 
     @classmethod
-    def build(cls, data_db: List[OfferLinkModel]) -> 'OfferFullResponseSchema':
-        obj = cls(employee=data_db[0].employee)
-        for i in data_db:
-            full_schema = _OfferFullSchema.from_orm(i)
+    def build(cls, offers: List[OfferLinkModel]) -> 'OfferFullResponseSchema':
+        obj = cls(employee=offers[0].employee)
+        for offer in offers:
+            full_schema = _OfferFullSchema.from_orm(offer)
             if full_schema.service.category_id not in obj.categories:
-                obj.categories[full_schema.service.category_id] = i.service_name.category
+                obj.categories[full_schema.service.category_id] = offer.service_name.category
             obj.offers.append(full_schema)
         return obj

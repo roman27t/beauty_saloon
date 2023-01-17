@@ -44,7 +44,7 @@ async def view_filter_offer_full(ifilter: OfferFilter, pk: int, session: AsyncSe
     offers = await OfferLinkService(db_session=session).filter(params=ifilter.get_filters(pk=pk), options=joins)
     if not offers:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'item with id {pk} not found')
-    return OfferFullResponseSchema.build(data_db=offers)
+    return OfferFullResponseSchema.build(offers=offers)
 
 
 @router_offer.post(R_OFFER, response_model=OfferLinkModel)
