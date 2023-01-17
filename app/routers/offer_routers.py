@@ -20,13 +20,16 @@ class OfferFilter(str, Enum):
     employee = 'employee'
     service_name = 'service_name'
 
+    def get_filters(self, pk: int) -> dict:
+        params = {f'{self.value}_id': pk}
+        if self.value == OfferFilter.service_name:
+            params['is_active'] = True
+        return params
+
 
 @router_offer.get(R_OFFER + RouteSlug.ifilter + RouteSlug.pk, response_model=list[OfferLinkModel])
 async def view_filter_offer(ifilter: OfferFilter, pk: int, session: AsyncSession = Depends(get_session)):
-    params = {f'{ifilter.value}_id': pk}
-    if ifilter.value == OfferFilter.service_name.value:
-        params['is_active'] = True
-    offers = await OfferLinkService(db_session=session).filter(params)
+    offers = await OfferLinkService(db_session=session).filter(params=ifilter.get_filters(pk=pk))
     if not offers:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'item with id {pk} not found')
     return offers
@@ -34,14 +37,11 @@ async def view_filter_offer(ifilter: OfferFilter, pk: int, session: AsyncSession
 
 @router_offer.get(R_OFFER + RouteSlug.full + RouteSlug.ifilter + RouteSlug.pk, response_model=OfferFullResponseSchema)
 async def view_filter_offer_full(ifilter: OfferFilter, pk: int, session: AsyncSession = Depends(get_session)):
-    params = {f'{ifilter.value}_id': pk}
-    if ifilter.value == OfferFilter.service_name.value:
-        params['is_active'] = True
     joins = [
         joinedload(OfferLinkModel.employee),
         selectinload(OfferLinkModel.service_name).joinedload(ServiceNameModel.category),
     ]
-    offers = await OfferLinkService(db_session=session).filter(params=params, options=joins)
+    offers = await OfferLinkService(db_session=session).filter(params=ifilter.get_filters(pk=pk), options=joins)
     if not offers:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'item with id {pk} not found')
     return OfferFullResponseSchema.build(data_db=offers)
