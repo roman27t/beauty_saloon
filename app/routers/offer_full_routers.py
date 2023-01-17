@@ -25,7 +25,7 @@ OFFER_SERVICE = '/offer/full/'
 from sqlalchemy import select
 
 
-class OfferFullSchema(OfferLinkInSchema):
+class _OfferFullSchema(OfferLinkInSchema):
     service: ServiceNameModel = Field(alias='service_name')
     price: Optional[condecimal(max_digits=7, decimal_places=2)] = None
 
@@ -36,14 +36,14 @@ class OfferFullSchema(OfferLinkInSchema):
 
 class OfferFullResponseSchema(BasePydanticSchema):
     employee: EmployeeModel
-    offers: List[OfferFullSchema] = []
+    offers: List[_OfferFullSchema] = []
     categories: Dict[int, CategoryInSchema] = {}
 
     @classmethod
-    def build(cls, data_db: List) -> 'OfferFullResponseSchema':
+    def build(cls, data_db: List[OfferLinkModel]) -> 'OfferFullResponseSchema':
         obj = cls(employee=data_db[0].employee)
         for i in data_db:
-            full_schema = OfferFullSchema.from_orm(i)
+            full_schema = _OfferFullSchema.from_orm(i)
             if full_schema.service.category_id not in obj.categories:
                 obj.categories[full_schema.service.category_id] = i.service_name.category
             obj.offers.append(full_schema)
