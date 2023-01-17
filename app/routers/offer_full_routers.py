@@ -39,6 +39,16 @@ class OfferFullResponseSchema(BasePydanticSchema):
     offers: List[OfferFullSchema] = []
     categories: Dict[int, CategoryInSchema] = {}
 
+    @classmethod
+    def build(cls, data_db: List) -> 'OfferFullResponseSchema':
+        obj = cls(employee=data_db[0].employee)
+        for i in data_db:
+            full_schema = OfferFullSchema.from_orm(i)
+            if full_schema.service.category_id not in obj.categories:
+                obj.categories[full_schema.service.category_id] = i.service_name.category
+            obj.offers.append(full_schema)
+        return obj
+
 
 @router_offer_full.get(OFFER_SERVICE + RouteSlug.ifilter + RouteSlug.pk, response_model=OfferFullResponseSchema)
 async def view_filter_offer_full(ifilter: OfferFilter, pk: int, session: AsyncSession = Depends(get_session)):
@@ -54,11 +64,5 @@ async def view_filter_offer_full(ifilter: OfferFilter, pk: int, session: AsyncSe
     data_db = result.scalars().all()
     if not data_db:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'item with id {pk} not found')
-    response_2 = OfferFullResponseSchema(employee=data_db[0].employee)
-    for i in data_db:
-        full_schema = OfferFullSchema.from_orm(i)
-        if full_schema.service.category_id not in response_2.categories:
-            response_2.categories[full_schema.service.category_id] = i.service_name.category
-        response_2.offers.append(full_schema)
-    return response_2
+    return OfferFullResponseSchema.build(data_db=data_db)
 
