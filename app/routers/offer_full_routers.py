@@ -1,13 +1,14 @@
 from decimal import Decimal
 from enum import Enum
-from typing import Optional
+from typing import Optional, List, Dict
 
 from fastapi import Depends, APIRouter, HTTPException, status
-from pydantic import condecimal, validator
+from pydantic import Field, condecimal, validator
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from models import OfferLinkModel, EmployeeModel, ServiceNameModel
+from models.service_model import CategoryInSchema
 from routers.consts import RouteSlug
 from models.database import get_session
 from models.offer_model import OfferLinkInSchema
@@ -25,15 +26,21 @@ from sqlalchemy import select
 
 
 class OfferFullSchema(OfferLinkInSchema):
-    service_name: ServiceNameModel
+    service: ServiceNameModel = Field(alias='service_name')
     price: Optional[condecimal(max_digits=7, decimal_places=2)] = None
 
     @validator('price', always=True)
     def set_price(cls, v, values) -> Decimal:
-        return values['service_name'].price * values['rate']
+        return Decimal(int(values['service'].price * values['rate']))
 
 
-@router_offer_full.get(OFFER_SERVICE + RouteSlug.ifilter + RouteSlug.pk, response_model=dict)
+class OfferFullResponseSchema(BasePydanticSchema):
+    employee: EmployeeModel
+    offers: List[OfferFullSchema] = []
+    categories: Dict[int, CategoryInSchema] = {}
+
+
+@router_offer_full.get(OFFER_SERVICE + RouteSlug.ifilter + RouteSlug.pk, response_model=OfferFullResponseSchema)
 async def view_filter_offer_full(ifilter: OfferFilter, pk: int, session: AsyncSession = Depends(get_session)):
     params = {f'{ifilter.value}_id': pk}
     if ifilter.value == OfferFilter.service_name.value:
@@ -47,10 +54,11 @@ async def view_filter_offer_full(ifilter: OfferFilter, pk: int, session: AsyncSe
     data_db = result.scalars().all()
     if not data_db:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'item with id {pk} not found')
-    response = {'offer': [], 'categories': {}, 'employee': EmployeeModel.from_orm(data_db[0].employee).dict()}
+    response_2 = OfferFullResponseSchema(employee=data_db[0].employee)
     for i in data_db:
         full_schema = OfferFullSchema.from_orm(i)
-        if full_schema.service_name.category_id not in response['categories']:
-            response['categories'][full_schema.service_name.category_id] = i.service_name.category
-        response['offer'].append(full_schema.dict())
-    return response
+        if full_schema.service.category_id not in response_2.categories:
+            response_2.categories[full_schema.service.category_id] = i.service_name.category
+        response_2.offers.append(full_schema)
+    return response_2
+
