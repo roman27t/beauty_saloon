@@ -30,8 +30,8 @@ class _OfferFullSchema(OfferLinkInSchema):
     price: Optional[condecimal(max_digits=7, decimal_places=2)] = None
 
     @validator('price', always=True)
-    def set_price(cls, v, values) -> Decimal:
-        return Decimal(int(values['service'].price * values['rate']))
+    def set_price(cls, v: Optional[Decimal], values: dict) -> Decimal:
+        return v or (Decimal(values['service'].price * values['rate'])).normalize()
 
 
 class OfferFullResponseSchema(BasePydanticSchema):
