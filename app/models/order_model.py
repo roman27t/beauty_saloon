@@ -15,6 +15,7 @@ if TYPE_CHECKING:
 
 MAX_PERIOD_IN_YEAR = 1
 MAX_PERIOD_EVENT_HOUR = 4
+MIN_PERIOD_EVENT_HOUR = 1
 
 
 class OrderInSchema(BaseSQLModel):
@@ -42,8 +43,11 @@ class OrderInSchema(BaseSQLModel):
     def validate_end_at(cls, v: dt.datetime, values: dict) -> dt.datetime:
         if values['start_at'] >= v:
             raise ValueError('end_at must be more start_at')
-        if (v - values['start_at']) > dt.timedelta(hours=MAX_PERIOD_EVENT_HOUR):
+        event_period = v - values['start_at']
+        if event_period > dt.timedelta(hours=MAX_PERIOD_EVENT_HOUR):
             raise ValueError(f'max period {MAX_PERIOD_EVENT_HOUR} hours')
+        if event_period < dt.timedelta(hours=MIN_PERIOD_EVENT_HOUR):
+            raise ValueError(f'min before {MIN_PERIOD_EVENT_HOUR} hour')
         return v
 
 
