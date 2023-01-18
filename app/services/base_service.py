@@ -64,6 +64,12 @@ class AbstractService(BaseService, ABC):
         data: Optional[int] = result.scalar()
         return data
 
+    async def get_by_filter(self, params: dict, options: Optional[List] = None) -> MODEL:
+        objs_db = await self.filter(params=params, options=options, limit=1)
+        if not objs_db:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='item not found')
+        return objs_db[0]
+
     async def filter(
             self, params: dict, options: Optional[List] = None,  limit: int = 0, offset: Optional[int] = None
     ) -> List[MODEL]:
