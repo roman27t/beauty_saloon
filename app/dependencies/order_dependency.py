@@ -6,6 +6,7 @@ from models import OrderModel, OfferLinkModel
 from models.choices import StatusOrder
 from models.database import get_session
 from models.order_model import OrderInSchema
+from schemas.order_schema import OrderPaymentSchema
 from services.order_service import OrderService
 from services.client_service import ClientService
 from services.service_service import OfferLinkService, ServiceNameService
@@ -30,7 +31,7 @@ class ValidPostOrderDependency:
         self._mapper = {'client_id': ClientService, 'service_id': ServiceNameService}
         self._obj_result = dict.fromkeys(list(self._mapper.keys()), None)
 
-    async def __call__(self, *args, **kwargs) -> OrderInSchema:
+    async def __call__(self) -> OrderInSchema:
         offer_db = await self.__check_get_offer_db()
         await self.__check_set_db_items()
         self.__check_price(offer_db=offer_db)
@@ -53,3 +54,18 @@ class ValidPostOrderDependency:
         if origin_price != self.schema.price:
             message = f'price error {origin_price} != {self.schema.price}'
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=message)
+
+
+@dataclass
+class ValidPaymentOrderDependency:
+    pk: int
+    schema: OrderPaymentSchema
+    session: AsyncSession = Depends(get_session)
+
+    async def __call__(self) -> OrderModel:
+        obj_db: OrderModel = await OrderService(db_session=self.session).get(pk=self.pk)
+        if obj_db.status != StatusOrder.WAIT:
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail='status order already expired')
+        if obj_db.price != self.schema.price:
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail='bad price')
+        return obj_db

@@ -27,7 +27,8 @@ def _get_order_schema(price: int, cvv: str) -> OrderPaymentSchema:
     'schema, status_code',
     [
         (_get_order_schema(price=10000, cvv='777'), status.HTTP_200_OK),  # success payment
-        (_get_order_schema(price=10000, cvv='111'), status.HTTP_409_CONFLICT),  # error payment
+        (_get_order_schema(price=9999, cvv='777'), status.HTTP_409_CONFLICT),  # error payment - bad price
+        (_get_order_schema(price=10000, cvv='111'), status.HTTP_409_CONFLICT),  # error payment - api error
         (None, status.HTTP_422_UNPROCESSABLE_ENTITY),
     ],
 )
