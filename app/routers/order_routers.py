@@ -7,11 +7,10 @@ from models import OrderModel
 from models.choices import StatusOrder
 from routers.consts import RouteSlug
 from models.database import get_session
-from models.order_model import OrderInSchema
 from schemas.order_schema import OrderPaymentSchema, OrderOptionalSchema
 from schemas.payment_schema import PaymentContentSchema
 from services.order_service import OrderService
-from dependencies.order_dependency import valid_post_schema, valid_status_wait
+from dependencies.order_dependency import ValidPostOrderDependency, valid_status_wait
 from core.payment.api_pay.interface import ApiPay
 
 router_order = APIRouter()
@@ -34,8 +33,11 @@ async def view_filter_order(ifilter: OrderFilter, pk: int, session: AsyncSession
 
 @router_order.post(R_ORDER, response_model=OrderModel)
 async def view_add_order(
-    schema: OrderInSchema = Depends(valid_post_schema), session: AsyncSession = Depends(get_session)
+        dependency: ValidPostOrderDependency = Depends(ValidPostOrderDependency),
+        session: AsyncSession = Depends(get_session
+    )
 ):
+    schema = await dependency()
     return await OrderService(db_session=session).add(schema=schema)
 
 
