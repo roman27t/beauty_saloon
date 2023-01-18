@@ -1,7 +1,9 @@
 from fastapi import Depends, APIRouter, HTTPException, status
+from pydantic import PositiveInt
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload, selectinload
 
+from core.utils.pagination import Pagination
 from models import OrderModel, ServiceNameModel
 from models.choices import StatusOrder
 from routers.choices import OrderFilter
@@ -15,6 +17,7 @@ from core.payment.api_pay.interface import ApiPay
 
 router_order = APIRouter()
 R_ORDER = '/order/'
+ORDER_PAGE_SIZE = 5
 
 
 @router_order.get(R_ORDER + RouteSlug.ifilter + RouteSlug.pk, response_model=list[OrderModel])
@@ -27,17 +30,22 @@ async def view_filter_order(ifilter: OrderFilter, pk: int, session: AsyncSession
 
 
 @router_order.get(R_ORDER + RouteSlug.full + RouteSlug.ifilter + RouteSlug.pk, response_model=OrderFullResponseSchema)
-async def view_filter_order_full(ifilter: OrderFilter, pk: int, session: AsyncSession = Depends(get_session)):
+async def view_filter_order_full(
+        ifilter: OrderFilter, pk: PositiveInt, session: AsyncSession = Depends(get_session), page: PositiveInt = 1
+):
     params = {f'{ifilter.value}_id': pk}
     joins = [
         joinedload(getattr(OrderModel, ifilter.value)),
         selectinload(getattr(OrderModel, ifilter.invert())),
         selectinload(OrderModel.service).joinedload(ServiceNameModel.category),
     ]
-    orders = await OrderService(db_session=session).filter(params=params, options=joins)
+    pagination = Pagination(page=page, page_size=ORDER_PAGE_SIZE)
+    max_rows = await OrderService(db_session=session).count(params=params)
+    pagination.check_set_max_page(page=page, max_rows=max_rows)
+    orders = await OrderService(db_session=session).filter(params=params, options=joins, **pagination.to_dict())
     if not orders:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'item with id {pk} not found')
-    return OrderFullResponseSchema.build(orders=orders, source=ifilter)
+    return OrderFullResponseSchema.build(orders=orders, source=ifilter, pagination=pagination)
 
 
 @router_order.post(R_ORDER, response_model=OrderModel)

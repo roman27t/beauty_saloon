@@ -1,12 +1,13 @@
-from typing import Union, List, Dict
+from typing import Union, List, Dict, Optional
 
 from pydantic import condecimal
 
+from core.utils.pagination import Pagination
 from models import EmployeeModel, ClientModel, OrderModel, ServiceNameModel
 from models.choices import StatusOrder
 from models.service_model import CategoryInSchema
 from routers.choices import OrderFilter
-from schemas.base_schema import BasePydanticSchema
+from schemas.base_schema import BasePydanticSchema, PaginationSchema
 from schemas.payment_schema import CardSchema, PaymentType
 
 
@@ -26,17 +27,19 @@ class OrderFullResponseSchema(BasePydanticSchema):
     users: Dict[int, Union['EmployeeModel', 'ClientModel']] = {}
     services: Dict[int, ServiceNameModel] = {}
     categories: Dict[int, CategoryInSchema] = {}
+    pagination: Optional[PaginationSchema]
 
     @classmethod
-    def build(cls, orders: List['OrderModel'], source: OrderFilter) -> 'OrderFullResponseSchema':
+    def build(cls, orders: List['OrderModel'], source: OrderFilter, pagination=Pagination) -> 'OrderFullResponseSchema':
         obj = cls(user=getattr(orders[0], source.value))
         for order in orders:
             user = getattr(order, source.invert())
             if user.id not in obj.users:
-                obj.users[order.id] = user
+                obj.users[user.id] = user
             if order.service.id not in obj.services:
-                obj.services[order.id] = order.service
+                obj.services[order.service.id] = order.service
                 if order.service.category_id not in obj.categories:
                     obj.categories[order.service.category_id] = order.service.category
             obj.orders.append(order)
+        obj.pagination = pagination.schema
         return obj

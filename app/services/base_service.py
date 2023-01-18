@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, List, Type, Union, TypeVar, Optional
 
 from fastapi import HTTPException, status
 from sqlalchemy import select
+from sqlmodel import func
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from models.db_helper import db_commit
@@ -69,6 +70,11 @@ class AbstractService(BaseService, ABC):
         if not objs_db:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='item not found')
         return objs_db[0]
+
+    async def count(self, params: dict) -> int:
+        query = select(func.count(self._table.id)).where(*self.__parse_params(params=params))
+        result = await self.db_session.execute(query)
+        return result.scalar()
 
     async def filter(
             self, params: dict, options: Optional[List] = None,  limit: int = 0, offset: Optional[int] = None
