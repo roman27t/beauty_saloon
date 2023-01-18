@@ -16,9 +16,13 @@ async def valid_patch_id(pk: int, session: AsyncSession = Depends(get_session)) 
     return await OrderService(db_session=session).get(pk=pk)
 
 
-async def valid_status_wait(obj_db: OrderModel = Depends(valid_patch_id)) -> OrderModel:
+def _check_status_wait_core(obj_db: OrderModel):
     if obj_db.status != StatusOrder.WAIT:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail='status order already expired')
+
+
+async def valid_status_wait(obj_db: OrderModel = Depends(valid_patch_id)) -> OrderModel:
+    _check_status_wait_core(obj_db=obj_db)
     return obj_db
 
 
@@ -64,8 +68,7 @@ class ValidPaymentOrderDependency:
 
     async def __call__(self) -> OrderModel:
         obj_db: OrderModel = await OrderService(db_session=self.session).get(pk=self.pk)
-        if obj_db.status != StatusOrder.WAIT:
-            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail='status order already expired')
+        _check_status_wait_core(obj_db=obj_db)
         if obj_db.price != self.schema.price:
             raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail='bad price')
         return obj_db
