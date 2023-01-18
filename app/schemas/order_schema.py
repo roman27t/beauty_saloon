@@ -1,13 +1,13 @@
-from typing import Union, List, Dict, Optional
+from typing import Dict, List, Union, Optional
 
 from pydantic import condecimal
 
-from core.utils.pagination import Pagination
-from models import EmployeeModel, ClientModel, OrderModel, ServiceNameModel
+from models import OrderModel, ClientModel, EmployeeModel, ServiceNameModel
 from models.choices import StatusOrder
-from models.service_model import CategoryInSchema
 from routers.choices import OrderFilter
-from schemas.base_schema import BasePydanticSchema, PaginationSchema
+from schemas.base_schema import PaginationSchema, BasePydanticSchema
+from models.service_model import CategoryInSchema
+from core.utils.pagination import Pagination
 from schemas.payment_schema import CardSchema, PaymentType
 
 
@@ -22,7 +22,7 @@ class OrderPaymentSchema(BasePydanticSchema):
 
 
 class OrderFullResponseSchema(BasePydanticSchema):
-    user: Union['EmployeeModel','ClientModel']
+    user: Union['EmployeeModel', 'ClientModel']
     orders: List[OrderModel] = []
     users: Dict[int, Union['EmployeeModel', 'ClientModel']] = {}
     services: Dict[int, ServiceNameModel] = {}

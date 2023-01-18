@@ -13,8 +13,8 @@ from models import OrderModel
 from tests.utils import url_reverse
 from models.choices import StatusOrder
 from tests.conftest import MOCK_FREEZE_TIME, engine
-from models.order_model import OrderInSchema
 from routers.choices import OrderFilter
+from models.order_model import OrderInSchema
 from services.stub_init_service import T_BOOK_DATE
 
 

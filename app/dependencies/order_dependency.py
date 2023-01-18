@@ -1,6 +1,7 @@
+from dataclasses import dataclass
+
 from fastapi import Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
-from dataclasses import dataclass
 
 from models import OrderModel, OfferLinkModel
 from models.choices import StatusOrder
