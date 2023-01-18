@@ -25,10 +25,7 @@ async def valid_post_schema(schema: OrderInSchema, session: AsyncSession = Depen
     for field, class_service in mapper.items():
         pk = getattr(schema, field)
         service_helper = class_service(db_session=session)
-        obj_result[field] = await service_helper.get(pk=pk)
-        if not obj_result[field]:
-            message = f'item with id {service_helper.name}.{pk} not found'
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=message)
+        obj_result[field] = await service_helper.get(pk=pk, e_message=f'item {service_helper.name}.{pk} not found')
     origin_price = offer_db.rate * obj_result['service_id'].price
     if origin_price != schema.price:
         message = f'price error {origin_price} != {schema.price}'
@@ -37,10 +34,7 @@ async def valid_post_schema(schema: OrderInSchema, session: AsyncSession = Depen
 
 
 async def valid_patch_id(pk: int, session: AsyncSession = Depends(get_session)) -> OrderModel:
-    obj_db = await OrderService(db_session=session).get(pk=pk)
-    if not obj_db:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'item with id {pk} not found')
-    return obj_db
+    return await OrderService(db_session=session).get(pk=pk)
 
 
 async def valid_status_wait(obj_db: OrderModel = Depends(valid_patch_id)) -> OrderModel:

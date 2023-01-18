@@ -8,10 +8,7 @@ from services.employee_service import EmployeeService
 
 
 async def valid_patch_id(pk: int, session: AsyncSession = Depends(get_session)) -> EmployeeModel:
-    user = await EmployeeService(db_session=session).get(pk=pk)
-    if not user:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'item with id {pk} not found')
-    return user
+    return await EmployeeService(db_session=session).get(pk=pk)
 
 
 async def valid_patch_schema(schema: EmployeeInOptionalSchema) -> EmployeeInOptionalSchema:

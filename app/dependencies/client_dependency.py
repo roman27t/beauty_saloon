@@ -7,12 +7,8 @@ from schemas.user_schemas import EmployeeInOptionalSchema
 from services.client_service import ClientService
 
 
-# todo common ?
 async def valid_patch_id(pk: int, session: AsyncSession = Depends(get_session)) -> ClientModel:
-    user = await ClientService(db_session=session).get(pk=pk)
-    if not user:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'item with id {pk} not found')
-    return user
+    return await ClientService(db_session=session).get(pk=pk)
 
 
 async def valid_patch_schema(schema: EmployeeInOptionalSchema) -> EmployeeInOptionalSchema:

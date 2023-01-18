@@ -8,10 +8,7 @@ from services.service_service import CategoryService
 
 
 async def valid_patch_id(pk: int, session: AsyncSession = Depends(get_session)) -> CategoryModel:
-    category = await CategoryService(db_session=session).get(pk=pk)
-    if not category:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'item with id {pk} not found')
-    return category
+    return await CategoryService(db_session=session).get(pk=pk)
 
 
 async def valid_patch_schema(schema: CategoryOptionalSchema) -> CategoryOptionalSchema:

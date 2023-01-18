@@ -1,4 +1,4 @@
-from fastapi import Depends, APIRouter, HTTPException, status
+from fastapi import Depends, APIRouter
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from models import CategoryModel
@@ -14,10 +14,7 @@ ROUTE_CATEGORY = '/category/'
 
 @router_category.get(ROUTE_CATEGORY + RouteSlug.pk, response_model=CategoryModel)
 async def view_get_category_by_id(pk: int, session: AsyncSession = Depends(get_session)):
-    category = await CategoryService(db_session=session).get(pk=pk)
-    if not category:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'item with id {pk} not found')
-    return category
+    return await CategoryService(db_session=session).get(pk=pk)
 
 
 @router_category.get(ROUTE_CATEGORY, response_model=list[CategoryModel])

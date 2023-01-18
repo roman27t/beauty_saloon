@@ -1,4 +1,4 @@
-from fastapi import Depends, APIRouter, HTTPException, status
+from fastapi import Depends, APIRouter
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from models import ClientModel
@@ -14,10 +14,7 @@ ROUTE_CLIENT = '/client/'
 
 @router_client.get(ROUTE_CLIENT + RouteSlug.pk, response_model=ClientModel)
 async def view_get_client_by_id(pk: int, session: AsyncSession = Depends(get_session)):
-    user = await ClientService(db_session=session).get(pk=pk)
-    if not user:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'item with id {pk} not found')
-    return user
+    return await ClientService(db_session=session).get(pk=pk)
 
 
 @router_client.get(ROUTE_CLIENT, response_model=list[ClientModel])
@@ -27,8 +24,7 @@ async def view_get_client_all(session: AsyncSession = Depends(get_session)):
 
 @router_client.post(ROUTE_CLIENT, response_model=ClientModel)
 async def view_add_client(client: ClientInSchema, session: AsyncSession = Depends(get_session)):
-    user_schema = await ClientService(db_session=session).add(schema=client)
-    return user_schema
+    return await ClientService(db_session=session).add(schema=client)
 
 
 @router_client.patch(ROUTE_CLIENT + RouteSlug.pk, response_model=ClientModel)

@@ -8,10 +8,7 @@ from schemas.service_name_schema import ServiceNameOptionalSchema
 
 
 async def valid_patch_id(pk: int, session: AsyncSession = Depends(get_session)) -> CategoryModel:
-    service = await ServiceNameService(db_session=session).get(pk=pk)
-    if not service:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'item with id {pk} not found')
-    return service
+    return await ServiceNameService(db_session=session).get(pk=pk)
 
 
 async def valid_patch_schema(schema: ServiceNameOptionalSchema) -> ServiceNameOptionalSchema:
