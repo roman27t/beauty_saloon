@@ -1,13 +1,13 @@
-from enum import Enum
-
 from fastapi import Depends, APIRouter, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import joinedload, selectinload
 
-from models import OrderModel
+from models import OrderModel, ServiceNameModel
 from models.choices import StatusOrder
+from routers.choices import OrderFilter
 from routers.consts import RouteSlug
 from models.database import get_session
-from schemas.order_schema import OrderPaymentSchema, OrderOptionalSchema
+from schemas.order_schema import OrderPaymentSchema, OrderOptionalSchema, OrderFullResponseSchema
 from schemas.payment_schema import PaymentContentSchema
 from services.order_service import OrderService
 from dependencies.order_dependency import ValidPostOrderDependency, valid_status_wait, ValidPaymentOrderDependency
@@ -17,11 +17,6 @@ router_order = APIRouter()
 R_ORDER = '/order/'
 
 
-class OrderFilter(str, Enum):
-    employee = 'employee'
-    client = 'client'
-
-
 @router_order.get(R_ORDER + RouteSlug.ifilter + RouteSlug.pk, response_model=list[OrderModel])
 async def view_filter_order(ifilter: OrderFilter, pk: int, session: AsyncSession = Depends(get_session)):
     params = {f'{ifilter.value}_id': pk}
@@ -29,6 +24,20 @@ async def view_filter_order(ifilter: OrderFilter, pk: int, session: AsyncSession
     if not orders:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'item with id {pk} not found')
     return orders
+
+
+@router_order.get(R_ORDER + RouteSlug.full + RouteSlug.ifilter + RouteSlug.pk, response_model=OrderFullResponseSchema)
+async def view_filter_order_full(ifilter: OrderFilter, pk: int, session: AsyncSession = Depends(get_session)):
+    params = {f'{ifilter.value}_id': pk}
+    joins = [
+        joinedload(getattr(OrderModel, ifilter.value)),
+        selectinload(getattr(OrderModel, ifilter.invert())),
+        selectinload(OrderModel.service).joinedload(ServiceNameModel.category),
+    ]
+    orders = await OrderService(db_session=session).filter(params=params, options=joins)
+    if not orders:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'item with id {pk} not found')
+    return OrderFullResponseSchema.build(orders=orders, source=ifilter)
 
 
 @router_order.post(R_ORDER, response_model=OrderModel)
