@@ -55,7 +55,7 @@ class ValidPostOrderDependency:
             self._obj_result[field] = await service_helper.get(pk=pk, e_message=f'{service_helper.name}.{pk} not found')
 
     def __check_price(self, offer_db: OfferLinkModel):
-        origin_price = offer_db.rate * self._obj_result['service_id'].price
+        origin_price = self._obj_result['service_id'].price * offer_db.rate
         if origin_price != self.schema.price:
             message = f'price error {origin_price} != {self.schema.price}'
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=message)
