@@ -1,3 +1,5 @@
+from typing import List
+
 from fastapi import Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -14,7 +16,7 @@ async def valid_post_schema(schema: OrderInSchema, session: AsyncSession = Depen
     if not schema.dict(exclude_unset=True):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='empty data')
     params = {'service_name_id': schema.service_id, 'employee_id': schema.employee_id}
-    offer_db = await OfferLinkService(db_session=session).filter(params)
+    offer_db: List[OfferLinkModel] = await OfferLinkService(db_session=session).filter(params)
     if not offer_db:
         message = f'item with offer not found'
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=message)
