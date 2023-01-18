@@ -24,10 +24,7 @@ async def view_get_service_name_all(session: AsyncSession = Depends(get_session)
 
 @router_service.get(ROUTE_SERVICE + RouteSlug.pk, response_model=ServiceNameModel)
 async def view_get_service_name_by_id(pk: int, session: AsyncSession = Depends(get_session)):
-    category = await ServiceNameService(db_session=session).get(pk=pk)
-    if not category:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'item with id {pk} not found')
-    return category
+    return await ServiceNameService(db_session=session).get(pk=pk)
 
 
 @router_service.get(ROUTE_SERVICE_CATEGORY + RouteSlug.pk, response_model=list[ServiceNameModel])

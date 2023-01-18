@@ -1,4 +1,4 @@
-from fastapi import Depends, APIRouter, HTTPException, status
+from fastapi import Depends, APIRouter
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from models import EmployeeModel
@@ -14,10 +14,7 @@ ROUTE_EMPLOYEE = '/employee/'
 
 @router_employee.get(ROUTE_EMPLOYEE + RouteSlug.pk, response_model=EmployeeModel)
 async def view_get_employee_by_id(pk: int, session: AsyncSession = Depends(get_session)):
-    user = await EmployeeService(db_session=session).get(pk=pk)
-    if not user:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'item with id {pk} not found')
-    return user
+    return await EmployeeService(db_session=session).get(pk=pk)
 
 
 @router_employee.get(ROUTE_EMPLOYEE, response_model=list[EmployeeModel])
@@ -27,8 +24,7 @@ async def view_get_employee_all(session: AsyncSession = Depends(get_session)):
 
 @router_employee.post(ROUTE_EMPLOYEE)
 async def view_add_employee(employee: EmployeeInSchema, session: AsyncSession = Depends(get_session)):
-    employee_schema = await EmployeeService(db_session=session).add(schema=employee)
-    return employee_schema
+    return await EmployeeService(db_session=session).add(schema=employee)
 
 
 @router_employee.patch(ROUTE_EMPLOYEE + RouteSlug.pk, response_model=EmployeeModel)

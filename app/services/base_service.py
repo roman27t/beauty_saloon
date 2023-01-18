@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, List, Type, Union, TypeVar, Optional
 
+from fastapi import HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -51,20 +52,34 @@ class AbstractService(BaseService, ABC):
         result = await self.db_session.execute(select(self._table).order_by(getattr(self._table, 'id')))
         return result.scalars().all()
 
-    async def get(self, pk: int) -> Optional[MODEL]:
-        result = await self.db_session.get(self._table, pk)
-        return result
+    async def get(self, pk: int, e_message: str = '', raise_ex: bool = True) -> Optional[MODEL]:
+        obj_db = await self.db_session.get(self._table, pk)
+        if raise_ex and not obj_db:
+            e_message = e_message or f'item with id {pk} not found'
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=e_message)
+        return obj_db
 
     async def exists(self, conditions: Union['BinaryExpression', 'BooleanClauseList']) -> Optional[int]:
         result = await self.db_session.execute(select(self._table.id).where(conditions).limit(1))
         data: Optional[int] = result.scalar()
         return data
 
-    async def filter(self, params: dict, options: Optional[List] = None) -> List[MODEL]:
+    async def get_by_filter(self, params: dict, options: Optional[List] = None) -> MODEL:
+        objs_db = await self.filter(params=params, options=options, limit=1)
+        if not objs_db:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='item not found')
+        return objs_db[0]
+
+    async def filter(
+            self, params: dict, options: Optional[List] = None,  limit: int = 0, offset: Optional[int] = None
+    ) -> List[MODEL]:
         options = options or []
-        result = await self.db_session.execute(
-            select(self._table).where(*self.__parse_params(params=params)).options(*options)
-        )
+        query = select(self._table).where(*self.__parse_params(params=params)).options(*options)
+        if limit:
+            query = query.limit(limit)
+        if offset:
+            query = query.offset(offset)
+        result = await self.db_session.execute(query)
         return result.scalars().all()
 
     def __parse_params(self, params: dict) -> list:
