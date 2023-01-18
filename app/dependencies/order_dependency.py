@@ -1,5 +1,6 @@
 from fastapi import Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
+from dataclasses import dataclass
 
 from models import OrderModel, OfferLinkModel
 from models.choices import StatusOrder
@@ -20,32 +21,34 @@ async def valid_status_wait(obj_db: OrderModel = Depends(valid_patch_id)) -> Ord
     return obj_db
 
 
+@dataclass
 class ValidPostOrderDependency:
-    def __init__(self, schema: OrderInSchema, session: AsyncSession = Depends(get_session)):
-        self.schema = schema
-        self.session = session
+    schema: OrderInSchema
+    session: AsyncSession = Depends(get_session)
+
+    def __post_init__(self):
         self._mapper = {'client_id': ClientService, 'service_id': ServiceNameService}
         self._obj_result = dict.fromkeys(list(self._mapper.keys()), None)
 
     async def __call__(self, *args, **kwargs) -> OrderInSchema:
-        offer_db = await self._check_get_offer_db()
-        await self._check_set_db_items()
-        self._check_price(offer_db=offer_db)
+        offer_db = await self.__check_get_offer_db()
+        await self.__check_set_db_items()
+        self.__check_price(offer_db=offer_db)
         return self.schema
 
-    async def _check_get_offer_db(self) -> OfferLinkModel:
+    async def __check_get_offer_db(self) -> OfferLinkModel:
         if not self.schema.dict(exclude_unset=True):
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='empty data')
         params = {'service_name_id': self.schema.service_id, 'employee_id': self.schema.employee_id}
         return await OfferLinkService(db_session=self.session).get_by_filter(params=params)
 
-    async def _check_set_db_items(self):
+    async def __check_set_db_items(self):
         for field, class_service in self._mapper.items():
             pk = getattr(self.schema, field)
             service_helper = class_service(db_session=self.session)
             self._obj_result[field] = await service_helper.get(pk=pk, e_message=f'{service_helper.name}.{pk} not found')
 
-    def _check_price(self, offer_db: OfferLinkModel):
+    def __check_price(self, offer_db: OfferLinkModel):
         origin_price = offer_db.rate * self._obj_result['service_id'].price
         if origin_price != self.schema.price:
             message = f'price error {origin_price} != {self.schema.price}'
