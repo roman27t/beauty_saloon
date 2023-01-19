@@ -1,18 +1,26 @@
 from fastapi import Depends, APIRouter, HTTPException, status
 from pydantic import PositiveInt
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload, selectinload
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.utils.pagination import Pagination
 from models import OrderModel, ServiceNameModel
 from models.choices import StatusOrder
-from routers.choices import OrderFilter
 from routers.consts import RouteSlug
 from models.database import get_session
-from schemas.order_schema import OrderPaymentSchema, OrderOptionalSchema, OrderFullResponseSchema
+from routers.choices import OrderFilter
+from schemas.order_schema import (
+    OrderPaymentSchema,
+    OrderOptionalSchema,
+    OrderFullResponseSchema,
+)
+from core.utils.pagination import Pagination
 from schemas.payment_schema import PaymentContentSchema
 from services.order_service import OrderService
-from dependencies.order_dependency import ValidPostOrderDependency, valid_status_wait, ValidPaymentOrderDependency
+from dependencies.order_dependency import (
+    ValidPostOrderDependency,
+    ValidPaymentOrderDependency,
+    valid_status_wait,
+)
 from core.payment.api_pay.interface import ApiPay
 
 router_order = APIRouter()
@@ -31,7 +39,7 @@ async def view_filter_order(ifilter: OrderFilter, pk: int, session: AsyncSession
 
 @router_order.get(R_ORDER + RouteSlug.full + RouteSlug.ifilter + RouteSlug.pk, response_model=OrderFullResponseSchema)
 async def view_filter_order_full(
-        ifilter: OrderFilter, pk: PositiveInt, session: AsyncSession = Depends(get_session), page: PositiveInt = 1
+    ifilter: OrderFilter, pk: PositiveInt, session: AsyncSession = Depends(get_session), page: PositiveInt = 1
 ):
     params = {f'{ifilter.value}_id': pk}
     joins = [
@@ -50,8 +58,8 @@ async def view_filter_order_full(
 
 @router_order.post(R_ORDER, response_model=OrderModel)
 async def view_add_order(
-        dependency: ValidPostOrderDependency = Depends(ValidPostOrderDependency),
-        session: AsyncSession = Depends(get_session)
+    dependency: ValidPostOrderDependency = Depends(ValidPostOrderDependency),
+    session: AsyncSession = Depends(get_session),
 ):
     schema = await dependency()
     return await OrderService(db_session=session).add(schema=schema)

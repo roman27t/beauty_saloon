@@ -3,10 +3,10 @@ from httpx import AsyncClient
 from fastapi import status
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from routers.order_routers import ORDER_PAGE_SIZE
-from schemas.order_schema import OrderFullResponseSchema
 from tests.utils import url_reverse
 from routers.choices import OrderFilter
+from schemas.order_schema import OrderFullResponseSchema
+from routers.order_routers import ORDER_PAGE_SIZE
 
 
 @pytest.mark.parametrize(
@@ -33,7 +33,6 @@ async def test_filter_order(
         assert response_obj.pagination.max_rows == len_content
         assert response_obj.pagination.max_page == 3
         assert response_obj.pagination.page == 1
-
 
 
 @pytest.mark.parametrize(

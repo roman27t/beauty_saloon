@@ -13,8 +13,8 @@ from models import OrderModel
 from tests.utils import url_reverse
 from models.choices import StatusOrder
 from tests.conftest import MOCK_FREEZE_TIME, engine
-from models.order_model import OrderInSchema
 from routers.choices import OrderFilter
+from models.order_model import OrderInSchema
 from services.stub_init_service import T_BOOK_DATE
 
 
@@ -63,7 +63,7 @@ def _get_order_schema(
 @pytest.mark.parametrize(
     'schema, status_code',
     [
-        (_get_order_schema(employee_id=1, service_id=1, price=10000), status.HTTP_200_OK),
+        (_get_order_schema(employee_id=1, service_id=1, price=10000 * 2), status.HTTP_200_OK),
         (None, status.HTTP_422_UNPROCESSABLE_ENTITY),
     ],
 )
@@ -92,7 +92,7 @@ async def test_post_order(
 @pytest.mark.asyncio
 async def test_post_order_duplicate(async_client: AsyncClient, async_session: AsyncSession):
     for i in range(1, 3):
-        schema = _get_order_schema(employee_id=3, service_id=1, price=12000)
+        schema = _get_order_schema(employee_id=3, service_id=1, price=12000 * 2)
         result = await async_session.execute(
             select(OrderModel).where(
                 OrderModel.employee_id == schema.employee_id,
@@ -110,28 +110,29 @@ async def test_post_order_duplicate(async_client: AsyncClient, async_session: As
 
 @freeze_time(MOCK_FREEZE_TIME)
 @pytest.mark.parametrize(
-    'd_date, d_end, t_date, t_end, status_code',
+    'd_date, d_end, t_date, t_end, parts, status_code',
     [
-        (T_BOOK_DATE, T_BOOK_DATE, '10:00', '11:00', status.HTTP_409_CONFLICT),
-        (T_BOOK_DATE, T_BOOK_DATE, '11:00', '12:00', status.HTTP_409_CONFLICT),
-        (T_BOOK_DATE, T_BOOK_DATE, '11:00', '12:30', status.HTTP_409_CONFLICT),
-        (T_BOOK_DATE, T_BOOK_DATE, '11:00', '15:00', status.HTTP_409_CONFLICT),
-        (T_BOOK_DATE, T_BOOK_DATE, '13:00', '15:00', status.HTTP_409_CONFLICT),
-        (T_BOOK_DATE, T_BOOK_DATE, '13:30', '15:00', status.HTTP_409_CONFLICT),
-        (T_BOOK_DATE, T_BOOK_DATE, '12:00', '13:00', status.HTTP_200_OK),
-        (T_BOOK_DATE, T_BOOK_DATE, '12:00', '14:00', status.HTTP_200_OK),
-        (T_BOOK_DATE, T_BOOK_DATE, '12:00', '16:00', status.HTTP_409_CONFLICT),
-        (T_BOOK_DATE, T_BOOK_DATE, '13:00', '14:00', status.HTTP_200_OK),
-        (T_BOOK_DATE, T_BOOK_DATE, '13:30', '14:30', status.HTTP_409_CONFLICT),
-        (T_BOOK_DATE, T_BOOK_DATE, '14:00', '15:00', status.HTTP_409_CONFLICT),
+        (T_BOOK_DATE, T_BOOK_DATE, '10:00', '11:00', 2, status.HTTP_409_CONFLICT),
+        (T_BOOK_DATE, T_BOOK_DATE, '11:00', '12:00', 2, status.HTTP_409_CONFLICT),
+        (T_BOOK_DATE, T_BOOK_DATE, '11:00', '12:30', 3, status.HTTP_409_CONFLICT),
+        (T_BOOK_DATE, T_BOOK_DATE, '11:00', '15:00', 8, status.HTTP_409_CONFLICT),
+        (T_BOOK_DATE, T_BOOK_DATE, '13:00', '15:00', 4, status.HTTP_409_CONFLICT),
+        (T_BOOK_DATE, T_BOOK_DATE, '13:30', '15:00', 3, status.HTTP_409_CONFLICT),
+        (T_BOOK_DATE, T_BOOK_DATE, '12:00', '13:00', 2, status.HTTP_200_OK),
+        (T_BOOK_DATE, T_BOOK_DATE, '12:00', '14:00', 4, status.HTTP_200_OK),
+        (T_BOOK_DATE, T_BOOK_DATE, '12:00', '16:00', 8, status.HTTP_409_CONFLICT),
+        (T_BOOK_DATE, T_BOOK_DATE, '13:00', '14:00', 2, status.HTTP_200_OK),
+        (T_BOOK_DATE, T_BOOK_DATE, '13:30', '14:30', 2, status.HTTP_409_CONFLICT),
+        (T_BOOK_DATE, T_BOOK_DATE, '14:00', '15:00', 2, status.HTTP_409_CONFLICT),
     ],
 )
 @pytest.mark.asyncio
 async def test_post_order_validate(
-    async_client: AsyncClient, async_session: AsyncSession, d_date, d_end, t_date, t_end, status_code: int
+    async_client: AsyncClient, async_session: AsyncSession, d_date, d_end, parts: int, t_date, t_end, status_code: int
 ):
+    price = 12000 * parts
     schema = _get_order_schema(
-        employee_id=3, service_id=1, date_start=d_date, date_end=d_end, time_start=t_date, time_end=t_end, price=12000
+        employee_id=3, service_id=1, date_start=d_date, date_end=d_end, time_start=t_date, time_end=t_end, price=price
     )
     response = await async_client.post(url_reverse('view_add_order'), content=schema.json())
     assert response.status_code == status_code

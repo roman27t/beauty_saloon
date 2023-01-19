@@ -1,6 +1,9 @@
+import datetime as dt
+from decimal import Decimal
+from dataclasses import dataclass
+
 from fastapi import Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
-from dataclasses import dataclass
 
 from models import OrderModel, OfferLinkModel
 from models.choices import StatusOrder
@@ -54,10 +57,21 @@ class ValidPostOrderDependency:
             self._obj_result[field] = await service_helper.get(pk=pk, e_message=f'{service_helper.name}.{pk} not found')
 
     def __check_price(self, offer_db: OfferLinkModel):
-        origin_price = offer_db.rate * self._obj_result['service_id'].price
+        origin_price = count_price(
+            price=self._obj_result['service_id'].price,
+            rate=offer_db.rate,
+            start_at=self.schema.start_at,
+            end_at=self.schema.end_at,
+        )
         if origin_price != self.schema.price:
             message = f'price error {origin_price} != {self.schema.price}'
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=message)
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=message)
+
+
+def count_price(price: Decimal, rate: Decimal, start_at: dt.datetime, end_at: dt.datetime) -> Decimal:
+    _price = price * rate
+    _parts = Decimal((end_at - start_at).total_seconds() / 60 / 30)
+    return (_price * _parts).normalize()
 
 
 @dataclass

@@ -2,8 +2,8 @@ from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, List, Type, Union, TypeVar, Optional
 
 from fastapi import HTTPException, status
-from sqlalchemy import select
 from sqlmodel import func
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from models.db_helper import db_commit
@@ -77,7 +77,7 @@ class AbstractService(BaseService, ABC):
         return result.scalar()
 
     async def filter(
-            self, params: dict, options: Optional[List] = None,  limit: int = 0, offset: Optional[int] = None
+        self, params: dict, options: Optional[List] = None, limit: int = 0, offset: Optional[int] = None
     ) -> List[MODEL]:
         options = options or []
         query = select(self._table).where(*self.__parse_params(params=params)).options(*options)

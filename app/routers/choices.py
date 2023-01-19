@@ -1,6 +1,6 @@
 from enum import Enum
 
-from models import EmployeeModel, ClientModel
+from models import ClientModel, EmployeeModel
 
 
 class OrderFilter(str, Enum):
@@ -12,5 +12,3 @@ class OrderFilter(str, Enum):
 
     def invert(self) -> str:
         return self.client if self.value == self.employee else self.employee
-
-

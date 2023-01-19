@@ -13,7 +13,9 @@ from models.base_models import BaseSQLModel, DateCreatedChangedBase
 if TYPE_CHECKING:
     from models import ClientModel, EmployeeModel, ServiceNameModel
 
-MAX_PERIOD = 1
+MAX_PERIOD_IN_YEAR = 1
+MAX_PERIOD_EVENT_HOUR = 4
+MIN_PERIOD_EVENT_HOUR = 1
 
 
 class OrderInSchema(BaseSQLModel):
@@ -33,14 +35,19 @@ class OrderInSchema(BaseSQLModel):
         date_today = dt.datetime.now()
         if date_today > v:
             raise ValueError('data in past')
-        if v > date_today + relativedelta(years=MAX_PERIOD):
-            raise ValueError(f'max period {MAX_PERIOD} years - {v}')
+        if v > date_today + relativedelta(years=MAX_PERIOD_IN_YEAR):
+            raise ValueError(f'max period in {MAX_PERIOD_IN_YEAR} years - {v}')
         return v
 
     @validator('end_at')
-    def validate_end_at(cls, v: str, values) -> str:
+    def validate_end_at(cls, v: dt.datetime, values: dict) -> dt.datetime:
         if values['start_at'] >= v:
             raise ValueError('end_at must be more start_at')
+        event_period = v - values['start_at']
+        if event_period > dt.timedelta(hours=MAX_PERIOD_EVENT_HOUR):
+            raise ValueError(f'max period {MAX_PERIOD_EVENT_HOUR} hours')
+        if event_period < dt.timedelta(hours=MIN_PERIOD_EVENT_HOUR):
+            raise ValueError(f'min before {MIN_PERIOD_EVENT_HOUR} hour')
         return v
 
 
