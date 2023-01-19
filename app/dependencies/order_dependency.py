@@ -1,6 +1,6 @@
 import datetime as dt
-from dataclasses import dataclass
 from decimal import Decimal
+from dataclasses import dataclass
 
 from fastapi import Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
