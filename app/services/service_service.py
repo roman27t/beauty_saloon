@@ -24,5 +24,5 @@ class OfferLinkService(AbstractService):
 
 
 ServiceRegistry.register(model=CategoryModel, service_class=CategoryService)
-ServiceRegistry.register(model=CategoryModel, service_class=CategoryService)
+ServiceRegistry.register(model=ServiceNameModel, service_class=ServiceNameService)
 ServiceRegistry.register(model=OfferLinkModel, service_class=OfferLinkService)
