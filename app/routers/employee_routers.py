@@ -6,7 +6,10 @@ from routers.consts import RouteSlug
 from models.database import get_session
 from schemas.user_schemas import EmployeeInSchema, EmployeeInOptionalSchema
 from services.employee_service import EmployeeService
-from dependencies.employee_dependency import valid_patch_id, valid_patch_schema
+from dependencies.base_dependency import (
+    ValidGetByIdDependency,
+    valid_empty_schema,
+)
 
 router_employee = APIRouter()
 ROUTE_EMPLOYEE = '/employee/'
@@ -29,8 +32,8 @@ async def view_add_employee(employee: EmployeeInSchema, session: AsyncSession = 
 
 @router_employee.patch(ROUTE_EMPLOYEE + RouteSlug.pk, response_model=EmployeeModel)
 async def view_patch_employee(
-    schema: EmployeeInOptionalSchema = Depends(valid_patch_schema),
-    employee_db: EmployeeModel = Depends(valid_patch_id),
+    schema: EmployeeInOptionalSchema = Depends(valid_empty_schema(class_schema=EmployeeInOptionalSchema)),
+    employee_db: EmployeeModel = Depends(ValidGetByIdDependency(class_service=EmployeeService)),
     session: AsyncSession = Depends(get_session),
 ):
     await EmployeeService(db_session=session).update(obj_db=employee_db, schema=schema)

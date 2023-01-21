@@ -27,7 +27,7 @@ class Pagination:
     @property
     def max_rows(self):
         if not self._max_rows:
-            raise Exception('max_page does not init')
+            raise Exception('max_rows does not init')
         return self._max_rows
 
     def check_set_max_page(self, page: int, max_rows: int):

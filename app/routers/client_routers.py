@@ -6,7 +6,10 @@ from routers.consts import RouteSlug
 from models.database import get_session
 from schemas.user_schemas import ClientInSchema, ClientInOptionalSchema
 from services.client_service import ClientService
-from dependencies.client_dependency import valid_patch_id, valid_patch_schema
+from dependencies.base_dependency import (
+    ValidGetByIdDependency,
+    valid_empty_schema,
+)
 
 router_client = APIRouter()
 ROUTE_CLIENT = '/client/'
@@ -29,8 +32,8 @@ async def view_add_client(client: ClientInSchema, session: AsyncSession = Depend
 
 @router_client.patch(ROUTE_CLIENT + RouteSlug.pk, response_model=ClientModel)
 async def view_patch_client(
-    schema: ClientInOptionalSchema = Depends(valid_patch_schema),
-    employee_db: ClientModel = Depends(valid_patch_id),
+    schema: ClientInOptionalSchema = Depends(valid_empty_schema(class_schema=ClientInOptionalSchema)),
+    employee_db: ClientModel = Depends(ValidGetByIdDependency(class_service=ClientService)),
     session: AsyncSession = Depends(get_session),
 ):
     await ClientService(db_session=session).update(obj_db=employee_db, schema=schema)

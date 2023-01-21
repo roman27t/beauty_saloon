@@ -7,9 +7,9 @@ from models.database import get_session
 from routers.category_routers import ROUTE_CATEGORY
 from services.service_service import ServiceNameService
 from schemas.service_name_schema import ServiceNameOptionalSchema
-from dependencies.service_name_dependency import (
-    valid_patch_id,
-    valid_patch_schema,
+from dependencies.base_dependency import (
+    ValidGetByIdDependency,
+    valid_empty_schema,
 )
 
 router_service = APIRouter()
@@ -42,8 +42,8 @@ async def view_add_service_name(schema: ServiceNameModel, session: AsyncSession 
 
 @router_service.patch(ROUTE_SERVICE + RouteSlug.pk, response_model=ServiceNameModel)
 async def view_patch_service_name(
-    schema: ServiceNameOptionalSchema = Depends(valid_patch_schema),
-    obj_db: ServiceNameModel = Depends(valid_patch_id),
+    schema: ServiceNameOptionalSchema = Depends(valid_empty_schema(class_schema=ServiceNameOptionalSchema)),
+    obj_db: ServiceNameModel = Depends(ValidGetByIdDependency(class_service=ServiceNameService)),
     session: AsyncSession = Depends(get_session),
 ):
     await ServiceNameService(db_session=session).update(obj_db=obj_db, schema=schema)

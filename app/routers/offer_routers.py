@@ -13,7 +13,10 @@ from schemas.offer_schema import (
     OfferLinkOptionalSchema,
 )
 from services.service_service import OfferLinkService
-from dependencies.offer_dependency import valid_patch_id, valid_patch_schema
+from dependencies.base_dependency import (
+    ValidGetByIdDependency,
+    valid_empty_schema,
+)
 
 router_offer = APIRouter()
 R_OFFER = '/offer/'
@@ -57,8 +60,8 @@ async def view_add_offer(schema: OfferLinkInSchema, session: AsyncSession = Depe
 
 @router_offer.patch(R_OFFER + RouteSlug.pk, response_model=OfferLinkModel)
 async def view_patch_offer(
-    schema: OfferLinkOptionalSchema = Depends(valid_patch_schema),
-    obj_db: OfferLinkModel = Depends(valid_patch_id),
+    schema: OfferLinkOptionalSchema = Depends(valid_empty_schema(class_schema=OfferLinkOptionalSchema)),
+    obj_db: OfferLinkModel = Depends(ValidGetByIdDependency(class_service=OfferLinkService)),
     session: AsyncSession = Depends(get_session),
 ):
     await OfferLinkService(db_session=session).update(obj_db=obj_db, schema=schema)
@@ -67,7 +70,7 @@ async def view_patch_offer(
 
 @router_offer.delete(R_OFFER + RouteSlug.pk, response_model=OfferLinkModel)
 async def view_delete_offer(
-    obj_db: OfferLinkModel = Depends(valid_patch_id),
+    obj_db: OfferLinkModel = Depends(ValidGetByIdDependency(class_service=OfferLinkService)),
     session: AsyncSession = Depends(get_session),
 ):
     schema = OfferLinkOptionalSchema(is_active=False)
