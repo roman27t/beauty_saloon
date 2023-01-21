@@ -6,7 +6,6 @@ from sqlalchemy import or_, and_
 from models import OrderModel, OrderDetailModel
 from core.exceptions import ConflictException
 from models.order_model import OrderInSchema
-from services import ServiceRegistry
 from services.base_service import AbstractService
 
 BOOKING_TIME_MINUTES = 15
@@ -46,6 +45,3 @@ class OrderDetailService(AbstractService):
     @property
     def _table(self) -> Type[OrderDetailModel]:
         return OrderDetailModel
-
-
-ServiceRegistry.register(model=OrderModel, service_class=OrderService)

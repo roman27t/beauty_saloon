@@ -1,13 +1,16 @@
 from fastapi import Depends, APIRouter, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from dependencies.base_dependency import ValidGetByIdDependency, valid_empty_schema
 from models import ServiceNameModel
 from routers.consts import RouteSlug
 from models.database import get_session
 from routers.category_routers import ROUTE_CATEGORY
 from services.service_service import ServiceNameService
 from schemas.service_name_schema import ServiceNameOptionalSchema
+from dependencies.base_dependency import (
+    ValidGetByIdDependency,
+    valid_empty_schema,
+)
 
 router_service = APIRouter()
 ROUTE_SERVICE = '/service/'
@@ -40,7 +43,7 @@ async def view_add_service_name(schema: ServiceNameModel, session: AsyncSession 
 @router_service.patch(ROUTE_SERVICE + RouteSlug.pk, response_model=ServiceNameModel)
 async def view_patch_service_name(
     schema: ServiceNameOptionalSchema = Depends(valid_empty_schema(class_schema=ServiceNameOptionalSchema)),
-    obj_db: ServiceNameModel = Depends(ValidGetByIdDependency(model=ServiceNameModel)),
+    obj_db: ServiceNameModel = Depends(ValidGetByIdDependency(service_class=ServiceNameService)),
     session: AsyncSession = Depends(get_session),
 ):
     await ServiceNameService(db_session=session).update(obj_db=obj_db, schema=schema)
