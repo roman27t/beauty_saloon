@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from fastapi import Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from dependencies.base_dependency import ValidGetByIdDependency
 from models import OrderModel, OfferLinkModel
 from models.choices import StatusOrder
 from models.database import get_session
@@ -15,16 +16,12 @@ from services.client_service import ClientService
 from services.service_service import OfferLinkService, ServiceNameService
 
 
-async def valid_patch_id(pk: int, session: AsyncSession = Depends(get_session)) -> OrderModel:
-    return await OrderService(db_session=session).get(pk=pk)
-
-
 def _check_status_wait_core(obj_db: OrderModel):
     if obj_db.status != StatusOrder.WAIT:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail='status order already expired')
 
 
-async def valid_status_wait(obj_db: OrderModel = Depends(valid_patch_id)) -> OrderModel:
+async def valid_status_wait(obj_db: OrderModel = Depends(ValidGetByIdDependency(model=OrderModel))) -> OrderModel:
     _check_status_wait_core(obj_db=obj_db)
     return obj_db
 
