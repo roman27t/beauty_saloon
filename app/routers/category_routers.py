@@ -1,12 +1,13 @@
 from fastapi import Depends, APIRouter
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from dependencies.base_dependency import ValidGetByIdDependency
 from models import CategoryModel
 from routers.consts import RouteSlug
 from models.database import get_session
 from schemas.category_schema import CategoryOptionalSchema
 from services.service_service import CategoryService
-from dependencies.category_dependency import valid_patch_id, valid_patch_schema
+from dependencies.category_dependency import valid_patch_schema
 
 router_category = APIRouter()
 ROUTE_CATEGORY = '/category/'
@@ -30,7 +31,7 @@ async def view_add_category(client: CategoryModel, session: AsyncSession = Depen
 @router_category.patch(ROUTE_CATEGORY + RouteSlug.pk, response_model=CategoryModel)
 async def view_patch_category(
     schema: CategoryOptionalSchema = Depends(valid_patch_schema),
-    obj_db: CategoryModel = Depends(valid_patch_id),
+    obj_db: CategoryModel = Depends(ValidGetByIdDependency(model=CategoryModel)),
     session: AsyncSession = Depends(get_session),
 ):
     await CategoryService(db_session=session).update(obj_db=obj_db, schema=schema)
