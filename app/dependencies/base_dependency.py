@@ -21,8 +21,8 @@ def valid_empty_schema(class_schema: Type[T_SCHEMA]):
 
 
 class ValidGetByIdDependency:
-    def __init__(self, service_class: Type[AbstractService]):
-        self.service_class = service_class
+    def __init__(self, class_service: Type[AbstractService]):
+        self.class_service = class_service
 
     async def __call__(self, pk: int, session: AsyncSession = Depends(get_session)) -> BaseSQLModel:
-        return await self.service_class(db_session=session).get(pk=pk)
+        return await self.class_service(db_session=session).get(pk=pk)

@@ -33,7 +33,7 @@ async def view_add_client(client: ClientInSchema, session: AsyncSession = Depend
 @router_client.patch(ROUTE_CLIENT + RouteSlug.pk, response_model=ClientModel)
 async def view_patch_client(
     schema: ClientInOptionalSchema = Depends(valid_empty_schema(class_schema=ClientInOptionalSchema)),
-    employee_db: ClientModel = Depends(ValidGetByIdDependency(service_class=ClientService)),
+    employee_db: ClientModel = Depends(ValidGetByIdDependency(class_service=ClientService)),
     session: AsyncSession = Depends(get_session),
 ):
     await ClientService(db_session=session).update(obj_db=employee_db, schema=schema)

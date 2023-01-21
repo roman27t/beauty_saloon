@@ -33,7 +33,7 @@ async def view_add_category(client: CategoryModel, session: AsyncSession = Depen
 @router_category.patch(ROUTE_CATEGORY + RouteSlug.pk, response_model=CategoryModel)
 async def view_patch_category(
     schema: CategoryOptionalSchema = Depends(valid_empty_schema(CategoryOptionalSchema)),
-    obj_db: CategoryModel = Depends(ValidGetByIdDependency(service_class=CategoryService)),
+    obj_db: CategoryModel = Depends(ValidGetByIdDependency(class_service=CategoryService)),
     session: AsyncSession = Depends(get_session),
 ):
     await CategoryService(db_session=session).update(obj_db=obj_db, schema=schema)

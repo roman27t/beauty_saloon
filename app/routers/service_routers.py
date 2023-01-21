@@ -43,7 +43,7 @@ async def view_add_service_name(schema: ServiceNameModel, session: AsyncSession 
 @router_service.patch(ROUTE_SERVICE + RouteSlug.pk, response_model=ServiceNameModel)
 async def view_patch_service_name(
     schema: ServiceNameOptionalSchema = Depends(valid_empty_schema(class_schema=ServiceNameOptionalSchema)),
-    obj_db: ServiceNameModel = Depends(ValidGetByIdDependency(service_class=ServiceNameService)),
+    obj_db: ServiceNameModel = Depends(ValidGetByIdDependency(class_service=ServiceNameService)),
     session: AsyncSession = Depends(get_session),
 ):
     await ServiceNameService(db_session=session).update(obj_db=obj_db, schema=schema)

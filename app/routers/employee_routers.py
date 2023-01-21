@@ -33,7 +33,7 @@ async def view_add_employee(employee: EmployeeInSchema, session: AsyncSession = 
 @router_employee.patch(ROUTE_EMPLOYEE + RouteSlug.pk, response_model=EmployeeModel)
 async def view_patch_employee(
     schema: EmployeeInOptionalSchema = Depends(valid_empty_schema(class_schema=EmployeeInOptionalSchema)),
-    employee_db: EmployeeModel = Depends(ValidGetByIdDependency(service_class=EmployeeService)),
+    employee_db: EmployeeModel = Depends(ValidGetByIdDependency(class_service=EmployeeService)),
     session: AsyncSession = Depends(get_session),
 ):
     await EmployeeService(db_session=session).update(obj_db=employee_db, schema=schema)
