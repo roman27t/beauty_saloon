@@ -1,9 +1,8 @@
 from fastapi import FastAPI
 from sqladmin import Admin
 
-from admin import admin_classes
 from config import i_config
-from includer.admins import admin_classes2
+from includer.admins import admin_classes
 from includer.routers import routers_all2
 from routers import routers_all
 from models.database import engine
@@ -11,8 +10,6 @@ from models.database import engine
 app = FastAPI(debug=i_config.DEBUG)
 
 admin = Admin(app, engine)
-for admin_class in admin_classes2:
-    admin.add_view(admin_class)
 for admin_class in admin_classes:
     admin.add_view(admin_class)
 
