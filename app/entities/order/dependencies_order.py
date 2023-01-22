@@ -15,7 +15,7 @@ from entities.order.services_order import OrderService
 from entities.users.services.client_service import ClientService
 from entities.offer.services_offer import OfferLinkService
 from entities.service_name.services_service_name import ServiceNameService
-from dependencies.base_dependency import ValidGetByIdDependency
+from dependencies import ValidGetByIdDependency
 
 
 def _check_status_wait_core(obj_db: OrderModel):

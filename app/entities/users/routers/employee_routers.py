@@ -6,10 +6,7 @@ from routers.consts import RouteSlug
 from models.database import get_session
 from entities.users.schemas_users import EmployeeInSchema, EmployeeInOptionalSchema
 from entities.users.services.employee_service import EmployeeService
-from dependencies.base_dependency import (
-    ValidGetByIdDependency,
-    valid_empty_schema,
-)
+from dependencies import valid_empty_schema, ValidGetByIdDependency
 
 router_employee = APIRouter()
 ROUTE_EMPLOYEE = '/employee/'

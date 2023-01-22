@@ -6,10 +6,7 @@ from routers.consts import RouteSlug
 from models.database import get_session
 from entities.service_name.services_service_name import ServiceNameService
 from entities.service_name.schemas_service_name import ServiceNameOptionalSchema
-from dependencies.base_dependency import (
-    ValidGetByIdDependency,
-    valid_empty_schema,
-)
+from dependencies import valid_empty_schema, ValidGetByIdDependency
 
 router_service = APIRouter()
 ROUTE_SERVICE = '/service/'

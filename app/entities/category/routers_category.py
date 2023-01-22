@@ -6,10 +6,7 @@ from routers.consts import RouteSlug
 from models.database import get_session
 from entities.category.schemas_category import CategoryOptionalSchema
 from entities.category.services_category import CategoryService
-from dependencies.base_dependency import (
-    ValidGetByIdDependency,
-    valid_empty_schema,
-)
+from dependencies import valid_empty_schema, ValidGetByIdDependency
 
 router_category = APIRouter()
 ROUTE_CATEGORY = '/category/'
