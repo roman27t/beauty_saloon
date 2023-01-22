@@ -4,7 +4,7 @@ from fastapi import status
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from tests.utils import url_reverse
-from routers.choices import OrderFilter
+from entities.order.choices import OrderFilter
 from entities.order.schemas.schema_order import OrderFullResponseSchema
 from routers.order_routers import ORDER_PAGE_SIZE
 

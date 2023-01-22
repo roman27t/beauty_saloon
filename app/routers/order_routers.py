@@ -8,7 +8,7 @@ from entities.service_name.models_service_name import ServiceNameModel
 from models.choices import StatusOrder
 from routers.consts import RouteSlug
 from models.database import get_session
-from routers.choices import OrderFilter
+from entities.order.choices import OrderFilter
 from entities.order.schemas.schema_order import (
     OrderPaymentSchema,
     OrderOptionalSchema,
