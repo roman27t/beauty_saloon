@@ -19,8 +19,8 @@ from services.order_service import (
 from entities.users.services.client_service import ClientService
 from services.service_service import (
     OfferLinkService,
-    ServiceNameService,
 )
+from entities.service_name.services_service_name import ServiceNameService
 from entities.category.services_category import CategoryService
 from entities.users.services.employee_service import EmployeeService
 

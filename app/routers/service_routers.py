@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from entities.service_name.models_service_name import ServiceNameModel
 from routers.consts import RouteSlug
 from models.database import get_session
-from services.service_service import ServiceNameService
+from entities.service_name.services_service_name import ServiceNameService
 from entities.service_name.schemas_service_name import ServiceNameOptionalSchema
 from dependencies.base_dependency import (
     ValidGetByIdDependency,
