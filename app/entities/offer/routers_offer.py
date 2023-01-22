@@ -13,7 +13,7 @@ from entities.offer.schemas_offer import (
     OfferFullResponseSchema,
     OfferLinkOptionalSchema,
 )
-from services.service_service import OfferLinkService
+from entities.offer.services_offer import OfferLinkService
 from dependencies.base_dependency import (
     ValidGetByIdDependency,
     valid_empty_schema,

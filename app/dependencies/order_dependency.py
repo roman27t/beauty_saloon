@@ -13,7 +13,7 @@ from models.order_model import OrderInSchema
 from schemas.order_schema import OrderPaymentSchema
 from services.order_service import OrderService
 from entities.users.services.client_service import ClientService
-from services.service_service import OfferLinkService
+from entities.offer.services_offer import OfferLinkService
 from entities.service_name.services_service_name import ServiceNameService
 from dependencies.base_dependency import ValidGetByIdDependency
 
