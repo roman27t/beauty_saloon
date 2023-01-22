@@ -2,12 +2,10 @@ from config import i_config
 from routers.index import router_index
 from routers.offer_routers import router_offer
 from routers.order_routers import router_order
-from routers.service_routers import router_service
 from routers.stub_init_routers import router_init_stub
 
 routers_all = [
     router_index,
-    router_service,
     router_offer,
     router_order,
 ]
