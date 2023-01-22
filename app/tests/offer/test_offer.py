@@ -7,12 +7,11 @@ from sqlalchemy import select
 from sqlalchemy.orm import sessionmaker
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from entities.offer.models_offer import OfferLinkModel
 from tests.utils import url_reverse
 from tests.conftest import engine
-from entities.offer.models_offer import OfferLinkInSchema
-from entities.offer.schemas_offer import OfferLinkOptionalSchema
+from entities.offer.models_offer import OfferLinkModel, OfferLinkInSchema
 from entities.offer.routers_offer import OfferFilter
+from entities.offer.schemas_offer import OfferLinkOptionalSchema
 
 
 @pytest.mark.parametrize(

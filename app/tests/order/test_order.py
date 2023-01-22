@@ -9,12 +9,11 @@ from sqlalchemy import select
 from sqlalchemy.orm import sessionmaker
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from entities.order.models_order import OrderModel
 from tests.utils import url_reverse
 from tests.conftest import MOCK_FREEZE_TIME, engine
-from entities.order.choices_order import OrderFilter, StatusOrder
-from entities.order.models_order import OrderInSchema
 from services.stub_init_service import T_BOOK_DATE
+from entities.order.models_order import OrderModel, OrderInSchema
+from entities.order.choices_order import OrderFilter, StatusOrder
 
 
 @pytest.mark.parametrize(

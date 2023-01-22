@@ -1,12 +1,12 @@
 from fastapi import Depends, APIRouter
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from entities.users.models_user import ClientModel
+from dependencies import ValidGetByIdDependency, valid_empty_schema
 from routers.consts import RouteSlug
 from models.database import get_session
+from entities.users.models_user import ClientModel
 from entities.users.schemas_users import ClientInSchema, ClientInOptionalSchema
 from entities.users.services.client_service import ClientService
-from dependencies import valid_empty_schema, ValidGetByIdDependency
 
 router_client = APIRouter()
 ROUTE_CLIENT = '/client/'

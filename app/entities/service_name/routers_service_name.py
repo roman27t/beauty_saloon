@@ -1,12 +1,14 @@
 from fastapi import Depends, APIRouter, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from entities.service_name.models_service_name import ServiceNameModel
+from dependencies import ValidGetByIdDependency, valid_empty_schema
 from routers.consts import RouteSlug
 from models.database import get_session
+from entities.service_name.models_service_name import ServiceNameModel
+from entities.service_name.schemas_service_name import (
+    ServiceNameOptionalSchema,
+)
 from entities.service_name.services_service_name import ServiceNameService
-from entities.service_name.schemas_service_name import ServiceNameOptionalSchema
-from dependencies import valid_empty_schema, ValidGetByIdDependency
 
 router_service = APIRouter()
 ROUTE_SERVICE = '/service/'

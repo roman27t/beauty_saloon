@@ -4,8 +4,8 @@ from pydantic import constr, condecimal
 from sqlmodel import Field, Relationship
 from sqlalchemy import UniqueConstraint
 
-from entities.category.models_category import CategoryModel
 from models.base_models import BaseSQLModel, DateCreatedChangedBase
+from entities.category.models_category import CategoryModel
 
 if TYPE_CHECKING:
     from models import OrderModel

@@ -4,8 +4,8 @@ from fastapi import status
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from tests.utils import url_reverse
-from entities.offer.schemas_offer import OfferFullResponseSchema
 from entities.offer.routers_offer import OfferFilter
+from entities.offer.schemas_offer import OfferFullResponseSchema
 
 
 @pytest.mark.parametrize(

@@ -1,7 +1,7 @@
 from typing import Type
 
-from entities.offer.models_offer import OfferLinkModel
 from services.base_service import AbstractService
+from entities.offer.models_offer import OfferLinkModel
 
 
 class OfferLinkService(AbstractService):

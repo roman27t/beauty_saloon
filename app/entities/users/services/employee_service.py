@@ -1,7 +1,7 @@
 from typing import Type
 
-from entities.users.models_user import EmployeeModel
 from services.base_service import AbstractService
+from entities.users.models_user import EmployeeModel
 
 
 class EmployeeService(AbstractService):

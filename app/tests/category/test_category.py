@@ -7,9 +7,9 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 
 from tests.utils import url_reverse
 from tests.conftest import engine
-from entities.category.models_category import CategoryInSchema, CategoryModel
-from entities.category.schemas_category import CategoryOptionalSchema
 from services.stub_init_service import CATEGORIES
+from entities.category.models_category import CategoryModel, CategoryInSchema
+from entities.category.schemas_category import CategoryOptionalSchema
 
 
 @pytest.mark.asyncio

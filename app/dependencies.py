@@ -1,12 +1,12 @@
-from typing import Union, Type
+from typing import Type, Union
 
-from fastapi import HTTPException, Depends
-from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import Depends, HTTPException
 from starlette import status
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from models.base_models import BaseSQLModel
-from models.database import get_session
 from schemas import BasePydanticSchema
+from models.database import get_session
+from models.base_models import BaseSQLModel
 from services.base_service import AbstractService
 
 T_SCHEMA = Union[BaseSQLModel, BasePydanticSchema]

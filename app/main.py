@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 from sqladmin import Admin
 
-from config import i_config
 from admins import admin_classes
+from config import i_config
 from routers import routers_all
 from models.database import engine
 

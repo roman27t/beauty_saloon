@@ -2,14 +2,14 @@ from typing import Dict, List, Union, Optional
 
 from pydantic import condecimal
 
-from entities.order.models_order import OrderModel
-from entities.service_name.models_service_name import ServiceNameModel
-from entities.users.models_user import ClientModel, EmployeeModel
-from entities.order.choices_order import OrderFilter, StatusOrder
-from schemas import BasePydanticSchema, PaginationSchema
-from entities.category.schemas_category import CategoryInSchema
+from schemas import PaginationSchema, BasePydanticSchema
 from core.utils.pagination import Pagination
+from entities.users.models_user import ClientModel, EmployeeModel
+from entities.order.models_order import OrderModel
+from entities.order.choices_order import OrderFilter, StatusOrder
+from entities.category.schemas_category import CategoryInSchema
 from entities.order.schemas.schema_payment import CardSchema, PaymentType
+from entities.service_name.models_service_name import ServiceNameModel
 
 
 class OrderOptionalSchema(BasePydanticSchema):

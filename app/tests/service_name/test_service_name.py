@@ -7,12 +7,16 @@ from sqlalchemy import select
 from sqlalchemy.orm import sessionmaker
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from entities.service_name.models_service_name import ServiceNameModel
 from tests.utils import url_reverse
 from tests.conftest import engine
-from entities.service_name.models_service_name import ServiceNameInSchema
 from services.stub_init_service import CATEGORIES_SERVICE
-from entities.service_name.schemas_service_name import ServiceNameOptionalSchema
+from entities.service_name.models_service_name import (
+    ServiceNameModel,
+    ServiceNameInSchema,
+)
+from entities.service_name.schemas_service_name import (
+    ServiceNameOptionalSchema,
+)
 
 
 @pytest.mark.asyncio

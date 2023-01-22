@@ -5,13 +5,12 @@ from httpx import AsyncClient
 from fastapi import status
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from entities.order.models_order import OrderModel
 from tests.utils import url_reverse
+from entities.order.models_order import OrderModel, OrderInSchema
 from entities.order.choices_order import StatusOrder
-from entities.order.models_order import OrderInSchema
+from entities.order.services_order import OrderService
 from entities.order.schemas.schema_order import OrderPaymentSchema
 from entities.order.schemas.schema_payment import CardSchema, PaymentType
-from entities.order.services_order import OrderService
 
 
 def _get_order_schema(price: int, cvv: str) -> OrderPaymentSchema:

@@ -5,8 +5,8 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 
 from tests.utils import url_reverse
 from entities.order.choices_order import OrderFilter
-from entities.order.schemas.schema_order import OrderFullResponseSchema
 from entities.order.routers_order import ORDER_PAGE_SIZE
+from entities.order.schemas.schema_order import OrderFullResponseSchema
 
 
 @pytest.mark.parametrize(

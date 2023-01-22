@@ -3,8 +3,8 @@ from typing import Optional
 
 from pydantic import EmailStr, constr
 
-from entities.users.choices_user import Gender
 from entities.users.models_user import _UserInSchema
+from entities.users.choices_user import Gender
 
 
 class EmployeeInSchema(_UserInSchema):

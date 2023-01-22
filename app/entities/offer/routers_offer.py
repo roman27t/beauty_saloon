@@ -4,17 +4,16 @@ from fastapi import Depends, APIRouter, HTTPException, status
 from sqlalchemy.orm import joinedload, selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from entities.offer.models_offer import OfferLinkModel
-from entities.service_name.models_service_name import ServiceNameModel
+from dependencies import ValidGetByIdDependency, valid_empty_schema
 from routers.consts import RouteSlug
 from models.database import get_session
-from entities.offer.models_offer import OfferLinkInSchema
+from entities.offer.models_offer import OfferLinkModel, OfferLinkInSchema
 from entities.offer.schemas_offer import (
     OfferFullResponseSchema,
     OfferLinkOptionalSchema,
 )
 from entities.offer.services_offer import OfferLinkService
-from dependencies import valid_empty_schema, ValidGetByIdDependency
+from entities.service_name.models_service_name import ServiceNameModel
 
 router_offer = APIRouter()
 R_OFFER = '/offer/'

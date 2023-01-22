@@ -1,7 +1,7 @@
 from typing import Type
 
-from entities.category.models_category import CategoryModel
 from services.base_service import AbstractService
+from entities.category.models_category import CategoryModel
 
 
 class CategoryService(AbstractService):

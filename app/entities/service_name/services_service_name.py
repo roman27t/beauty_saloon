@@ -1,7 +1,7 @@
 from typing import Type
 
-from entities.service_name.models_service_name import ServiceNameModel
 from services.base_service import AbstractService
+from entities.service_name.models_service_name import ServiceNameModel
 
 
 class ServiceNameService(AbstractService):

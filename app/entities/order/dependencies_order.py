@@ -5,17 +5,16 @@ from dataclasses import dataclass
 from fastapi import Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from entities.order.models_order import OrderModel
-from entities.offer.models_offer import OfferLinkModel
-from entities.order.choices_order import StatusOrder
-from models.database import get_session
-from entities.order.models_order import OrderInSchema
-from entities.order.schemas.schema_order import OrderPaymentSchema
-from entities.order.services_order import OrderService
-from entities.users.services.client_service import ClientService
-from entities.offer.services_offer import OfferLinkService
-from entities.service_name.services_service_name import ServiceNameService
 from dependencies import ValidGetByIdDependency
+from models.database import get_session
+from entities.offer.models_offer import OfferLinkModel
+from entities.order.models_order import OrderModel, OrderInSchema
+from entities.order.choices_order import StatusOrder
+from entities.offer.services_offer import OfferLinkService
+from entities.order.services_order import OrderService
+from entities.order.schemas.schema_order import OrderPaymentSchema
+from entities.users.services.client_service import ClientService
+from entities.service_name.services_service_name import ServiceNameService
 
 
 def _check_status_wait_core(obj_db: OrderModel):

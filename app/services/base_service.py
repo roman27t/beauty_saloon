@@ -6,9 +6,9 @@ from sqlmodel import func
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from schemas import BasePydanticSchema
 from models.db_helper import db_commit
 from models.base_models import BaseSQLModel
-from schemas import BasePydanticSchema
 
 if TYPE_CHECKING:
     from sqlalchemy.sql.elements import BinaryExpression, BooleanClauseList

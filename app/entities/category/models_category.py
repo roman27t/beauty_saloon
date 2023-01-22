@@ -1,10 +1,11 @@
-from typing import Union, List, TYPE_CHECKING
+from typing import TYPE_CHECKING, List, Union
 
 from pydantic import constr
-from sqlalchemy import Column, VARCHAR
 from sqlmodel import Field, Relationship
+from sqlalchemy import VARCHAR, Column
 
 from models.base_models import BaseSQLModel, DateCreatedChangedBase
+
 if TYPE_CHECKING:
     from entities.service_name.models_service_name import ServiceNameModel
 

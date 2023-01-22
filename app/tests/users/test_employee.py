@@ -1,9 +1,12 @@
 from typing import Type
 
-from entities.users.models_user import EmployeeModel
 from tests.users.abstract_user import UserAbstract
-from entities.users.schemas_users import EmployeeInSchema, EmployeeInOptionalSchema
+from entities.users.models_user import EmployeeModel
 from services.stub_init_service import LAST_NAMES
+from entities.users.schemas_users import (
+    EmployeeInSchema,
+    EmployeeInOptionalSchema,
+)
 
 
 class TestEmployee(UserAbstract):
