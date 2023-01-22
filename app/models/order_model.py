@@ -12,7 +12,7 @@ from models.base_models import BaseSQLModel, DateCreatedChangedBase
 
 if TYPE_CHECKING:
     from entities.users.models_user import ClientModel, EmployeeModel
-    from entities.service_name.service_model import ServiceNameModel
+    from entities.service_name.model_service_name import ServiceNameModel
 
 MAX_PERIOD_IN_YEAR = 1
 MAX_PERIOD_EVENT_HOUR = 4

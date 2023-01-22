@@ -1,7 +1,7 @@
 import datetime as dt
 from decimal import Decimal
 
-from entities.service_name.service_model import ServiceNameModel
+from entities.service_name.model_service_name import ServiceNameModel
 from models import (
     OrderModel,
     OfferLinkModel,

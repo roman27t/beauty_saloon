@@ -2,7 +2,7 @@ from typing import Optional
 
 from pydantic import constr, condecimal
 
-from entities.service_name.service_model import ServiceNameInSchema
+from entities.service_name.model_service_name import ServiceNameInSchema
 
 
 class ServiceNameOptionalSchema(ServiceNameInSchema):

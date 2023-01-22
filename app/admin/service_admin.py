@@ -1,6 +1,6 @@
 from sqladmin import ModelView
 
-from entities.service_name.service_model import ServiceNameModel
+from entities.service_name.model_service_name import ServiceNameModel
 
 
 class ServiceNameAdmin(ModelView, model=ServiceNameModel):

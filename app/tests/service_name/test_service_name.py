@@ -7,10 +7,10 @@ from sqlalchemy import select
 from sqlalchemy.orm import sessionmaker
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from entities.service_name.service_model import ServiceNameModel
+from entities.service_name.model_service_name import ServiceNameModel
 from tests.utils import url_reverse
 from tests.conftest import engine
-from entities.service_name.service_model import ServiceNameInSchema
+from entities.service_name.model_service_name import ServiceNameInSchema
 from services.stub_init_service import CATEGORIES_SERVICE
 from schemas.service_name_schema import ServiceNameOptionalSchema
 
