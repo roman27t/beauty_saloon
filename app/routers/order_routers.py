@@ -9,13 +9,13 @@ from models.choices import StatusOrder
 from routers.consts import RouteSlug
 from models.database import get_session
 from routers.choices import OrderFilter
-from schemas.order_schema import (
+from entities.order.schemas.schema_order import (
     OrderPaymentSchema,
     OrderOptionalSchema,
     OrderFullResponseSchema,
 )
 from core.utils.pagination import Pagination
-from schemas.payment_schema import PaymentContentSchema
+from entities.order.schemas.schema_payment import PaymentContentSchema
 from services.order_service import OrderService
 from dependencies.order_dependency import (
     ValidPostOrderDependency,

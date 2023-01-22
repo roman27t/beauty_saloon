@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from schemas.payment_schema import (
+from entities.order.schemas.schema_payment import (
     CardSchema,
     PaymentContentSchema,
     ResponsePaymentSchema,

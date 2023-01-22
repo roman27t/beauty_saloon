@@ -10,7 +10,7 @@ from routers.choices import OrderFilter
 from schemas.base_schema import PaginationSchema, BasePydanticSchema
 from entities.category.schemas_category import CategoryInSchema
 from core.utils.pagination import Pagination
-from schemas.payment_schema import CardSchema, PaymentType
+from entities.order.schemas.schema_payment import CardSchema, PaymentType
 
 
 class OrderOptionalSchema(BasePydanticSchema):

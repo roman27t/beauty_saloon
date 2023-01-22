@@ -10,7 +10,7 @@ from entities.offer.models_offer import OfferLinkModel
 from models.choices import StatusOrder
 from models.database import get_session
 from entities.order.models_order import OrderInSchema
-from schemas.order_schema import OrderPaymentSchema
+from entities.order.schemas.schema_order import OrderPaymentSchema
 from services.order_service import OrderService
 from entities.users.services.client_service import ClientService
 from entities.offer.services_offer import OfferLinkService
