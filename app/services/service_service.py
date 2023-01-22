@@ -1,6 +1,7 @@
 from typing import Type
 
-from models import CategoryModel, OfferLinkModel, ServiceNameModel
+from models import OfferLinkModel, ServiceNameModel
+from category.model_category import CategoryModel
 from services.base_service import AbstractService
 
 

@@ -3,11 +3,11 @@ from decimal import Decimal
 
 from models import (
     OrderModel,
-    CategoryModel,
     OfferLinkModel,
     OrderDetailModel,
     ServiceNameModel,
 )
+from category.model_category import CategoryModel
 from models.choices import Gender
 from schemas.user_schemas import ClientInSchema, EmployeeInSchema
 from services.base_service import BaseService

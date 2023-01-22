@@ -4,7 +4,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from models import ServiceNameModel
 from routers.consts import RouteSlug
 from models.database import get_session
-from routers.category_routers import ROUTE_CATEGORY
 from services.service_service import ServiceNameService
 from schemas.service_name_schema import ServiceNameOptionalSchema
 from dependencies.base_dependency import (
@@ -14,7 +13,8 @@ from dependencies.base_dependency import (
 
 router_service = APIRouter()
 ROUTE_SERVICE = '/service/'
-ROUTE_SERVICE_CATEGORY = f'{ROUTE_SERVICE}{ROUTE_CATEGORY[1:]}'
+_ROUTE_CATEGORY = '/category/'
+ROUTE_SERVICE_CATEGORY = f'{ROUTE_SERVICE}{_ROUTE_CATEGORY[1:]}'
 
 
 @router_service.get(ROUTE_SERVICE, response_model=list[ServiceNameModel])

@@ -5,11 +5,10 @@ from sqlalchemy import select
 from sqlalchemy.orm import sessionmaker
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from models import CategoryModel
 from tests.utils import url_reverse
 from tests.conftest import engine
-from models.service_model import CategoryInSchema
-from schemas.category_schema import CategoryOptionalSchema
+from category.model_category import CategoryInSchema, CategoryModel
+from category.category_schema import CategoryOptionalSchema
 from services.stub_init_service import CATEGORIES
 
 
