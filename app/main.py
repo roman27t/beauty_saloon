@@ -3,7 +3,6 @@ from sqladmin import Admin
 
 from config import i_config
 from admins import admin_classes
-from includer.routers import routers_all2
 from routers import routers_all
 from models.database import engine
 
@@ -14,8 +13,6 @@ for admin_class in admin_classes:
     admin.add_view(admin_class)
 
 for route in routers_all:
-    app.include_router(route)  # , prefix='/api/auth', tags=['auth']
-for route in routers_all2:
     app.include_router(route)  # , prefix='/api/auth', tags=['auth']
 
 
