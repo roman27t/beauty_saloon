@@ -2,7 +2,8 @@ from typing import Dict, List, Union, Optional
 
 from pydantic import condecimal
 
-from models import OrderModel, ClientModel, EmployeeModel, ServiceNameModel
+from models import OrderModel, ServiceNameModel
+from entities.users.model_user import ClientModel, EmployeeModel
 from models.choices import StatusOrder
 from routers.choices import OrderFilter
 from schemas.base_schema import PaginationSchema, BasePydanticSchema

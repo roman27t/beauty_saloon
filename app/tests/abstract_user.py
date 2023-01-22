@@ -8,7 +8,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import sessionmaker
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from models import ClientModel, EmployeeModel
+from entities.users.model_user import ClientModel, EmployeeModel
 from tests.utils import user_data, url_reverse
 from tests.conftest import engine
 from models.base_models import BaseSQLModel

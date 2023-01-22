@@ -1,6 +1,6 @@
 from enum import Enum
 
-from models import ClientModel, EmployeeModel
+from entities.users.model_user import ClientModel, EmployeeModel
 
 
 class OrderFilter(str, Enum):

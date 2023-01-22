@@ -8,7 +8,8 @@ from sqlalchemy import UniqueConstraint
 from models.base_models import BaseSQLModel, DateCreatedChangedBase
 
 if TYPE_CHECKING:
-    from models import EmployeeModel, ServiceNameModel
+    from models import ServiceNameModel
+    from entities.users.model_user import EmployeeModel
 
 
 class OfferLinkInSchema(BaseSQLModel):

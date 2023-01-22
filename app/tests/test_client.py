@@ -1,6 +1,6 @@
 from typing import Type
 
-from models import ClientModel
+from entities.users.model_user import ClientModel
 from tests.abstract_user import UserAbstract
 from schemas.user_schemas import ClientInSchema, ClientInOptionalSchema
 from services.stub_init_service import LAST_NAMES

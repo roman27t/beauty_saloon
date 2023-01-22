@@ -1,6 +1,6 @@
 from typing import Type
 
-from models import EmployeeModel
+from entities.users.model_user import EmployeeModel
 from services.base_service import AbstractService
 
 
