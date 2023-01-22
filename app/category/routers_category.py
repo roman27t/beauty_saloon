@@ -5,7 +5,7 @@ from category.model_category import CategoryModel
 from routers.consts import RouteSlug
 from models.database import get_session
 from category.schema_category import CategoryOptionalSchema
-from services.service_service import CategoryService
+from category.service_category import CategoryService
 from dependencies.base_dependency import (
     ValidGetByIdDependency,
     valid_empty_schema,

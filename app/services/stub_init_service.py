@@ -18,10 +18,10 @@ from services.order_service import (
 )
 from services.client_service import ClientService
 from services.service_service import (
-    CategoryService,
     OfferLinkService,
     ServiceNameService,
 )
+from category.service_category import CategoryService
 from services.employee_service import EmployeeService
 
 LAST_NAMES = ('Shevchenko', 'Rebrov', 'Zidane', 'Beckham', 'Husin', 'Husiev', 'Golovko', 'Flo', 'Li', 'Voronin')
