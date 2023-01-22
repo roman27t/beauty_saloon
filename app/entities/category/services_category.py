@@ -1,6 +1,6 @@
 from typing import Type
 
-from category.models_category import CategoryModel
+from entities.category.models_category import CategoryModel
 from services.base_service import AbstractService
 
 

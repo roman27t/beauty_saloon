@@ -2,7 +2,7 @@ from typing import Optional
 
 from pydantic import constr
 
-from category.models_category import CategoryInSchema
+from entities.category.models_category import CategoryInSchema
 
 
 class CategoryOptionalSchema(CategoryInSchema):

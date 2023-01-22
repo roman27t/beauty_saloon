@@ -1,11 +1,11 @@
 from fastapi import Depends, APIRouter
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from category.models_category import CategoryModel
+from entities.category.models_category import CategoryModel
 from routers.consts import RouteSlug
 from models.database import get_session
-from category.schemas_category import CategoryOptionalSchema
-from category.services_category import CategoryService
+from entities.category.schemas_category import CategoryOptionalSchema
+from entities.category.services_category import CategoryService
 from dependencies.base_dependency import (
     ValidGetByIdDependency,
     valid_empty_schema,
