@@ -16,13 +16,13 @@ from services.order_service import (
     OrderService,
     OrderDetailService,
 )
-from services.client_service import ClientService
+from entities.users.services.client_service import ClientService
 from services.service_service import (
     OfferLinkService,
     ServiceNameService,
 )
 from entities.category.services_category import CategoryService
-from services.employee_service import EmployeeService
+from entities.users.services.employee_service import EmployeeService
 
 LAST_NAMES = ('Shevchenko', 'Rebrov', 'Zidane', 'Beckham', 'Husin', 'Husiev', 'Golovko', 'Flo', 'Li', 'Voronin')
 FIRST_NAMES = ('Andriy', 'Sergei', 'Zineddin', 'David', 'Andriy', 'Oleh', 'Alex', 'Tore Andre', 'Max', 'Andriy')

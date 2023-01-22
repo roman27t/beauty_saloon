@@ -5,7 +5,7 @@ from entities.users.models_user import ClientModel
 from routers.consts import RouteSlug
 from models.database import get_session
 from entities.users.schemas_users import ClientInSchema, ClientInOptionalSchema
-from services.client_service import ClientService
+from entities.users.services.client_service import ClientService
 from dependencies.base_dependency import (
     ValidGetByIdDependency,
     valid_empty_schema,

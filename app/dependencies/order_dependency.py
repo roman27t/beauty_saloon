@@ -11,7 +11,7 @@ from models.database import get_session
 from models.order_model import OrderInSchema
 from schemas.order_schema import OrderPaymentSchema
 from services.order_service import OrderService
-from services.client_service import ClientService
+from entities.users.services.client_service import ClientService
 from services.service_service import OfferLinkService, ServiceNameService
 from dependencies.base_dependency import ValidGetByIdDependency
 
