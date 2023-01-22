@@ -12,7 +12,7 @@ from entities.users.models_user import ClientModel, EmployeeModel
 from tests.utils import user_data, url_reverse
 from tests.conftest import engine
 from models.base_models import BaseSQLModel
-from schemas.base_schema import BasePydanticSchema
+from schemas import BasePydanticSchema
 
 
 class UserAbstract(ABC):

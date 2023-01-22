@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from models.database import get_session
 from models.base_models import BaseSQLModel
-from schemas.base_schema import BasePydanticSchema
+from schemas import BasePydanticSchema
 from services.base_service import AbstractService
 
 T_SCHEMA = Union[BaseSQLModel, BasePydanticSchema]

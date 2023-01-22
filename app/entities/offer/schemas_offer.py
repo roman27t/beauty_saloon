@@ -6,7 +6,7 @@ from pydantic import Field, validator, condecimal
 from entities.users.models_user import EmployeeModel, OfferLinkModel
 from entities.service_name.models_service_name import ServiceNameModel
 from entities.offer.models_offer import OfferLinkInSchema
-from schemas.base_schema import BasePydanticSchema
+from schemas import BasePydanticSchema
 from entities.category.schemas_category import CategoryInSchema
 
 

@@ -4,7 +4,7 @@ from typing import Optional
 from pydantic import constr, condecimal
 from pydantic.types import PaymentCardNumber
 
-from schemas.base_schema import BasePydanticSchema
+from schemas import BasePydanticSchema
 
 
 class PaymentType(str, Enum):

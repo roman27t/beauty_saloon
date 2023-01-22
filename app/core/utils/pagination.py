@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 from fastapi import HTTPException, status
 
-from schemas.base_schema import PaginationSchema
+from schemas import PaginationSchema
 
 
 @dataclass
