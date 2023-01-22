@@ -6,7 +6,7 @@ from sqlmodel import Field, Relationship
 
 from models.base_models import BaseSQLModel, DateCreatedChangedBase
 if TYPE_CHECKING:
-    from models import ServiceNameModel
+    from entities.service_name.service_model import ServiceNameModel
 
 
 class CategoryInSchema(BaseSQLModel):

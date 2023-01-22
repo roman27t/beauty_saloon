@@ -2,7 +2,8 @@ from typing import Dict, List, Union, Optional
 
 from pydantic import condecimal
 
-from models import OrderModel, ServiceNameModel
+from models import OrderModel
+from entities.service_name.service_model import ServiceNameModel
 from entities.users.models_user import ClientModel, EmployeeModel
 from models.choices import StatusOrder
 from routers.choices import OrderFilter

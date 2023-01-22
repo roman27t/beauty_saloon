@@ -4,7 +4,7 @@ from decimal import Decimal
 from pydantic import Field, validator, condecimal
 
 from entities.users.models_user import EmployeeModel, OfferLinkModel
-from models import ServiceNameModel
+from entities.service_name.service_model import ServiceNameModel
 from models.offer_model import OfferLinkInSchema
 from schemas.base_schema import BasePydanticSchema
 from entities.category.schemas_category import CategoryInSchema

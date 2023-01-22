@@ -1,7 +1,7 @@
 from fastapi import Depends, APIRouter, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from models import ServiceNameModel
+from entities.service_name.service_model import ServiceNameModel
 from routers.consts import RouteSlug
 from models.database import get_session
 from services.service_service import ServiceNameService

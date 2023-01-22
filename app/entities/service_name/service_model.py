@@ -24,7 +24,6 @@ class ServiceNameModel(DateCreatedChangedBase, ServiceNameInSchema, table=True):
     id: int = Field(default=None, primary_key=True)
 
     category: CategoryModel = Relationship(back_populates='services')
-    # employees: List['EmployeeModel'] = Relationship(back_populates="services_name", link_model=OfferLinkModel)
     employee_links: List['OfferLinkModel'] = Relationship(back_populates="service_name")
     orders: List['OrderModel'] = Relationship(back_populates='service')
 

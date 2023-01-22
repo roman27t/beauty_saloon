@@ -12,6 +12,7 @@ from config import i_config
 from models import *
 from entities.category.models_category import *
 from entities.users.models_user import *
+from entities.service_name.service_model import *
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

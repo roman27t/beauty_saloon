@@ -8,7 +8,7 @@ from sqlalchemy import UniqueConstraint
 from models.base_models import BaseSQLModel, DateCreatedChangedBase
 
 if TYPE_CHECKING:
-    from models import ServiceNameModel
+    from entities.service_name.service_model import ServiceNameModel
     from entities.users.models_user import EmployeeModel
 
 
