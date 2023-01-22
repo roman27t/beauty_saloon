@@ -25,7 +25,7 @@ services:
     restart: always
     ports:
       - '63791:6379'
-    command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+    command: redis-server --port 63791 --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
     networks:
       - app-network-2-test
   app-test:
