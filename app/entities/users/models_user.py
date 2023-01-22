@@ -8,7 +8,7 @@ from sqlalchemy.sql.sqltypes import Enum as EnumSQL
 
 from entities.users.choices import Gender
 from models.base_models import BaseSQLModel, DateCreatedChangedBase
-from models.offer_model import OfferLinkModel
+from entities.offer.offer_model import OfferLinkModel
 
 if TYPE_CHECKING:
     from models import OrderModel

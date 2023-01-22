@@ -1,6 +1,6 @@
 from sqladmin import ModelView
 
-from models import OfferLinkModel
+from entities.offer.offer_model import OfferLinkModel
 
 
 class OfferLinkAdmin(ModelView, model=OfferLinkModel):

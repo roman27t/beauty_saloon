@@ -8,7 +8,8 @@ from entities.category.models_category import CategoryModel
 from models.base_models import BaseSQLModel, DateCreatedChangedBase
 
 if TYPE_CHECKING:
-    from models import OrderModel, OfferLinkModel
+    from models import OrderModel
+    from entities.offer.offer_model import OfferLinkModel
 
 
 class ServiceNameInSchema(BaseSQLModel):

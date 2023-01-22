@@ -7,10 +7,10 @@ from sqlalchemy import select
 from sqlalchemy.orm import sessionmaker
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from models import OfferLinkModel
+from entities.offer.offer_model import OfferLinkModel
 from tests.utils import url_reverse
 from tests.conftest import engine
-from models.offer_model import OfferLinkInSchema
+from entities.offer.offer_model import OfferLinkInSchema
 from schemas.offer_schema import OfferLinkOptionalSchema
 from routers.offer_routers import OfferFilter
 
