@@ -1,28 +1,23 @@
 import datetime as dt
 from decimal import Decimal
 
-from models import (
-    OrderModel,
-    CategoryModel,
-    OfferLinkModel,
-    OrderDetailModel,
-    ServiceNameModel,
-)
-from models.choices import Gender
-from schemas.user_schemas import ClientInSchema, EmployeeInSchema
 from services.base_service import BaseService
-from services.order_service import (
+from entities.offer.models_offer import OfferLinkModel
+from entities.order.models_order import OrderModel, OrderDetailModel
+from entities.users.choices_user import Gender
+from entities.users.schemas_users import ClientInSchema, EmployeeInSchema
+from entities.offer.services_offer import OfferLinkService
+from entities.order.services_order import (
     BOOKING_TIME_MINUTES,
     OrderService,
     OrderDetailService,
 )
-from services.client_service import ClientService
-from services.service_service import (
-    CategoryService,
-    OfferLinkService,
-    ServiceNameService,
-)
-from services.employee_service import EmployeeService
+from entities.category.models_category import CategoryModel
+from entities.category.services_category import CategoryService
+from entities.users.services.client_service import ClientService
+from entities.users.services.employee_service import EmployeeService
+from entities.service_name.models_service_name import ServiceNameModel
+from entities.service_name.services_service_name import ServiceNameService
 
 LAST_NAMES = ('Shevchenko', 'Rebrov', 'Zidane', 'Beckham', 'Husin', 'Husiev', 'Golovko', 'Flo', 'Li', 'Voronin')
 FIRST_NAMES = ('Andriy', 'Sergei', 'Zineddin', 'David', 'Andriy', 'Oleh', 'Alex', 'Tore Andre', 'Max', 'Andriy')

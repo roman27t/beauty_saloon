@@ -9,7 +9,11 @@ from sqlmodel import SQLModel
 from alembic import context
 
 from config import i_config
-from models import *
+from entities.category.models_category import *
+from entities.users.models_user import *
+from entities.service_name.models_service_name import *
+from entities.offer.models_offer import *
+from entities.order.models_order import *
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

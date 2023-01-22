@@ -2,7 +2,7 @@ import typing
 import datetime as dt
 
 from main import app
-from models.choices import Gender
+from entities.users.choices_user import Gender
 
 
 def url_reverse(view_name: str, **path_params: typing.Any) -> str:
