@@ -12,7 +12,7 @@ from tests.utils import url_reverse
 from tests.conftest import engine
 from entities.service_name.model_service_name import ServiceNameInSchema
 from services.stub_init_service import CATEGORIES_SERVICE
-from schemas.service_name_schema import ServiceNameOptionalSchema
+from entities.service_name.schema_service_name import ServiceNameOptionalSchema
 
 
 @pytest.mark.asyncio
