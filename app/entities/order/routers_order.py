@@ -16,7 +16,7 @@ from entities.order.schemas.schema_order import (
 from core.utils.pagination import Pagination
 from entities.order.schemas.schema_payment import PaymentContentSchema
 from entities.order.services_order import OrderService
-from dependencies.order_dependency import (
+from entities.order.dependencies_order import (
     ValidPostOrderDependency,
     ValidPaymentOrderDependency,
     valid_status_wait,
