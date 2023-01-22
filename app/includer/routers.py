@@ -1,4 +1,5 @@
 from entities.category.routers_category import router_category
+from entities.offer.routers_offer import router_offer
 from entities.service_name.routers_service_name import router_service
 from entities.users.routers.client_routers import router_client
 from entities.users.routers.employee_routers import router_employee
@@ -8,4 +9,5 @@ routers_all2 = [
     router_client,
     router_employee,
     router_service,
+    router_offer,
 ]

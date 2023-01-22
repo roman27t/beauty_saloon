@@ -11,8 +11,8 @@ from entities.offer.models_offer import OfferLinkModel
 from tests.utils import url_reverse
 from tests.conftest import engine
 from entities.offer.models_offer import OfferLinkInSchema
-from entities.offer.schema_offer import OfferLinkOptionalSchema
-from routers.offer_routers import OfferFilter
+from entities.offer.schemas_offer import OfferLinkOptionalSchema
+from entities.offer.routers_offer import OfferFilter
 
 
 @pytest.mark.parametrize(
