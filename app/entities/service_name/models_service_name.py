@@ -9,7 +9,7 @@ from models.base_models import BaseSQLModel, DateCreatedChangedBase
 
 if TYPE_CHECKING:
     from models import OrderModel
-    from entities.offer.offer_model import OfferLinkModel
+    from entities.offer.models_offer import OfferLinkModel
 
 
 class ServiceNameInSchema(BaseSQLModel):

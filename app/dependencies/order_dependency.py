@@ -6,7 +6,7 @@ from fastapi import Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from models import OrderModel
-from entities.offer.offer_model import OfferLinkModel
+from entities.offer.models_offer import OfferLinkModel
 from models.choices import StatusOrder
 from models.database import get_session
 from models.order_model import OrderInSchema
