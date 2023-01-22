@@ -8,7 +8,7 @@ from entities.category.models_category import CategoryModel
 from entities.users.choices import Gender
 from entities.users.schemas_users import ClientInSchema, EmployeeInSchema
 from services.base_service import BaseService
-from services.order_service import (
+from entities.order.services_order import (
     BOOKING_TIME_MINUTES,
     OrderService,
     OrderDetailService,

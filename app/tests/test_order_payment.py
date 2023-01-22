@@ -11,7 +11,7 @@ from entities.order.choices import StatusOrder
 from entities.order.models_order import OrderInSchema
 from entities.order.schemas.schema_order import OrderPaymentSchema
 from entities.order.schemas.schema_payment import CardSchema, PaymentType
-from services.order_service import OrderService
+from entities.order.services_order import OrderService
 
 
 def _get_order_schema(price: int, cvv: str) -> OrderPaymentSchema:
