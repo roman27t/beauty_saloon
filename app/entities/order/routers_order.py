@@ -21,7 +21,7 @@ from entities.order.dependencies_order import (
     ValidPaymentOrderDependency,
     valid_status_wait,
 )
-from core.payment.api_pay.interface import ApiPay
+from core.webservices.payment.api_pay.interface import ApiPay
 
 router_order = APIRouter()
 R_ORDER = '/order/'
