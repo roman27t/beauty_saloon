@@ -1,4 +1,4 @@
-from category.admin_category import ServiceCategoryAdmin
+from category.admins_category import ServiceCategoryAdmin
 
 
 admin_classes2 = (

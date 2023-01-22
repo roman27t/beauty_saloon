@@ -6,7 +6,7 @@ from models import OrderModel, ClientModel, EmployeeModel, ServiceNameModel
 from models.choices import StatusOrder
 from routers.choices import OrderFilter
 from schemas.base_schema import PaginationSchema, BasePydanticSchema
-from category.model_category import CategoryInSchema
+from category.models_category import CategoryInSchema
 from core.utils.pagination import Pagination
 from schemas.payment_schema import CardSchema, PaymentType
 

@@ -7,7 +7,7 @@ from models import (
     OrderDetailModel,
     ServiceNameModel,
 )
-from category.model_category import CategoryModel
+from category.models_category import CategoryModel
 from models.choices import Gender
 from schemas.user_schemas import ClientInSchema, EmployeeInSchema
 from services.base_service import BaseService
@@ -21,7 +21,7 @@ from services.service_service import (
     OfferLinkService,
     ServiceNameService,
 )
-from category.service_category import CategoryService
+from category.services_category import CategoryService
 from services.employee_service import EmployeeService
 
 LAST_NAMES = ('Shevchenko', 'Rebrov', 'Zidane', 'Beckham', 'Husin', 'Husiev', 'Golovko', 'Flo', 'Li', 'Voronin')

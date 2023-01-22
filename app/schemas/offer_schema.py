@@ -6,7 +6,7 @@ from pydantic import Field, validator, condecimal
 from models import EmployeeModel, OfferLinkModel, ServiceNameModel
 from models.offer_model import OfferLinkInSchema
 from schemas.base_schema import BasePydanticSchema
-from category.model_category import CategoryInSchema
+from category.models_category import CategoryInSchema
 
 
 class OfferLinkOptionalSchema(OfferLinkInSchema):
