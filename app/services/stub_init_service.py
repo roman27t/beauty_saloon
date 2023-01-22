@@ -9,7 +9,7 @@ from models import (
 )
 from entities.category.models_category import CategoryModel
 from models.choices import Gender
-from schemas.user_schemas import ClientInSchema, EmployeeInSchema
+from entities.users.schemas_users import ClientInSchema, EmployeeInSchema
 from services.base_service import BaseService
 from services.order_service import (
     BOOKING_TIME_MINUTES,

@@ -2,7 +2,7 @@ from typing import Type
 
 from entities.users.models_user import ClientModel
 from tests.abstract_user import UserAbstract
-from schemas.user_schemas import ClientInSchema, ClientInOptionalSchema
+from entities.users.schemas_users import ClientInSchema, ClientInOptionalSchema
 from services.stub_init_service import LAST_NAMES
 
 

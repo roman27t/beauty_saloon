@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from entities.users.models_user import ClientModel
 from routers.consts import RouteSlug
 from models.database import get_session
-from schemas.user_schemas import ClientInSchema, ClientInOptionalSchema
+from entities.users.schemas_users import ClientInSchema, ClientInOptionalSchema
 from services.client_service import ClientService
 from dependencies.base_dependency import (
     ValidGetByIdDependency,
