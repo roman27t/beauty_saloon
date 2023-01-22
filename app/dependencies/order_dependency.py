@@ -5,11 +5,11 @@ from dataclasses import dataclass
 from fastapi import Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from entities.order.order_model import OrderModel
+from entities.order.models_order import OrderModel
 from entities.offer.models_offer import OfferLinkModel
 from models.choices import StatusOrder
 from models.database import get_session
-from entities.order.order_model import OrderInSchema
+from entities.order.models_order import OrderInSchema
 from schemas.order_schema import OrderPaymentSchema
 from services.order_service import OrderService
 from entities.users.services.client_service import ClientService

@@ -5,10 +5,10 @@ from httpx import AsyncClient
 from fastapi import status
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from entities.order.order_model import OrderModel
+from entities.order.models_order import OrderModel
 from tests.utils import url_reverse
 from models.choices import StatusOrder
-from entities.order.order_model import OrderInSchema
+from entities.order.models_order import OrderInSchema
 from schemas.order_schema import OrderPaymentSchema
 from schemas.payment_schema import CardSchema, PaymentType
 from services.order_service import OrderService

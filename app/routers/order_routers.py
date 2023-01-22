@@ -3,7 +3,7 @@ from pydantic import PositiveInt
 from sqlalchemy.orm import joinedload, selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from entities.order.order_model import OrderModel
+from entities.order.models_order import OrderModel
 from entities.service_name.models_service_name import ServiceNameModel
 from models.choices import StatusOrder
 from routers.consts import RouteSlug
