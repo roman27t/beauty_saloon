@@ -9,7 +9,7 @@ from entities.service_name.models_service_name import ServiceNameModel
 from routers.consts import RouteSlug
 from models.database import get_session
 from entities.offer.models_offer import OfferLinkInSchema
-from schemas.offer_schema import (
+from entities.offer.schema_offer import (
     OfferFullResponseSchema,
     OfferLinkOptionalSchema,
 )

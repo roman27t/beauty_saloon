@@ -4,7 +4,7 @@ from fastapi import status
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from tests.utils import url_reverse
-from schemas.offer_schema import OfferFullResponseSchema
+from entities.offer.schema_offer import OfferFullResponseSchema
 from routers.offer_routers import OfferFilter
 
 
