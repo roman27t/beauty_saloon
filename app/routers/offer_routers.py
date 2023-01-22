@@ -5,7 +5,7 @@ from sqlalchemy.orm import joinedload, selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from models import OfferLinkModel
-from entities.service_name.model_service_name import ServiceNameModel
+from entities.service_name.models_service_name import ServiceNameModel
 from routers.consts import RouteSlug
 from models.database import get_session
 from models.offer_model import OfferLinkInSchema
