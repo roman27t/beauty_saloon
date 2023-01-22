@@ -6,7 +6,7 @@ from sqlmodel import VARCHAR, Field, Relationship
 from sqlalchemy import Column
 from sqlalchemy.sql.sqltypes import Enum as EnumSQL
 
-from entities.users.choices import Gender
+from entities.users.choices_user import Gender
 from models.base_models import BaseSQLModel, DateCreatedChangedBase
 from entities.offer.models_offer import OfferLinkModel
 

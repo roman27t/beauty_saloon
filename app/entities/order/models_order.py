@@ -7,7 +7,7 @@ from sqlalchemy import Column, UniqueConstraint
 from dateutil.relativedelta import relativedelta
 from sqlalchemy.sql.sqltypes import Enum as EnumSQL
 
-from entities.order.choices import StatusOrder
+from entities.order.choices_order import StatusOrder
 from models.base_models import BaseSQLModel, DateCreatedChangedBase
 
 if TYPE_CHECKING:

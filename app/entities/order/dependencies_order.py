@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from entities.order.models_order import OrderModel
 from entities.offer.models_offer import OfferLinkModel
-from entities.order.choices import StatusOrder
+from entities.order.choices_order import StatusOrder
 from models.database import get_session
 from entities.order.models_order import OrderInSchema
 from entities.order.schemas.schema_order import OrderPaymentSchema

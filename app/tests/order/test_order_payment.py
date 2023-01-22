@@ -7,7 +7,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 
 from entities.order.models_order import OrderModel
 from tests.utils import url_reverse
-from entities.order.choices import StatusOrder
+from entities.order.choices_order import StatusOrder
 from entities.order.models_order import OrderInSchema
 from entities.order.schemas.schema_order import OrderPaymentSchema
 from entities.order.schemas.schema_payment import CardSchema, PaymentType

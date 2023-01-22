@@ -5,7 +5,7 @@ from pydantic import condecimal
 from entities.order.models_order import OrderModel
 from entities.service_name.models_service_name import ServiceNameModel
 from entities.users.models_user import ClientModel, EmployeeModel
-from entities.order.choices import OrderFilter, StatusOrder
+from entities.order.choices_order import OrderFilter, StatusOrder
 from schemas import BasePydanticSchema, PaginationSchema
 from entities.category.schemas_category import CategoryInSchema
 from core.utils.pagination import Pagination

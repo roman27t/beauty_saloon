@@ -5,7 +5,7 @@ from entities.offer.models_offer import OfferLinkModel
 from entities.service_name.models_service_name import ServiceNameModel
 from entities.order.models_order import OrderModel, OrderDetailModel
 from entities.category.models_category import CategoryModel
-from entities.users.choices import Gender
+from entities.users.choices_user import Gender
 from entities.users.schemas_users import ClientInSchema, EmployeeInSchema
 from services.base_service import BaseService
 from entities.order.services_order import (
