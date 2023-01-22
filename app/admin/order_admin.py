@@ -1,6 +1,6 @@
 from sqladmin import ModelView
 
-from models import OrderModel, OrderDetailModel
+from entities.order.order_model import OrderModel, OrderDetailModel
 
 
 class OrderAdmin(ModelView, model=OrderModel):

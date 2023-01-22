@@ -3,10 +3,7 @@ from decimal import Decimal
 
 from entities.offer.models_offer import OfferLinkModel
 from entities.service_name.models_service_name import ServiceNameModel
-from models import (
-    OrderModel,
-    OrderDetailModel,
-)
+from entities.order.order_model import OrderModel, OrderDetailModel
 from entities.category.models_category import CategoryModel
 from entities.users.choices import Gender
 from entities.users.schemas_users import ClientInSchema, EmployeeInSchema

@@ -3,9 +3,9 @@ from typing import Type
 
 from sqlalchemy import or_, and_
 
-from models import OrderModel, OrderDetailModel
+from entities.order.order_model import OrderModel, OrderDetailModel
 from core.exceptions import ConflictException
-from models.order_model import OrderInSchema
+from entities.order.order_model import OrderInSchema
 from services.base_service import AbstractService
 
 BOOKING_TIME_MINUTES = 15

@@ -1,4 +1,3 @@
-from .order_model import OrderModel, OrderDetailModel
 
 # User [Client, Master] (email)
 # -------------
