@@ -1,6 +1,6 @@
 from typing import Type
 
-from entities.users.model_user import ClientModel
+from entities.users.models_user import ClientModel
 from services.base_service import AbstractService
 
 

@@ -4,7 +4,7 @@ from typing import Optional
 from pydantic import EmailStr, constr
 
 from models.choices import Gender
-from entities.users.model_user import _UserInSchema
+from entities.users.models_user import _UserInSchema
 
 
 class EmployeeInSchema(_UserInSchema):

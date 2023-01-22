@@ -11,7 +11,7 @@ from models.choices import StatusOrder
 from models.base_models import BaseSQLModel, DateCreatedChangedBase
 
 if TYPE_CHECKING:
-    from entities.users.model_user import ClientModel, EmployeeModel
+    from entities.users.models_user import ClientModel, EmployeeModel
     from models import ServiceNameModel
 
 MAX_PERIOD_IN_YEAR = 1
