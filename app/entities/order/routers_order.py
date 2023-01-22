@@ -5,10 +5,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from entities.order.models_order import OrderModel
 from entities.service_name.models_service_name import ServiceNameModel
-from models.choices import StatusOrder
 from routers.consts import RouteSlug
 from models.database import get_session
-from entities.order.choices import OrderFilter
+from entities.order.choices import OrderFilter, StatusOrder
 from entities.order.schemas.schema_order import (
     OrderPaymentSchema,
     OrderOptionalSchema,

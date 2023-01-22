@@ -11,9 +11,8 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 
 from entities.order.models_order import OrderModel
 from tests.utils import url_reverse
-from models.choices import StatusOrder
 from tests.conftest import MOCK_FREEZE_TIME, engine
-from entities.order.choices import OrderFilter
+from entities.order.choices import OrderFilter, StatusOrder
 from entities.order.models_order import OrderInSchema
 from services.stub_init_service import T_BOOK_DATE
 
