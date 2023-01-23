@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from typing import List, Union
 
 import aioredis
@@ -5,9 +6,14 @@ import aioredis
 from config import i_config
 
 
+@dataclass(frozen=True)
+class RedisDb:
+    CACHE = 1
+
+
 class RedisInterface:
-    def __init__(self, db: int = 1):
-        self.db = db
+    def __init__(self, db: int = RedisDb.CACHE):
+        self._db = db
         self._con = self.init()
 
     def init(self):
@@ -16,7 +22,7 @@ class RedisInterface:
             port=i_config.REDIS_PORT,
             password=i_config.REDIS_PASSWORD,
             socket_timeout=i_config.REDIS_TIMEOUT,
-            db=self.db,
+            db=self._db,
         )
 
     async def set(self, key: str, value: str, expire: int):
