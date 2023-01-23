@@ -1,11 +1,14 @@
-from fastapi import Depends, APIRouter, HTTPException, status
+from fastapi import Depends, APIRouter, HTTPException, BackgroundTasks, status
 from pydantic import PositiveInt
 from sqlalchemy.orm import joinedload, selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from backgrounds import task_clear_db_cache
 from routers.consts import RouteSlug
 from models.database import get_session
+from core.utils.decorators import cached
 from core.utils.pagination import Pagination
+from core.utils.time_seconds import TimeSeconds
 from entities.order.models_order import OrderModel
 from entities.order.choices_order import OrderFilter, StatusOrder
 from entities.order.services_order import OrderService
@@ -29,6 +32,7 @@ ORDER_PAGE_SIZE = 5
 
 
 @router_order.get(R_ORDER + RouteSlug.ifilter + RouteSlug.pk, response_model=list[OrderModel])
+@cached(expire=TimeSeconds.M5, extra_keys=['pk', 'ifilter'])
 async def view_filter_order(ifilter: OrderFilter, pk: int, session: AsyncSession = Depends(get_session)):
     params = {f'{ifilter.value}_id': pk}
     orders = await OrderService(db_session=session).filter(params)
@@ -38,6 +42,7 @@ async def view_filter_order(ifilter: OrderFilter, pk: int, session: AsyncSession
 
 
 @router_order.get(R_ORDER + RouteSlug.full + RouteSlug.ifilter + RouteSlug.pk, response_model=OrderFullResponseSchema)
+@cached(expire=TimeSeconds.M5, extra_keys=['pk', 'ifilter', 'page'])
 async def view_filter_order_full(
     ifilter: OrderFilter, pk: PositiveInt, session: AsyncSession = Depends(get_session), page: PositiveInt = 1
 ):
@@ -58,25 +63,31 @@ async def view_filter_order_full(
 
 @router_order.post(R_ORDER, response_model=OrderModel)
 async def view_add_order(
+    background_tasks: BackgroundTasks,
     dependency: ValidPostOrderDependency = Depends(ValidPostOrderDependency),
     session: AsyncSession = Depends(get_session),
 ):
     schema = await dependency()
-    return await OrderService(db_session=session).add(schema=schema)
+    result = await OrderService(db_session=session).add(schema=schema)
+    background_tasks.add_task(task_clear_db_cache)
+    return result
 
 
 @router_order.delete(R_ORDER + RouteSlug.pk, response_model=OrderModel)
 async def view_delete_order(
+    background_tasks: BackgroundTasks,
     obj_db: OrderModel = Depends(valid_status_wait),
     session: AsyncSession = Depends(get_session),
 ):
     schema = OrderOptionalSchema(status=StatusOrder.CANCEL)
     await OrderService(db_session=session).update(obj_db=obj_db, schema=schema)
+    background_tasks.add_task(task_clear_db_cache)
     return obj_db
 
 
 @router_order.post(R_ORDER + 'payment/' + RouteSlug.pk, response_model=OrderModel)
 async def view_order_payment(
+    background_tasks: BackgroundTasks,
     schema: OrderPaymentSchema,
     dependency: ValidPaymentOrderDependency = Depends(ValidPaymentOrderDependency),
     session: AsyncSession = Depends(get_session),
@@ -88,4 +99,5 @@ async def view_order_payment(
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=payment.message)
     schema_update = OrderOptionalSchema(status=StatusOrder.PAID)
     await OrderService(db_session=session).update(obj_db=obj_db, schema=schema_update)
+    background_tasks.add_task(task_clear_db_cache)
     return obj_db

@@ -12,6 +12,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from config import i_config
 from app.main import app
 from models.db_helper import db_commit
+from core.utils.redis_interface import cache_redis
 from services.stub_init_service import StubInitService
 
 engine = create_async_engine(f'{i_config.DB_URL}', echo=False)
@@ -27,12 +28,13 @@ def event_loop(request) -> Generator:  # noqa: indirect usage
 
 @pytest_asyncio.fixture
 async def async_client():
-    async with AsyncClient(app=app, base_url=f'http://localhost:8000') as client:  # {settings.api_v1_prefix}
+    async with AsyncClient(app=app, base_url=f'http://localhost:8000') as client:
         yield client
 
 
 @pytest_asyncio.fixture(scope='function')
 async def async_session() -> AsyncSession:
+    await cache_redis.flushall()
     session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
     async with session() as s:
         async with engine.begin() as conn:

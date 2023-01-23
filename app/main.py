@@ -5,6 +5,7 @@ from admins import admin_classes
 from config import i_config
 from routers import routers_all
 from models.database import engine
+from core.utils.redis_interface import cache_redis
 
 app = FastAPI(debug=i_config.DEBUG)
 
@@ -28,4 +29,10 @@ if i_config.DEBUG and i_config.DEBUG_TOOLBAR:
 @app.on_event('startup')
 async def startup():
     # Mount the background management system
-    print('@' * 80)
+    print('---startup')
+
+
+@app.on_event('shutdown')
+async def shutdown_event():
+    await cache_redis.close()
+    print('shutdown----')
