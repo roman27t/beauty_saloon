@@ -12,7 +12,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from config import i_config
 from app.main import app
 from models.db_helper import db_commit
-from core.utils.redis_interface import i_redis
+from core.utils.redis_interface import cache_redis
 from services.stub_init_service import StubInitService
 
 engine = create_async_engine(f'{i_config.DB_URL}', echo=False)
@@ -34,7 +34,7 @@ async def async_client():
 
 @pytest_asyncio.fixture(scope='function')
 async def async_session() -> AsyncSession:
-    await i_redis.flushall()
+    await cache_redis.flushall()
     session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
     async with session() as s:
         async with engine.begin() as conn:

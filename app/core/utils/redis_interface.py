@@ -47,4 +47,4 @@ class RedisInterface:
         return await self._con.keys(pattern)
 
 
-i_redis = RedisInterface()
+cache_redis = RedisInterface()
