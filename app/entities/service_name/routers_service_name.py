@@ -1,6 +1,5 @@
-from fastapi import Depends, APIRouter, HTTPException, status
+from fastapi import Depends, APIRouter, HTTPException, BackgroundTasks, status
 from sqlalchemy.ext.asyncio import AsyncSession
-from starlette.background import BackgroundTasks
 
 from backgrounds import task_clear_db_cache
 from core.utils.decorators import cached

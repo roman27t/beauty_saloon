@@ -1,10 +1,12 @@
-from enum import Enum
-
-from fastapi import Depends, APIRouter, HTTPException, status
+from fastapi import Depends, APIRouter, HTTPException, BackgroundTasks, status
 from sqlalchemy.orm import joinedload, selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from backgrounds import task_clear_db_cache
+from core.utils.decorators import cached
+from core.utils.time_seconds import TimeSeconds
 from dependencies import ValidGetByIdDependency, valid_empty_schema
+from entities.offer.choices_offer import OfferFilter
 from routers.consts import RouteSlug
 from models.database import get_session
 from entities.offer.models_offer import OfferLinkModel, OfferLinkInSchema
@@ -19,18 +21,8 @@ router_offer = APIRouter()
 R_OFFER = '/offer/'
 
 
-class OfferFilter(str, Enum):
-    employee = 'employee'
-    service_name = 'service_name'
-
-    def get_filters(self, pk: int) -> dict:
-        params = {f'{self.value}_id': pk}
-        if self.value == OfferFilter.service_name:
-            params['is_active'] = True
-        return params
-
-
 @router_offer.get(R_OFFER + RouteSlug.ifilter + RouteSlug.pk, response_model=list[OfferLinkModel])
+@cached(expire=TimeSeconds.M5, extra_keys=['pk', 'ifilter'])
 async def view_filter_offer(ifilter: OfferFilter, pk: int, session: AsyncSession = Depends(get_session)):
     offers = await OfferLinkService(db_session=session).filter(params=ifilter.get_filters(pk=pk))
     if not offers:
@@ -51,25 +43,31 @@ async def view_filter_offer_full(ifilter: OfferFilter, pk: int, session: AsyncSe
 
 
 @router_offer.post(R_OFFER, response_model=OfferLinkModel)
-async def view_add_offer(schema: OfferLinkInSchema, session: AsyncSession = Depends(get_session)):
-    return await OfferLinkService(db_session=session).add(schema=schema)
+async def view_add_offer(schema: OfferLinkInSchema, background_tasks: BackgroundTasks, session: AsyncSession = Depends(get_session)):
+    result = await OfferLinkService(db_session=session).add(schema=schema)
+    background_tasks.add_task(task_clear_db_cache)
+    return result
 
 
 @router_offer.patch(R_OFFER + RouteSlug.pk, response_model=OfferLinkModel)
 async def view_patch_offer(
+    background_tasks: BackgroundTasks,
     schema: OfferLinkOptionalSchema = Depends(valid_empty_schema(class_schema=OfferLinkOptionalSchema)),
     obj_db: OfferLinkModel = Depends(ValidGetByIdDependency(class_service=OfferLinkService)),
     session: AsyncSession = Depends(get_session),
 ):
     await OfferLinkService(db_session=session).update(obj_db=obj_db, schema=schema)
+    background_tasks.add_task(task_clear_db_cache)
     return obj_db
 
 
 @router_offer.delete(R_OFFER + RouteSlug.pk, response_model=OfferLinkModel)
 async def view_delete_offer(
+    background_tasks: BackgroundTasks,
     obj_db: OfferLinkModel = Depends(ValidGetByIdDependency(class_service=OfferLinkService)),
     session: AsyncSession = Depends(get_session),
 ):
     schema = OfferLinkOptionalSchema(is_active=False)
     await OfferLinkService(db_session=session).update(obj_db=obj_db, schema=schema)
+    background_tasks.add_task(task_clear_db_cache)
     return obj_db
