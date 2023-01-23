@@ -31,6 +31,7 @@ async def view_filter_offer(ifilter: OfferFilter, pk: int, session: AsyncSession
 
 
 @router_offer.get(R_OFFER + RouteSlug.full + RouteSlug.ifilter + RouteSlug.pk, response_model=OfferFullResponseSchema)
+@cached(expire=TimeSeconds.M5, extra_keys=['pk', 'ifilter'])
 async def view_filter_offer_full(ifilter: OfferFilter, pk: int, session: AsyncSession = Depends(get_session)):
     joins = [
         joinedload(OfferLinkModel.employee),

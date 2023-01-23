@@ -17,12 +17,12 @@ class OfferLinkOptionalSchema(OfferLinkInSchema):
 
 
 class _OfferFullSchema(OfferLinkInSchema):
-    service: ServiceNameModel = Field(alias='service_name')
+    service_name: ServiceNameModel
     price: Optional[condecimal(max_digits=7, decimal_places=2)] = None
 
     @validator('price', always=True)
     def set_price(cls, v: Optional[Decimal], values: dict) -> Decimal:
-        return v or (Decimal(values['service'].price * values['rate'])).normalize()
+        return v or (Decimal(values['service_name'].price * values['rate'])).normalize()
 
 
 class OfferFullResponseSchema(BasePydanticSchema):
@@ -35,7 +35,7 @@ class OfferFullResponseSchema(BasePydanticSchema):
         obj = cls(employee=offers[0].employee)
         for offer in offers:
             full_schema = _OfferFullSchema.from_orm(offer)
-            if full_schema.service.category_id not in obj.categories:
-                obj.categories[full_schema.service.category_id] = offer.service_name.category
+            if full_schema.service_name.category_id not in obj.categories:
+                obj.categories[full_schema.service_name.category_id] = offer.service_name.category
             obj.offers.append(full_schema)
         return obj

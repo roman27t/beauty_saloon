@@ -27,4 +27,4 @@ async def test_filter_offer_full(
         response_obj = OfferFullResponseSchema(**response.json())
         assert len(response_obj.offers) == len_content
         assert response_obj.employee.id == pk
-        assert response_obj.categories[response_obj.offers[0].service.category_id]
+        assert response_obj.categories[response_obj.offers[0].service_name.category_id]
