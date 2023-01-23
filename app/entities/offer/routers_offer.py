@@ -3,13 +3,13 @@ from sqlalchemy.orm import joinedload, selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backgrounds import task_clear_db_cache
-from core.utils.decorators import cached
-from core.utils.time_seconds import TimeSeconds
 from dependencies import ValidGetByIdDependency, valid_empty_schema
-from entities.offer.choices_offer import OfferFilter
 from routers.consts import RouteSlug
 from models.database import get_session
+from core.utils.decorators import cached
+from core.utils.time_seconds import TimeSeconds
 from entities.offer.models_offer import OfferLinkModel, OfferLinkInSchema
+from entities.offer.choices_offer import OfferFilter
 from entities.offer.schemas_offer import (
     OfferFullResponseSchema,
     OfferLinkOptionalSchema,
@@ -44,7 +44,9 @@ async def view_filter_offer_full(ifilter: OfferFilter, pk: int, session: AsyncSe
 
 
 @router_offer.post(R_OFFER, response_model=OfferLinkModel)
-async def view_add_offer(schema: OfferLinkInSchema, background_tasks: BackgroundTasks, session: AsyncSession = Depends(get_session)):
+async def view_add_offer(
+    schema: OfferLinkInSchema, background_tasks: BackgroundTasks, session: AsyncSession = Depends(get_session)
+):
     result = await OfferLinkService(db_session=session).add(schema=schema)
     background_tasks.add_task(task_clear_db_cache)
     return result

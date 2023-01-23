@@ -3,9 +3,9 @@ from sqladmin import Admin
 
 from admins import admin_classes
 from config import i_config
-from core.utils.redis_interface import i_redis
 from routers import routers_all
 from models.database import engine
+from core.utils.redis_interface import i_redis
 
 app = FastAPI(debug=i_config.DEBUG)
 

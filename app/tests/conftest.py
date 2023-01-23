@@ -11,8 +11,8 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 
 from config import i_config
 from app.main import app
-from core.utils.redis_interface import i_redis
 from models.db_helper import db_commit
+from core.utils.redis_interface import i_redis
 from services.stub_init_service import StubInitService
 
 engine = create_async_engine(f'{i_config.DB_URL}', echo=False)

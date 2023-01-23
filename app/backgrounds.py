@@ -1,4 +1,4 @@
-from typing import Union, List
+from typing import List, Union
 
 from core.utils.redis_interface import i_redis
 

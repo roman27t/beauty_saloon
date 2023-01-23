@@ -1,5 +1,6 @@
-import orjson
 import decimal
+
+import orjson
 
 
 def _default(obj):

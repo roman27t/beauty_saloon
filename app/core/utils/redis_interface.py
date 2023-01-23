@@ -1,6 +1,7 @@
-from typing import Union, List
+from typing import List, Union
 
 import aioredis
+
 from config import i_config
 
 
@@ -11,12 +12,12 @@ class RedisInterface:
 
     def init(self):
         return aioredis.Redis(
-        host=i_config.REDIS_HOST,
-        port=i_config.REDIS_PORT,
-        password=i_config.REDIS_PASSWORD,
-        socket_timeout=i_config.REDIS_TIMEOUT,
-        db=self.db,
-    )
+            host=i_config.REDIS_HOST,
+            port=i_config.REDIS_PORT,
+            password=i_config.REDIS_PASSWORD,
+            socket_timeout=i_config.REDIS_TIMEOUT,
+            db=self.db,
+        )
 
     async def set(self, key: str, value: str, expire: int):
         return await self._con.set(key, value, expire)

@@ -2,11 +2,11 @@ from fastapi import Depends, APIRouter, HTTPException, BackgroundTasks, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backgrounds import task_clear_db_cache
-from core.utils.decorators import cached
-from core.utils.time_seconds import TimeSeconds
 from dependencies import ValidGetByIdDependency, valid_empty_schema
 from routers.consts import RouteSlug
 from models.database import get_session
+from core.utils.decorators import cached
+from core.utils.time_seconds import TimeSeconds
 from entities.service_name.models_service_name import ServiceNameModel
 from entities.service_name.schemas_service_name import (
     ServiceNameOptionalSchema,
@@ -41,9 +41,9 @@ async def view_filter_service_name(pk: int, session: AsyncSession = Depends(get_
 
 @router_service.post(ROUTE_SERVICE, response_model=ServiceNameModel)
 async def view_add_service_name(
-        schema: ServiceNameModel,
-        background_tasks: BackgroundTasks,
-        session: AsyncSession = Depends(get_session),
+    schema: ServiceNameModel,
+    background_tasks: BackgroundTasks,
+    session: AsyncSession = Depends(get_session),
 ):
     result = await ServiceNameService(db_session=session).add(schema=schema)
     background_tasks.add_task(task_clear_db_cache)
