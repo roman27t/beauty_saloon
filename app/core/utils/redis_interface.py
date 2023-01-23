@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Union, List
 
 import aioredis
 from config import i_config
@@ -23,6 +23,9 @@ class RedisInterface:
 
     async def get(self, key):
         return await self._con.get(key)
+
+    async def delete(self, *keys: Union[str, List[str]]):
+        return await self._con.delete(*keys)
 
     async def close(self):
         await self._con.close()
