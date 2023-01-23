@@ -1,7 +1,7 @@
 import functools
 from typing import List
 
-from core.json_helper import json_dumps, json_loads
+from core.utils.json_helper import json_dumps, json_loads
 from core.utils.redis_interface import cache_redis
 
 
