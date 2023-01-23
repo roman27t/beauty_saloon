@@ -18,10 +18,10 @@ class RedisInterface:
         db=self.db,
     )
 
-    async def set(self, key, value, expire: int):
+    async def set(self, key: str, value: str, expire: int):
         return await self._con.set(key, value, expire)
 
-    async def get(self, key):
+    async def get(self, key: str):
         return await self._con.get(key)
 
     async def delete(self, *keys: Union[str, List[str]]):
@@ -32,6 +32,9 @@ class RedisInterface:
 
     async def flushall(self):
         await self._con.flushall()
+
+    async def flushdb(self):
+        await self._con.flushdb()
 
     async def keys(self, pattern):
         return await self._con.keys(pattern)
