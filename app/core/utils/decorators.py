@@ -6,7 +6,7 @@ from core.json_helper import json_dumps, json_loads
 from core.utils.redis_interface import i_redis
 
 
-def cached(key: str = '', expire: int = 3600, extra_keys: List[str] = None):
+def cached(expire: int, key: str = '', extra_keys: List[str] = None):
     def wrapper(func):
         @functools.wraps(func)
         async def wrapped(*args, **kwargs):
