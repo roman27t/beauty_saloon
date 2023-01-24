@@ -106,14 +106,14 @@ async def view_order_payment(
 
 @router_order.get(RouteSlug.stats + R_ORDER  + RouteSlug.ifilter, response_model=dict)
 async def view_order_statistic(ifilter: OrderFilter, session: AsyncSession = Depends(get_session), min_price: int = 1):
-    field_select = getattr(OrderModel, ifilter.get_value_id)
-    field_invert = getattr(OrderModel, ifilter.get_value_invert_id)
+    group_field = getattr(OrderModel, ifilter.get_value_id)
+    field_user = getattr(OrderModel, ifilter.get_value_invert_id)
     total_price = func.sum(OrderModel.price).label('total_price')
     query = select(
         total_price,
-        func.count(field_invert).label('total_user'),
-        field_select,
-    ).where(OrderModel.status==StatusOrder.WAIT).group_by(field_select).having(total_price > min_price)
+        func.count(field_user).label('total_user'),
+        group_field,
+    ).where(OrderModel.status==StatusOrder.WAIT).group_by(group_field).having(total_price > min_price)
     result = await session.execute(query)
     orders = result.all()
     if not orders:
