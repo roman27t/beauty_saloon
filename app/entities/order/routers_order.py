@@ -1,5 +1,6 @@
 from fastapi import Depends, APIRouter, HTTPException, BackgroundTasks, status
 from pydantic import PositiveInt
+from sqlalchemy import func, select
 from sqlalchemy.orm import joinedload, selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -34,7 +35,7 @@ ORDER_PAGE_SIZE = 5
 @router_order.get(R_ORDER + RouteSlug.ifilter + RouteSlug.pk, response_model=list[OrderModel])
 @cached(expire=TimeSeconds.M5, extra_keys=['pk', 'ifilter'])
 async def view_filter_order(ifilter: OrderFilter, pk: int, session: AsyncSession = Depends(get_session)):
-    params = {f'{ifilter.value}_id': pk}
+    params = {ifilter.get_value_id: pk}
     orders = await OrderService(db_session=session).filter(params)
     if not orders:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'item with id {pk} not found')
@@ -46,7 +47,7 @@ async def view_filter_order(ifilter: OrderFilter, pk: int, session: AsyncSession
 async def view_filter_order_full(
     ifilter: OrderFilter, pk: PositiveInt, session: AsyncSession = Depends(get_session), page: PositiveInt = 1
 ):
-    params = {f'{ifilter.value}_id': pk}
+    params = {ifilter.get_value_id: pk}
     joins = [
         joinedload(getattr(OrderModel, ifilter.value)),
         selectinload(getattr(OrderModel, ifilter.invert())),
@@ -101,3 +102,25 @@ async def view_order_payment(
     await OrderService(db_session=session).update(obj_db=obj_db, schema=schema_update)
     background_tasks.add_task(task_clear_db_cache)
     return obj_db
+
+
+@router_order.get(RouteSlug.stats + R_ORDER + RouteSlug.ifilter, response_model=dict)
+async def view_order_statistic(ifilter: OrderFilter, session: AsyncSession = Depends(get_session), min_price: int = 1):
+    group_field = getattr(OrderModel, ifilter.get_value_id)
+    field_user = getattr(OrderModel, ifilter.get_value_invert_id)
+    total_price = func.sum(OrderModel.price).label('total_price')
+    query = (
+        select(
+            total_price,
+            func.count(field_user).label('total_user'),
+            group_field,
+        )
+        .where(OrderModel.status == StatusOrder.WAIT)
+        .group_by(group_field)
+        .having(total_price > min_price)
+    )
+    result = await session.execute(query)
+    orders = result.all()
+    if not orders:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'item with id not found')
+    return {'orders': orders}
