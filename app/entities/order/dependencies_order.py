@@ -7,10 +7,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from dependencies import ValidGetByIdDependency
 from models.database import get_session
-from entities.offer.models_offer import OfferLinkModel
+from entities.offer.models_offer import OfferModel
 from entities.order.models_order import OrderModel, OrderInSchema
 from entities.order.choices_order import StatusOrder
-from entities.offer.services_offer import OfferLinkService
+from entities.offer.services_offer import OfferService
 from entities.order.services_order import OrderService
 from entities.order.schemas.schema_order import OrderPaymentSchema
 from entities.users.services.client_service import ClientService
@@ -42,11 +42,11 @@ class ValidPostOrderDependency:
         self.__check_price(offer_db=offer_db)
         return self.schema
 
-    async def __check_get_offer_db(self) -> OfferLinkModel:
+    async def __check_get_offer_db(self) -> OfferModel:
         if not self.schema.dict(exclude_unset=True):
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='empty data')
         params = {'service_name_id': self.schema.service_id, 'employee_id': self.schema.employee_id}
-        return await OfferLinkService(db_session=self.session).get_by_filter(params=params)
+        return await OfferService(db_session=self.session).get_by_filter(params=params)
 
     async def __check_set_db_items(self):
         for field, class_service in self._mapper.items():
@@ -54,7 +54,7 @@ class ValidPostOrderDependency:
             service_helper = class_service(db_session=self.session)
             self._obj_result[field] = await service_helper.get(pk=pk, e_message=f'{service_helper.name}.{pk} not found')
 
-    def __check_price(self, offer_db: OfferLinkModel):
+    def __check_price(self, offer_db: OfferModel):
         origin_price = count_price(
             price=self._obj_result['service_id'].price,
             rate=offer_db.rate,

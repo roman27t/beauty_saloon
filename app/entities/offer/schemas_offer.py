@@ -1,22 +1,22 @@
 from typing import Dict, List, Optional
 from decimal import Decimal
 
-from pydantic import Field, validator, condecimal
+from pydantic import validator, condecimal
 
 from schemas import BasePydanticSchema
-from entities.users.models_user import EmployeeModel, OfferLinkModel
-from entities.offer.models_offer import OfferLinkInSchema
+from entities.users.models_user import OfferModel, EmployeeModel
+from entities.offer.models_offer import OfferInSchema
 from entities.category.schemas_category import CategoryInSchema
 from entities.service_name.models_service_name import ServiceNameModel
 
 
-class OfferLinkOptionalSchema(OfferLinkInSchema):
+class OfferLinkOptionalSchema(OfferInSchema):
     employee_id: Optional[int]
     service_name_id: Optional[int]
     rate: Optional[condecimal(max_digits=7, decimal_places=2)]
 
 
-class _OfferFullSchema(OfferLinkInSchema):
+class _OfferFullSchema(OfferInSchema):
     service_name: ServiceNameModel
     price: Optional[condecimal(max_digits=7, decimal_places=2)] = None
 
@@ -31,7 +31,7 @@ class OfferFullResponseSchema(BasePydanticSchema):
     categories: Dict[int, CategoryInSchema] = {}
 
     @classmethod
-    def build(cls, offers: List[OfferLinkModel]) -> 'OfferFullResponseSchema':
+    def build(cls, offers: List[OfferModel]) -> 'OfferFullResponseSchema':
         obj = cls(employee=offers[0].employee)
         for offer in offers:
             full_schema = _OfferFullSchema.from_orm(offer)

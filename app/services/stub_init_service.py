@@ -2,11 +2,11 @@ import datetime as dt
 from decimal import Decimal
 
 from services.base_service import BaseService
-from entities.offer.models_offer import OfferLinkModel
+from entities.offer.models_offer import OfferModel
 from entities.order.models_order import OrderModel, OrderDetailModel
 from entities.users.choices_user import Gender
 from entities.users.schemas_users import ClientInSchema, EmployeeInSchema
-from entities.offer.services_offer import OfferLinkService
+from entities.offer.services_offer import OfferService
 from entities.order.services_order import (
     BOOKING_TIME_MINUTES,
     OrderService,
@@ -85,12 +85,12 @@ class StubInitService(BaseService):
     def __init_offers(self):
         for index_employee, _ in enumerate(LAST_NAMES[:5]):
             for i in range(1, 10):
-                schema = OfferLinkModel(
+                schema = OfferModel(
                     employee_id=index_employee + 1,
                     service_name_id=i,
                     rate=Decimal(f'1.{index_employee}'),
                 )
-                OfferLinkService(db_session=self.db_session).pre_add(schema=schema)
+                OfferService(db_session=self.db_session).pre_add(schema=schema)
 
     def __init_order(self):
         index = 0

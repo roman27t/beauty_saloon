@@ -7,7 +7,7 @@ from sqlalchemy import Column
 from sqlalchemy.sql.sqltypes import Enum as EnumSQL
 
 from models.base_models import BaseSQLModel, DateCreatedChangedBase
-from entities.offer.models_offer import OfferLinkModel
+from entities.offer.models_offer import OfferModel
 from entities.users.choices_user import Gender
 
 if TYPE_CHECKING:
@@ -33,8 +33,7 @@ class _UserBase(DateCreatedChangedBase, _UserInSchema):
 class EmployeeModel(_UserBase, table=True):
     __tablename__ = 'employee'
 
-    # services_name: List['ServiceNameModel'] = Relationship(back_populates="employees", link_model=OfferLinkModel)
-    service_name_links: List['OfferLinkModel'] = Relationship(back_populates="employee")
+    service_name_links: List['OfferModel'] = Relationship(back_populates="employee")
     client_orders: List['OrderModel'] = Relationship(back_populates="employee")
 
 
