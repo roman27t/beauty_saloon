@@ -1,10 +1,10 @@
 from typing import Dict, List, Optional
 from decimal import Decimal
 
-from pydantic import Field, validator, condecimal
+from pydantic import validator, condecimal
 
 from schemas import BasePydanticSchema
-from entities.users.models_user import EmployeeModel, OfferModel
+from entities.users.models_user import OfferModel, EmployeeModel
 from entities.offer.models_offer import OfferInSchema
 from entities.category.schemas_category import CategoryInSchema
 from entities.service_name.models_service_name import ServiceNameModel

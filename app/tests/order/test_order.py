@@ -6,13 +6,17 @@ from httpx import AsyncClient
 from fastapi import status
 from freezegun import freeze_time
 from sqlalchemy import select
-from sqlalchemy.orm import sessionmaker, joinedload
+from sqlalchemy.orm import joinedload, sessionmaker
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from tests.utils import url_reverse
 from tests.conftest import MOCK_FREEZE_TIME, engine
 from services.stub_init_service import T_BOOK_DATE
-from entities.order.models_order import OrderModel, OrderInSchema, OrderDetailModel
+from entities.order.models_order import (
+    OrderModel,
+    OrderInSchema,
+    OrderDetailModel,
+)
 from entities.order.choices_order import OrderFilter, StatusOrder
 
 
@@ -80,7 +84,8 @@ async def test_post_order(
                 OrderModel.employee_id == schema.employee_id,
                 OrderModel.start_at == schema.start_at,
                 OrderModel.end_at == schema.end_at,
-            ).join(OrderDetailModel)
+            )
+            .join(OrderDetailModel)
             .options(joinedload(OrderModel.order_detail))
             .limit(1)
         )
