@@ -37,7 +37,15 @@ async def view_filter_offer_full(ifilter: OfferFilter, pk: int, session: AsyncSe
         joinedload(OfferLinkModel.employee),
         selectinload(OfferLinkModel.service_name).joinedload(ServiceNameModel.category),
     ]
-    offers = await OfferLinkService(db_session=session).filter(params=ifilter.get_filters(pk=pk), options=joins)
+    offer_service = OfferLinkService(db_session=session)
+    params = (
+        # *offer_service.parse_params(ifilter.get_filters(pk=pk)),
+        OfferLinkModel.service_name.is_active==True,
+    )
+    print('!'*80)
+    print(params)
+    print('!'*80)
+    offers = await offer_service.filter(params=params, options=joins)
     if not offers:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'item with id {pk} not found')
     return OfferFullResponseSchema.build(offers=offers)

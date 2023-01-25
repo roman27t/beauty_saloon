@@ -72,15 +72,16 @@ class AbstractService(BaseService, ABC):
         return objs_db[0]
 
     async def count(self, params: dict) -> int:
-        query = select(func.count(self._table.id)).where(*self.__parse_params(params=params))
+        query = select(func.count(self._table.id)).where(*self.parse_params(params=params))
         result = await self.db_session.execute(query)
         return result.scalar()
 
     async def filter(
-        self, params: dict, options: Optional[List] = None, limit: int = 0, offset: Optional[int] = None
+        self, params, options: Optional[List] = None, limit: int = 0, offset: Optional[int] = None
     ) -> List[MODEL]:
         options = options or []
-        query = select(self._table).where(*self.__parse_params(params=params)).options(*options)
+        params = self.parse_params(params=params) if isinstance(params, dict) else params
+        query = select(self._table).where(*params).options(*options)
         if limit:
             query = query.limit(limit)
         if offset:
@@ -88,5 +89,5 @@ class AbstractService(BaseService, ABC):
         result = await self.db_session.execute(query)
         return result.scalars().all()
 
-    def __parse_params(self, params: dict) -> list:
+    def parse_params(self, params: dict) -> list:
         return [getattr(self._table, key) == value for key, value in params.items()]
