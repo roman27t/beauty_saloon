@@ -3,7 +3,7 @@ from sqladmin import ModelView
 from entities.offer.models_offer import OfferModel
 
 
-class OfferLinkAdmin(ModelView, model=OfferModel):
+class OfferAdmin(ModelView, model=OfferModel):
     column_list = [
         OfferModel.id,
         OfferModel.created_at,

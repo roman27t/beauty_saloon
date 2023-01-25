@@ -11,7 +11,7 @@ from tests.utils import url_reverse
 from tests.conftest import engine
 from entities.offer.models_offer import OfferModel, OfferInSchema
 from entities.offer.choices_offer import OfferFilter
-from entities.offer.schemas_offer import OfferLinkOptionalSchema
+from entities.offer.schemas_offer import OfferOptionalSchema
 
 
 @pytest.mark.parametrize(
@@ -92,7 +92,7 @@ async def test_post_offer_duplicate(async_client: AsyncClient, async_session: As
 async def test_patch_offer(
     async_client: AsyncClient, async_session: AsyncSession, pk: int, data: dict, status_code: int
 ):
-    schema = OfferLinkOptionalSchema(**data)
+    schema = OfferOptionalSchema(**data)
     url = url_reverse('view_patch_offer', pk=pk)
     response = await async_client.patch(url, content=schema.json(exclude_unset=True))
     await async_session.commit()
