@@ -1,7 +1,7 @@
 from fastapi import Depends, APIRouter, BackgroundTasks
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backgrounds import task_clear_cache
+from backgrounds import task_clear_cache, task_clear_db_cache
 from dependencies import ValidGetByIdDependency, valid_empty_schema
 from routers.consts import RouteSlug
 from models.database import get_session
@@ -43,5 +43,5 @@ async def view_patch_category(
     session: AsyncSession = Depends(get_session),
 ):
     await CategoryService(db_session=session).update(obj_db=obj_db, schema=schema)
-    background_tasks.add_task(task_clear_cache, keys=view_get_category_all.__name__)
+    background_tasks.add_task(task_clear_db_cache)
     return obj_db

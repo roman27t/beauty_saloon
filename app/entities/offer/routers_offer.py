@@ -15,6 +15,7 @@ from entities.offer.schemas_offer import (
     OfferLinkOptionalSchema,
 )
 from entities.offer.services_offer import OfferLinkService
+from entities.category.models_category import CategoryModel
 from entities.service_name.models_service_name import ServiceNameModel
 
 router_offer = APIRouter()
@@ -33,19 +34,16 @@ async def view_filter_offer(ifilter: OfferFilter, pk: int, session: AsyncSession
 @router_offer.get(R_OFFER + RouteSlug.full + RouteSlug.ifilter + RouteSlug.pk, response_model=OfferFullResponseSchema)
 @cached(expire=TimeSeconds.M5, extra_keys=['pk', 'ifilter'])
 async def view_filter_offer_full(ifilter: OfferFilter, pk: int, session: AsyncSession = Depends(get_session)):
-    joins = [
+    options = [
         joinedload(OfferLinkModel.employee),
         selectinload(OfferLinkModel.service_name).joinedload(ServiceNameModel.category),
     ]
     offer_service = OfferLinkService(db_session=session)
-    params = (
-        # *offer_service.parse_params(ifilter.get_filters(pk=pk)),
-        OfferLinkModel.service_name.is_active==True,
-    )
-    print('!'*80)
-    print(params)
-    print('!'*80)
-    offers = await offer_service.filter(params=params, options=joins)
+    params = [
+        *offer_service.parse_params(ifilter.get_filters(pk=pk)),
+        CategoryModel.is_active == True,
+    ]
+    offers = await offer_service.filter(params=params, options=options, joins=[ServiceNameModel, CategoryModel])
     if not offers:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'item with id {pk} not found')
     return OfferFullResponseSchema.build(offers=offers)

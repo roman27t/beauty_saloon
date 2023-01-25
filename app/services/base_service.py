@@ -15,6 +15,7 @@ if TYPE_CHECKING:
 
 MODEL = TypeVar('MODEL', bound=BaseSQLModel)
 SCHEMA = TypeVar('SCHEMA', bound=BasePydanticSchema)
+TYPE_CONDITIONS = Union['BinaryExpression', 'BooleanClauseList']
 
 
 class BaseService:
@@ -77,11 +78,17 @@ class AbstractService(BaseService, ABC):
         return result.scalar()
 
     async def filter(
-        self, params, options: Optional[List] = None, limit: int = 0, offset: Optional[int] = None
+        self,
+        params: Union[dict, List[TYPE_CONDITIONS]],
+        options: Optional[List] = None,
+        joins: Optional[List] = None,
+        limit: int = 0,
+        offset: Optional[int] = None,
     ) -> List[MODEL]:
-        options = options or []
         params = self.parse_params(params=params) if isinstance(params, dict) else params
-        query = select(self._table).where(*params).options(*options)
+        query = select(self._table).options(*options or []).where(*params)
+        for model_join in joins or []:
+            query = query.join(model_join)
         if limit:
             query = query.limit(limit)
         if offset:
