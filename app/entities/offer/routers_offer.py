@@ -24,7 +24,8 @@ R_OFFER = '/offer/'
 @router_offer.get(R_OFFER + RouteSlug.ifilter + RouteSlug.pk, response_model=list[OfferLinkModel])
 @cached(expire=TimeSeconds.M5, extra_keys=['pk', 'ifilter'])
 async def view_filter_offer(ifilter: OfferFilter, pk: int, session: AsyncSession = Depends(get_session)):
-    offers = await OfferLinkService(db_session=session).filter(params=ifilter.get_filters(pk=pk))
+    params = {'is_active': True, **ifilter.get_filters(pk=pk)}
+    offers = await OfferLinkService(db_session=session).filter(params=params)
     if not offers:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'item with id {pk} not found')
     return offers
@@ -37,7 +38,8 @@ async def view_filter_offer_full(ifilter: OfferFilter, pk: int, session: AsyncSe
         joinedload(OfferLinkModel.employee),
         selectinload(OfferLinkModel.service_name).joinedload(ServiceNameModel.category),
     ]
-    offers = await OfferLinkService(db_session=session).filter(params=ifilter.get_filters(pk=pk), options=joins)
+    params = {'is_active': True, **ifilter.get_filters(pk=pk)}
+    offers = await OfferLinkService(db_session=session).filter(params=params, options=joins)
     if not offers:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'item with id {pk} not found')
     return OfferFullResponseSchema.build(offers=offers)
