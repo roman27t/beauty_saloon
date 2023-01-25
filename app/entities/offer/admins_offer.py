@@ -1,16 +1,16 @@
 from sqladmin import ModelView
 
-from entities.offer.models_offer import OfferLinkModel
+from entities.offer.models_offer import OfferModel
 
 
-class OfferLinkAdmin(ModelView, model=OfferLinkModel):
+class OfferLinkAdmin(ModelView, model=OfferModel):
     column_list = [
-        OfferLinkModel.id,
-        OfferLinkModel.created_at,
-        OfferLinkModel.changed_at,
-        OfferLinkModel.is_active,
-        OfferLinkModel.employee_id,
-        OfferLinkModel.service_name_id,
-        OfferLinkModel.rate,
+        OfferModel.id,
+        OfferModel.created_at,
+        OfferModel.changed_at,
+        OfferModel.is_active,
+        OfferModel.employee_id,
+        OfferModel.service_name_id,
+        OfferModel.rate,
     ]
-    column_details_exclude_list = [OfferLinkModel.employee, OfferLinkModel.service_name]
+    column_details_exclude_list = [OfferModel.employee, OfferModel.service_name]

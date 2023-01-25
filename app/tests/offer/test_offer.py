@@ -9,7 +9,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 
 from tests.utils import url_reverse
 from tests.conftest import engine
-from entities.offer.models_offer import OfferLinkModel, OfferLinkInSchema
+from entities.offer.models_offer import OfferModel, OfferInSchema
 from entities.offer.choices_offer import OfferFilter
 from entities.offer.schemas_offer import OfferLinkOptionalSchema
 
@@ -32,11 +32,11 @@ async def test_filter_offer(
     if status_code == status.HTTP_200_OK:
         content = response.json()
         assert len(content) == len_content
-        assert OfferLinkModel(**content[0])
+        assert OfferModel(**content[0])
 
 
-def _get_offer_schema(employee_id: int, service_name_id) -> OfferLinkInSchema:
-    return OfferLinkInSchema(
+def _get_offer_schema(employee_id: int, service_name_id) -> OfferInSchema:
+    return OfferInSchema(
         employee_id=employee_id,
         service_name_id=service_name_id,
         rate='1.1',
@@ -52,17 +52,17 @@ def _get_offer_schema(employee_id: int, service_name_id) -> OfferLinkInSchema:
 )
 @pytest.mark.asyncio
 async def test_post_offer(
-    async_client: AsyncClient, async_session: AsyncSession, schema: Optional[OfferLinkInSchema], status_code: int
+    async_client: AsyncClient, async_session: AsyncSession, schema: Optional[OfferInSchema], status_code: int
 ):
     content = schema.json() if schema else '{}'
     response = await async_client.post(url_reverse('view_add_offer'), content=content)
     assert response.status_code == status_code
     if status_code == status.HTTP_200_OK:
         result = await async_session.execute(
-            select(OfferLinkModel)
+            select(OfferModel)
             .where(
-                OfferLinkModel.employee_id == schema.employee_id,
-                OfferLinkModel.service_name_id == schema.service_name_id,
+                OfferModel.employee_id == schema.employee_id,
+                OfferModel.service_name_id == schema.service_name_id,
             )
             .limit(1)
         )
@@ -97,11 +97,11 @@ async def test_patch_offer(
     response = await async_client.patch(url, content=schema.json(exclude_unset=True))
     await async_session.commit()
     assert response.status_code == status_code
-    user = OfferLinkModel(**response.json())
+    user = OfferModel(**response.json())
     if status_code == status.HTTP_200_OK:
         session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
         async with session() as s:
-            obj_db = await s.get(OfferLinkModel, user.id)
+            obj_db = await s.get(OfferModel, user.id)
             for key, value in schema.dict(exclude_defaults=True).items():
                 assert getattr(obj_db, key) == value
 
@@ -119,9 +119,9 @@ async def test_delete_offer(async_client: AsyncClient, async_session: AsyncSessi
     response = await async_client.delete(url)
     await async_session.commit()
     assert response.status_code == status_code
-    user = OfferLinkModel(**response.json())
+    user = OfferModel(**response.json())
     if status_code == status.HTTP_200_OK:
         session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
         async with session() as s:
-            obj_db = await s.get(OfferLinkModel, user.id)
+            obj_db = await s.get(OfferModel, user.id)
             assert obj_db.is_active is False

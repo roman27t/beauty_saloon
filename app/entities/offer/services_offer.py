@@ -1,10 +1,10 @@
 from typing import Type
 
 from services.base_service import AbstractService
-from entities.offer.models_offer import OfferLinkModel
+from entities.offer.models_offer import OfferModel
 
 
-class OfferLinkService(AbstractService):
+class OfferService(AbstractService):
     @property
-    def _table(self) -> Type[OfferLinkModel]:
-        return OfferLinkModel
+    def _table(self) -> Type[OfferModel]:
+        return OfferModel
