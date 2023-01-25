@@ -12,7 +12,7 @@ from entities.offer.models_offer import OfferModel, OfferInSchema
 from entities.offer.choices_offer import OfferFilter
 from entities.offer.schemas_offer import (
     OfferFullResponseSchema,
-    OfferLinkOptionalSchema,
+    OfferOptionalSchema,
 )
 from entities.offer.services_offer import OfferService
 from entities.category.models_category import CategoryModel
@@ -61,7 +61,7 @@ async def view_add_offer(
 @router_offer.patch(R_OFFER + RouteSlug.pk, response_model=OfferModel)
 async def view_patch_offer(
     background_tasks: BackgroundTasks,
-    schema: OfferLinkOptionalSchema = Depends(valid_empty_schema(class_schema=OfferLinkOptionalSchema)),
+    schema: OfferOptionalSchema = Depends(valid_empty_schema(class_schema=OfferOptionalSchema)),
     obj_db: OfferModel = Depends(ValidGetByIdDependency(class_service=OfferService)),
     session: AsyncSession = Depends(get_session),
 ):
@@ -76,7 +76,7 @@ async def view_delete_offer(
     obj_db: OfferModel = Depends(ValidGetByIdDependency(class_service=OfferService)),
     session: AsyncSession = Depends(get_session),
 ):
-    schema = OfferLinkOptionalSchema(is_active=False)
+    schema = OfferOptionalSchema(is_active=False)
     await OfferService(db_session=session).update(obj_db=obj_db, schema=schema)
     background_tasks.add_task(task_clear_db_cache)
     return obj_db

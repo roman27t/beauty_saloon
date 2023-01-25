@@ -10,7 +10,7 @@ from entities.category.schemas_category import CategoryInSchema
 from entities.service_name.models_service_name import ServiceNameModel
 
 
-class OfferLinkOptionalSchema(OfferInSchema):
+class OfferOptionalSchema(OfferInSchema):
     employee_id: Optional[int]
     service_name_id: Optional[int]
     rate: Optional[condecimal(max_digits=7, decimal_places=2)]
