@@ -42,6 +42,8 @@ class StubInitService(BaseService):
     def init(self):
         self._categories = []
         self._services = []
+
+    def save_data_to_db(self):
         self.__init_user()
         self.__init_service_category()
         self.__init_service_name()

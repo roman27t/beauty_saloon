@@ -21,6 +21,10 @@ TYPE_CONDITIONS = Union['BinaryExpression', 'BooleanClauseList']
 class BaseService:
     def __init__(self, db_session: AsyncSession):
         self.db_session = db_session
+        self.init()
+
+    def init(self):
+        pass
 
 
 class AbstractService(BaseService, ABC):
