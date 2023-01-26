@@ -45,7 +45,7 @@ class ValidPostOrderDependency:
     async def __check_get_offer_db(self) -> OfferModel:
         if not self.schema.dict(exclude_unset=True):
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='empty data')
-        params = {'service_name_id': self.schema.service_id, 'employee_id': self.schema.employee_id}
+        params = {'service_name_id': self.schema.service_id, 'employee_id': self.schema.employee_id, 'is_active': True}
         return await OfferService(db_session=self.session).get_by_filter(params=params)
 
     async def __check_set_db_items(self):
