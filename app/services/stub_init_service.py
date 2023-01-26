@@ -93,17 +93,17 @@ class StubInitService(BaseService):
                 OfferService(db_session=self.db_session).pre_add(schema=schema)
 
     def __init_order(self):
-        index = 0
-        for j in range(1, 6):  # by 5
+        order_index = 0
+        for user_id in range(1, 6):  # by 5
             for hour in range(7, 23):
                 if hour in (12, 13):
                     continue
-                index += 1
-                index_service = index % len(self._services) - 1
+                order_index += 1
+                index_service = order_index % len(self._services) - 1
                 service: ServiceNameModel = self._services[index_service]
                 schema = OrderModel(
                     service_id=self._services.index(service) + 1,
-                    employee_id=j,
+                    employee_id=user_id,
                     client_id=hour % 5 + 1,
                     start_at=dt.datetime.strptime(f'{T_BOOK_DATE} {hour}:00', '%d.%m.%Y %H:%M'),
                     end_at=dt.datetime.strptime(f'{T_BOOK_DATE} {hour+1}:00', '%d.%m.%Y %H:%M'),
@@ -113,7 +113,7 @@ class StubInitService(BaseService):
                 )
                 OrderService(db_session=self.db_session).pre_add(schema=schema)
                 schema_detail = OrderDetailModel(
-                    order_id=index,
+                    order_id=order_index,
                     category=self._categories[service.category_id - 1].name,
                     name=service.name,
                     detail=service.name,
