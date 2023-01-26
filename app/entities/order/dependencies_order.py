@@ -3,6 +3,7 @@ from decimal import Decimal
 from dataclasses import dataclass
 
 from fastapi import Depends, HTTPException, status
+from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from dependencies import ValidGetByIdDependency
@@ -14,7 +15,7 @@ from entities.offer.services_offer import OfferService
 from entities.order.services_order import OrderService
 from entities.order.schemas.schema_order import OrderPaymentSchema
 from entities.users.services.client_service import ClientService
-from entities.service_name.services_service_name import ServiceNameService
+from entities.service_name.models_service_name import ServiceNameModel
 
 
 def _check_status_wait_core(obj_db: OrderModel):
@@ -32,44 +33,50 @@ class ValidPostOrderDependency:
     schema: OrderInSchema
     session: AsyncSession = Depends(get_session)
 
-    def __post_init__(self):
-        self._mapper = {'client_id': ClientService, 'service_id': ServiceNameService}
-        self._obj_result = dict.fromkeys(list(self._mapper.keys()), None)
-
     async def __call__(self) -> OrderInSchema:
-        offer_db = await self.__check_get_offer_db()
-        await self.__check_set_db_items()
-        self.__check_price(offer_db=offer_db)
+        self.offer_db = await self.__check_get_offer_db()
+        self.__check_active_service_category()
+        self.__check_price()
+        await self.__check_client()
         return self.schema
 
     async def __check_get_offer_db(self) -> OfferModel:
         if not self.schema.dict(exclude_unset=True):
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='empty data')
-        params = {'service_name_id': self.schema.service_id, 'employee_id': self.schema.employee_id}
-        return await OfferService(db_session=self.session).get_by_filter(params=params)
+        params = {'service_name_id': self.schema.service_id, 'employee_id': self.schema.employee_id, 'is_active': True}
+        options = [selectinload(OfferModel.service_name).joinedload(ServiceNameModel.category)]
+        return await OfferService(db_session=self.session).get_by_filter(params=params, options=options)
 
-    async def __check_set_db_items(self):
-        for field, class_service in self._mapper.items():
-            pk = getattr(self.schema, field)
-            service_helper = class_service(db_session=self.session)
-            self._obj_result[field] = await service_helper.get(pk=pk, e_message=f'{service_helper.name}.{pk} not found')
+    def __check_active_service_category(self):
+        if not self.offer_db.service_name.is_active:
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail='service already disabled')
+        if not self.offer_db.service_name.category.is_active:
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail='category already disabled')
 
-    def __check_price(self, offer_db: OfferModel):
+    async def __check_client(self):
+        pk = self.schema.client_id
+        await ClientService(db_session=self.session).get(pk=self.schema.client_id, e_message=f'client {pk} not found')
+
+    def __check_price(self):
         origin_price = count_price(
-            price=self._obj_result['service_id'].price,
-            rate=offer_db.rate,
+            price=self.offer_db.service_name.price,
+            rate=self.offer_db.rate,
             start_at=self.schema.start_at,
             end_at=self.schema.end_at,
         )
-        if origin_price != self.schema.price:
-            message = f'price error {origin_price} != {self.schema.price}'
-            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=message)
+        _check_price(origin_price=origin_price, client_price=self.schema.price)
 
 
 def count_price(price: Decimal, rate: Decimal, start_at: dt.datetime, end_at: dt.datetime) -> Decimal:
     _price = price * rate
     _parts = Decimal((end_at - start_at).total_seconds() / 60 / 30)
     return (_price * _parts).normalize()
+
+
+def _check_price(origin_price: Decimal, client_price: Decimal):
+    if origin_price != client_price:
+        message = f'price error {origin_price} != {client_price}'
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=message)
 
 
 @dataclass
@@ -81,6 +88,5 @@ class ValidPaymentOrderDependency:
     async def __call__(self) -> OrderModel:
         obj_db: OrderModel = await OrderService(db_session=self.session).get(pk=self.pk)
         _check_status_wait_core(obj_db=obj_db)
-        if obj_db.price != self.schema.price:
-            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail='bad price')
+        _check_price(origin_price=obj_db.price, client_price=self.schema.price)
         return obj_db
