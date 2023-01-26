@@ -3,11 +3,10 @@ from decimal import Decimal
 from dataclasses import dataclass
 
 from fastapi import Depends, HTTPException, status
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from dependencies import ValidGetByIdDependency
-from entities.service_name.models_service_name import ServiceNameModel
 from models.database import get_session
 from entities.offer.models_offer import OfferModel
 from entities.order.models_order import OrderModel, OrderInSchema
@@ -16,6 +15,7 @@ from entities.offer.services_offer import OfferService
 from entities.order.services_order import OrderService
 from entities.order.schemas.schema_order import OrderPaymentSchema
 from entities.users.services.client_service import ClientService
+from entities.service_name.models_service_name import ServiceNameModel
 
 
 def _check_status_wait_core(obj_db: OrderModel):
