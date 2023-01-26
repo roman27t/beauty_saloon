@@ -64,15 +64,19 @@ class ValidPostOrderDependency:
             start_at=self.schema.start_at,
             end_at=self.schema.end_at,
         )
-        if origin_price != self.schema.price:
-            message = f'price error {origin_price} != {self.schema.price}'
-            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=message)
+        _check_price(origin_price=origin_price, client_price=self.schema.price)
 
 
 def count_price(price: Decimal, rate: Decimal, start_at: dt.datetime, end_at: dt.datetime) -> Decimal:
     _price = price * rate
     _parts = Decimal((end_at - start_at).total_seconds() / 60 / 30)
     return (_price * _parts).normalize()
+
+
+def _check_price(origin_price: Decimal, client_price: Decimal):
+    if origin_price != client_price:
+        message = f'price error {origin_price} != {client_price}'
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=message)
 
 
 @dataclass
@@ -84,7 +88,5 @@ class ValidPaymentOrderDependency:
     async def __call__(self) -> OrderModel:
         obj_db: OrderModel = await OrderService(db_session=self.session).get(pk=self.pk)
         _check_status_wait_core(obj_db=obj_db)
-        if obj_db.price != self.schema.price:
-            message = f'bad price {obj_db.price}!={self.schema.price}'
-            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=message)
+        _check_price(origin_price=obj_db.price, client_price=self.schema.price)
         return obj_db
