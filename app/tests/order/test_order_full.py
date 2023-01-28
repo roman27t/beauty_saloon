@@ -36,24 +36,25 @@ async def test_filter_order(
 
 
 @pytest.mark.parametrize(
-    'field, pk, page, status_code',
+    'field, pk, page, order_by, status_code',
     [
-        (OrderFilter.employee.value, 1, 1, status.HTTP_200_OK),
-        (OrderFilter.client.value, 1, 1, status.HTTP_200_OK),
-        (OrderFilter.employee.value, 1, 2, status.HTTP_200_OK),
-        (OrderFilter.client.value, 1, 2, status.HTTP_200_OK),
-        (OrderFilter.employee.value, 1, 3, status.HTTP_200_OK),
-        (OrderFilter.client.value, 1, 3, status.HTTP_200_OK),
-        (OrderFilter.employee.value, 1, 4, status.HTTP_404_NOT_FOUND),
-        (OrderFilter.client.value, 1, 4, status.HTTP_404_NOT_FOUND),
+        (OrderFilter.employee.value, 1, 1, '-price', status.HTTP_200_OK),
+        (OrderFilter.client.value, 1, 1, 'price', status.HTTP_200_OK),
+        (OrderFilter.employee.value, 1, 2, '', status.HTTP_200_OK),
+        (OrderFilter.client.value, 1, 2, '', status.HTTP_200_OK),
+        (OrderFilter.employee.value, 1, 3, 'start_at', status.HTTP_200_OK),
+        (OrderFilter.client.value, 1, 3, 'start_at', status.HTTP_200_OK),
+        (OrderFilter.employee.value, 1, 4, 'start_at', status.HTTP_404_NOT_FOUND),
+        (OrderFilter.client.value, 1, 4, 'start_at', status.HTTP_404_NOT_FOUND),
+        (OrderFilter.employee.value, 1, 1, '-qwe', status.HTTP_400_BAD_REQUEST),    # bad order_by
     ],
 )
 @pytest.mark.asyncio
 async def test_filter_order_pages(
-    async_client: AsyncClient, async_session: AsyncSession, field, pk: int, page: int, status_code: int
+    async_client: AsyncClient, async_session: AsyncSession, field, pk: int, page: int, order_by: str, status_code: int
 ):
     main_url = url_reverse('view_filter_order_full', ifilter=field, pk=pk)
-    response = await async_client.get(f'{main_url}?page={page}')
+    response = await async_client.get(f'{main_url}?page={page}&order_by={order_by}')
     assert response.status_code == status_code
     if status_code == status.HTTP_200_OK:
         response_obj = OrderFullResponseSchema(**response.json())

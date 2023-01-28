@@ -5,6 +5,7 @@ from sqlalchemy.orm import joinedload, selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backgrounds import task_clear_db_cache
+from dependencies import valid_group_by
 from routers.consts import RouteSlug
 from models.database import get_session
 from core.utils.decorators import cached
@@ -43,9 +44,13 @@ async def view_filter_order(ifilter: OrderFilter, pk: int, session: AsyncSession
 
 
 @router_order.get(R_ORDER + RouteSlug.full + RouteSlug.ifilter + RouteSlug.pk, response_model=OrderFullResponseSchema)
-@cached(expire=TimeSeconds.M5, extra_keys=['pk', 'ifilter', 'page'])
+@cached(expire=TimeSeconds.M5, extra_keys=['pk', 'ifilter', 'page', 'order_by'])
 async def view_filter_order_full(
-    ifilter: OrderFilter, pk: PositiveInt, session: AsyncSession = Depends(get_session), page: PositiveInt = 1
+    ifilter: OrderFilter,
+    pk: PositiveInt,
+    session: AsyncSession = Depends(get_session),
+    order_by: str = Depends(valid_group_by(class_schema=OrderModel)),
+    page: PositiveInt = 1,
 ):
     params = {ifilter.get_value_id: pk}
     joins = [
@@ -56,7 +61,12 @@ async def view_filter_order_full(
     pagination = Pagination(page=page, page_size=ORDER_PAGE_SIZE)
     max_rows = await OrderService(db_session=session).count(params=params)
     pagination.check_set_max_page(page=page, max_rows=max_rows)
-    orders = await OrderService(db_session=session).filter(params=params, options=joins, **pagination.to_dict())
+    orders = await OrderService(db_session=session).filter(
+        params=params,
+        options=joins,
+        order_by=order_by,
+        **pagination.to_dict(),
+    )
     if not orders:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'item with id {pk} not found')
     return OrderFullResponseSchema.build(orders=orders, source=ifilter, pagination=pagination)
