@@ -46,7 +46,7 @@ async def test_filter_order(
         (OrderFilter.client.value, 1, 3, 'start_at', status.HTTP_200_OK),
         (OrderFilter.employee.value, 1, 4, 'start_at', status.HTTP_404_NOT_FOUND),
         (OrderFilter.client.value, 1, 4, 'start_at', status.HTTP_404_NOT_FOUND),
-        (OrderFilter.employee.value, 1, 1, '-qwe', status.HTTP_400_BAD_REQUEST),    # bad order_by
+        (OrderFilter.employee.value, 1, 1, '-qwe', status.HTTP_400_BAD_REQUEST),  # bad order_by
     ],
 )
 @pytest.mark.asyncio
