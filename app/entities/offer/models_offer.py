@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 
 class OfferInSchema(BaseSQLModel):
-    employee_id: int = Field(foreign_key='employee.id')
+    employee_id: int = Field(foreign_key='employee.id', index=True)
     service_name_id: int = Field(foreign_key='service_name.id', index=True)
     rate: condecimal(max_digits=3, decimal_places=2, ge=Decimal(1), le=Decimal(5)) = Decimal(1)
     is_active: Union[bool, None] = True

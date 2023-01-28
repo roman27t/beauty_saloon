@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 
 class ServiceNameInSchema(BaseSQLModel):
-    category_id: int = Field(foreign_key='category.id')
+    category_id: int = Field(foreign_key='category.id', index=True)
     name: constr(min_length=2, max_length=100)
     is_active: Union[bool, None] = True
     price: condecimal(max_digits=7, decimal_places=2)
