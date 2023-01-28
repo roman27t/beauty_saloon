@@ -76,7 +76,7 @@ class OrderDetailModel(DateCreatedChangedBase, table=True):
     __tablename__ = 'order_detail'
 
     id: int = Field(default=None, primary_key=True)
-    order_id: int = Field(foreign_key='order.id', unique=True)
+    order_id: int = Field(foreign_key='order.id', unique=True, index=True)
     category: constr(min_length=2, max_length=50)
     name: constr(min_length=2, max_length=100)
     detail: constr(max_length=50) = ''

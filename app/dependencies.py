@@ -21,6 +21,16 @@ def valid_empty_schema(class_schema: Type[T_SCHEMA]):
     return _valid_schema
 
 
+def valid_group_by(class_schema: Type[T_SCHEMA]):
+    def _valid_group_by(order_by: str = '', class_schema_: Type[T_SCHEMA] = class_schema) -> str:
+        field_order_by = order_by[1:] if order_by.startswith('-') else order_by
+        if field_order_by and field_order_by not in class_schema_.schema()['required']:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='wrong field')
+        return order_by
+
+    return _valid_group_by
+
+
 class ValidGetByIdDependency:
     def __init__(self, class_service: Type[AbstractService]):
         self.class_service = class_service

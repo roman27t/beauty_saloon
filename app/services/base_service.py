@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, List, Type, Union, TypeVar, Optional
 
 from fastapi import HTTPException, status
 from sqlmodel import func
-from sqlalchemy import select
+from sqlalchemy import desc, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from schemas import BasePydanticSchema
@@ -88,11 +88,14 @@ class AbstractService(BaseService, ABC):
         joins: Optional[List] = None,
         limit: int = 0,
         offset: Optional[int] = None,
+        order_by: Optional[str] = None,
     ) -> List[MODEL]:
         params = self.parse_params(params=params) if isinstance(params, dict) else params
         query = select(self._table).options(*options or []).where(*params)
         for model_join in joins or []:
             query = query.join(model_join)
+        if order_by:
+            query = query.order_by(desc(order_by[1:]) if order_by.startswith('-') else order_by)
         if limit:
             query = query.limit(limit)
         if offset:
