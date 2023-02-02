@@ -11,7 +11,7 @@ from entities.offer.models_offer import OfferModel
 from entities.users.choices_user import Gender
 
 if TYPE_CHECKING:
-    from models import OrderModel
+    from entities.order.models_order import OrderModel
 
 _REGEX_NAME = '^[A-Za-z- ]+$'
 
@@ -33,11 +33,11 @@ class _UserBase(DateCreatedChangedBase, _UserInSchema):
 class EmployeeModel(_UserBase, table=True):
     __tablename__ = 'employee'
 
-    service_name_links: list['OfferModel'] = Relationship(back_populates="employee")
-    client_orders: list['OrderModel'] = Relationship(back_populates="employee")
+    service_name_links: list['OfferModel'] = Relationship(back_populates='employee')
+    client_orders: list['OrderModel'] = Relationship(back_populates='employee')
 
 
 class ClientModel(_UserBase, table=True):
     __tablename__ = 'client'
 
-    employee_orders: list['OrderModel'] = Relationship(back_populates="client")
+    employee_orders: list['OrderModel'] = Relationship(back_populates='client')
