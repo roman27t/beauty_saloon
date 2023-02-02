@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional
+from typing import Optional
 from decimal import Decimal
 
 from pydantic import validator, condecimal
@@ -27,11 +27,11 @@ class _OfferFullSchema(OfferInSchema):
 
 class OfferFullResponseSchema(BasePydanticSchema):
     employee: EmployeeModel
-    offers: List[_OfferFullSchema] = []
-    categories: Dict[int, CategoryInSchema] = {}
+    offers: list[_OfferFullSchema] = []
+    categories: dict[int, CategoryInSchema] = {}
 
     @classmethod
-    def build(cls, offers: List[OfferModel]) -> 'OfferFullResponseSchema':
+    def build(cls, offers: list[OfferModel]) -> 'OfferFullResponseSchema':
         obj = cls(employee=offers[0].employee)
         for offer in offers:
             full_schema = _OfferFullSchema.from_orm(offer)

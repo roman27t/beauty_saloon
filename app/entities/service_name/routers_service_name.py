@@ -31,7 +31,7 @@ async def view_get_service_name_by_id(pk: int, session: AsyncSession = Depends(g
 
 
 @router_service.get(ROUTE_SERVICE_CATEGORY + RouteSlug.pk, response_model=list[ServiceNameModel])
-@cached(expire=TimeSeconds.M15, extra_keys=['pk'])
+@cached(expire=TimeSeconds.M15, extra_keys=('pk',))
 async def view_filter_service_name(pk: int, session: AsyncSession = Depends(get_session)):
     services = await ServiceNameService(db_session=session).filter({'category_id': pk})
     if not services:

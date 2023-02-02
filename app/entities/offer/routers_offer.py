@@ -23,7 +23,7 @@ R_OFFER = '/offer/'
 
 
 @router_offer.get(R_OFFER + RouteSlug.ifilter + RouteSlug.pk, response_model=list[OfferModel])
-@cached(expire=TimeSeconds.M5, extra_keys=['pk', 'ifilter'])
+@cached(expire=TimeSeconds.M5, extra_keys=('pk', 'ifilter'))
 async def view_filter_offer(ifilter: OfferFilter, pk: int, session: AsyncSession = Depends(get_session)):
     offers = await OfferService(db_session=session).filter(params=ifilter.get_filters(pk=pk))
     if not offers:
@@ -32,7 +32,7 @@ async def view_filter_offer(ifilter: OfferFilter, pk: int, session: AsyncSession
 
 
 @router_offer.get(R_OFFER + RouteSlug.full + RouteSlug.ifilter + RouteSlug.pk, response_model=OfferFullResponseSchema)
-@cached(expire=TimeSeconds.M5, extra_keys=['pk', 'ifilter'])
+@cached(expire=TimeSeconds.M5, extra_keys=('pk', 'ifilter'))
 async def view_filter_offer_full(ifilter: OfferFilter, pk: int, session: AsyncSession = Depends(get_session)):
     options = [
         joinedload(OfferModel.employee),

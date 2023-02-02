@@ -34,7 +34,7 @@ ORDER_PAGE_SIZE = 5
 
 
 @router_order.get(R_ORDER + RouteSlug.ifilter + RouteSlug.pk, response_model=list[OrderModel])
-@cached(expire=TimeSeconds.M5, extra_keys=['pk', 'ifilter'])
+@cached(expire=TimeSeconds.M5, extra_keys=('pk', 'ifilter'))
 async def view_filter_order(ifilter: OrderFilter, pk: int, session: AsyncSession = Depends(get_session)):
     params = {ifilter.get_value_id: pk}
     orders = await OrderService(db_session=session).filter(params)
@@ -44,7 +44,7 @@ async def view_filter_order(ifilter: OrderFilter, pk: int, session: AsyncSession
 
 
 @router_order.get(R_ORDER + RouteSlug.full + RouteSlug.ifilter + RouteSlug.pk, response_model=OrderFullResponseSchema)
-@cached(expire=TimeSeconds.M5, extra_keys=['pk', 'ifilter', 'page', 'order_by'])
+@cached(expire=TimeSeconds.M5, extra_keys=('pk', 'ifilter', 'page', 'order_by'))
 async def view_filter_order_full(
     ifilter: OrderFilter,
     pk: PositiveInt,

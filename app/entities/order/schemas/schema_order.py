@@ -1,4 +1,4 @@
-from typing import Dict, List, Union, Optional
+from typing import Union, Optional
 
 from pydantic import condecimal
 
@@ -24,14 +24,14 @@ class OrderPaymentSchema(BasePydanticSchema):
 
 class OrderFullResponseSchema(BasePydanticSchema):
     user: Union['EmployeeModel', 'ClientModel']
-    orders: List[OrderModel] = []
-    users: Dict[int, Union['EmployeeModel', 'ClientModel']] = {}
-    services: Dict[int, ServiceNameModel] = {}
-    categories: Dict[int, CategoryInSchema] = {}
+    orders: list[OrderModel] = []
+    users: dict[int, Union['EmployeeModel', 'ClientModel']] = {}
+    services: dict[int, ServiceNameModel] = {}
+    categories: dict[int, CategoryInSchema] = {}
     pagination: Optional[PaginationSchema]
 
     @classmethod
-    def build(cls, orders: List['OrderModel'], source: OrderFilter, pagination=Pagination) -> 'OrderFullResponseSchema':
+    def build(cls, orders: list['OrderModel'], source: OrderFilter, pagination=Pagination) -> 'OrderFullResponseSchema':
         obj = cls(user=getattr(orders[0], source.value))
         for order in orders:
             user = getattr(order, source.invert())
