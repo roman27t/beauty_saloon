@@ -1,4 +1,4 @@
-from typing import List, Union
+from typing import Union
 from dataclasses import dataclass
 
 import aioredis
@@ -31,7 +31,7 @@ class RedisInterface:
     async def get(self, key: str):
         return await self._con.get(key)
 
-    async def delete(self, *keys: Union[str, List[str]]):
+    async def delete(self, *keys: Union[str, list[str]]):
         return await self._con.delete(*keys)
 
     async def close(self):

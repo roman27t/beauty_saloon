@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, List, Type, Union, TypeVar, Optional
+from typing import TYPE_CHECKING, Type, Union, TypeVar, Optional
 
 from fastapi import HTTPException, status
 from sqlmodel import func
@@ -70,7 +70,7 @@ class AbstractService(BaseService, ABC):
         data: Optional[int] = result.scalar()
         return data
 
-    async def get_by_filter(self, params: dict, options: Optional[List] = None) -> MODEL:
+    async def get_by_filter(self, params: dict, options: Optional[list] = None) -> MODEL:
         objs_db = await self.filter(params=params, options=options, limit=1)
         if not objs_db:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='item not found')
@@ -83,13 +83,13 @@ class AbstractService(BaseService, ABC):
 
     async def filter(
         self,
-        params: Union[dict, List[TYPE_CONDITIONS]],
-        options: Optional[List] = None,
-        joins: Optional[List] = None,
+        params: Union[dict, list[TYPE_CONDITIONS]],
+        options: Optional[list] = None,
+        joins: Optional[list] = None,
         limit: int = 0,
         offset: Optional[int] = None,
         order_by: Optional[str] = None,
-    ) -> List[MODEL]:
+    ) -> list[MODEL]:
         params = self.parse_params(params=params) if isinstance(params, dict) else params
         query = select(self._table).options(*options or []).where(*params)
         for model_join in joins or []:

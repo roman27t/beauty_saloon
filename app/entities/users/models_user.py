@@ -1,5 +1,5 @@
 import datetime as dt
-from typing import TYPE_CHECKING, List, Union
+from typing import TYPE_CHECKING, Union
 
 from pydantic import EmailStr, constr
 from sqlmodel import VARCHAR, Field, Relationship
@@ -33,11 +33,11 @@ class _UserBase(DateCreatedChangedBase, _UserInSchema):
 class EmployeeModel(_UserBase, table=True):
     __tablename__ = 'employee'
 
-    service_name_links: List['OfferModel'] = Relationship(back_populates="employee")
-    client_orders: List['OrderModel'] = Relationship(back_populates="employee")
+    service_name_links: list['OfferModel'] = Relationship(back_populates="employee")
+    client_orders: list['OrderModel'] = Relationship(back_populates="employee")
 
 
 class ClientModel(_UserBase, table=True):
     __tablename__ = 'client'
 
-    employee_orders: List['OrderModel'] = Relationship(back_populates="client")
+    employee_orders: list['OrderModel'] = Relationship(back_populates="client")

@@ -1,11 +1,10 @@
 import functools
-from typing import List
 
 from core.utils.json_helper import json_dumps, json_loads
 from core.utils.redis_interface import cache_redis
 
 
-def cached(expire: int, key: str = '', extra_keys: List[str] = None):
+def cached(expire: int, key: str = '', extra_keys: list[str] = None):
     def wrapper(func):
         @functools.wraps(func)
         async def wrapped(*args, **kwargs):

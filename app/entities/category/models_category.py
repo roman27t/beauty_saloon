@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, List, Union
+from typing import TYPE_CHECKING, Union
 
 from pydantic import constr
 from sqlmodel import Field, Relationship
@@ -20,4 +20,4 @@ class CategoryModel(DateCreatedChangedBase, CategoryInSchema, table=True):
     __tablename__ = 'category'
     id: int = Field(default=None, primary_key=True)
 
-    services: List['ServiceNameModel'] = Relationship(back_populates='category')
+    services: list['ServiceNameModel'] = Relationship(back_populates='category')
