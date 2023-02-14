@@ -1,4 +1,4 @@
-from typing import Type, Union
+from typing import Type, Union, Callable
 
 from fastapi import Depends, HTTPException
 from starlette import status
@@ -12,7 +12,7 @@ from services.base_service import AbstractService
 T_SCHEMA = Union[BaseSQLModel, BasePydanticSchema]
 
 
-def valid_empty_schema(class_schema: Type[T_SCHEMA]):
+def valid_empty_schema(class_schema: Type[T_SCHEMA]) -> Callable[[Type[T_SCHEMA]], Type[T_SCHEMA]]:
     def _valid_schema(schema: class_schema) -> class_schema:
         if not schema.dict(exclude_unset=True):
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='empty data')

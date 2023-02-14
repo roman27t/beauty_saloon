@@ -9,9 +9,8 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlmodel.ext.asyncio.session import AsyncSession
 
+from main import app
 from config import i_config
-from app.main import app
-from models.db_helper import db_commit
 from core.utils.redis_interface import cache_redis
 from services.stub_init_service import StubInitService
 
@@ -40,25 +39,10 @@ async def async_session() -> AsyncSession:
         async with engine.begin() as conn:
             await conn.run_sync(SQLModel.metadata.create_all)
 
-        StubInitService(db_session=s).save_data_to_db()
-        await db_commit(db_session=s)
+        await StubInitService(db_session=s).save_data_to_db()
         yield s
 
     async with engine.begin() as conn:
         await conn.run_sync(SQLModel.metadata.drop_all)
 
     await engine.dispose()
-
-
-# @pytest.fixture(scope='function')
-# def test_data() -> dict:
-#    path = os.getenv('PYTEST_CURRENT_TEST')
-#    path = os.path.join(*os.path.split(path)[:-1], 'data', 'data.json')
-#
-#    if not os.path.exists(path):
-#        path = os.path.join('data', 'data.json')
-#
-#    with open(path, 'r') as file:
-#        data = json.loads(file.read())
-#
-#    return data
