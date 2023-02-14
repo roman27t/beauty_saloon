@@ -21,7 +21,7 @@ services:
       - app-network-2-test
 
   cache-redis-test:
-    image: redis:7.0.7-alpine
+    image: redis:7.0.8-alpine
     restart: always
     ports:
       - '63791:6379'
