@@ -11,7 +11,6 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 
 from config import i_config
 from main import app
-from models.db_helper import db_commit
 from core.utils.redis_interface import cache_redis
 from services.stub_init_service import StubInitService
 
@@ -40,8 +39,7 @@ async def async_session() -> AsyncSession:
         async with engine.begin() as conn:
             await conn.run_sync(SQLModel.metadata.create_all)
 
-        StubInitService(db_session=s).save_data_to_db()
-        await db_commit(db_session=s)
+        await StubInitService(db_session=s).save_data_to_db()
         yield s
 
     async with engine.begin() as conn:

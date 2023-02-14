@@ -1,6 +1,7 @@
 import datetime as dt
 from decimal import Decimal
 
+from models.db_helper import db_commit
 from services.base_service import BaseService
 from entities.offer.models_offer import OfferModel
 from entities.order.models_order import OrderModel, OrderDetailModel
@@ -43,12 +44,13 @@ class StubInitService(BaseService):
         self._categories = []
         self._services = []
 
-    def save_data_to_db(self):
+    async def save_data_to_db(self):
         self.__init_user()
         self.__init_service_category()
         self.__init_service_name()
         self.__init_offers()
         self.__init_order()
+        await db_commit(db_session=self.db_session)
 
     def __init_user(self):
         user_service = {EmployeeInSchema: EmployeeService, ClientInSchema: ClientService}
