@@ -9,8 +9,8 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from config import i_config
 from main import app
+from config import i_config
 from core.utils.redis_interface import cache_redis
 from services.stub_init_service import StubInitService
 

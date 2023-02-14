@@ -1,4 +1,4 @@
-from typing import Callable, Type, Union
+from typing import Type, Union, Callable
 
 from fastapi import Depends, HTTPException
 from starlette import status
