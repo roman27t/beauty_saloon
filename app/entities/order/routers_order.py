@@ -5,7 +5,7 @@ from sqlalchemy.orm import joinedload, selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backgrounds import task_clear_db_cache
-from dependencies import valid_group_by
+from dependencies import ValidOrderByDependency
 from routers.consts import RouteSlug
 from models.database import get_session
 from core.utils.decorators import cached
@@ -49,7 +49,7 @@ async def view_filter_order_full(
     ifilter: OrderFilter,
     pk: PositiveInt,
     session: AsyncSession = Depends(get_session),
-    order_by: str = Depends(valid_group_by(class_schema=OrderModel)),
+    order_by: str = Depends(ValidOrderByDependency(class_schema=OrderModel)),
     page: PositiveInt = 1,
 ):
     params = {ifilter.get_value_id: pk}

@@ -21,14 +21,15 @@ def valid_empty_schema(class_schema: Type[T_SCHEMA]) -> Callable[[Type[T_SCHEMA]
     return _valid_schema
 
 
-def valid_group_by(class_schema: Type[T_SCHEMA]):
-    def _valid_group_by(order_by: str = '', class_schema_: Type[T_SCHEMA] = class_schema) -> str:
+class ValidOrderByDependency:
+    def __init__(self, class_schema: Type[T_SCHEMA]):
+        self.class_schema = class_schema
+
+    def __call__(self, order_by: str = '') -> str:
         field_order_by = order_by[1:] if order_by.startswith('-') else order_by
-        if field_order_by and field_order_by not in class_schema_.schema()['required']:
+        if field_order_by and field_order_by not in self.class_schema.schema()['required']:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='wrong field')
         return order_by
-
-    return _valid_group_by
 
 
 class ValidGetByIdDependency:
