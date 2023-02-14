@@ -4,10 +4,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from core.exceptions import DuplicatedEntryException
 
 
-async def db_commit(db_session: AsyncSession, message: str = 'obj is already stored') -> dict:
+async def db_commit(db_session: AsyncSession, message: str = 'obj is already stored') -> None:
     try:
         await db_session.commit()
-        return {'ok': True}
     except IntegrityError:
         await db_session.rollback()
         raise DuplicatedEntryException(message)

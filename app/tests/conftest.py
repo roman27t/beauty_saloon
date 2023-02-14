@@ -10,7 +10,7 @@ from sqlalchemy.ext.asyncio import create_async_engine
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from config import i_config
-from app.main import app
+from main import app
 from models.db_helper import db_commit
 from core.utils.redis_interface import cache_redis
 from services.stub_init_service import StubInitService
@@ -48,17 +48,3 @@ async def async_session() -> AsyncSession:
         await conn.run_sync(SQLModel.metadata.drop_all)
 
     await engine.dispose()
-
-
-# @pytest.fixture(scope='function')
-# def test_data() -> dict:
-#    path = os.getenv('PYTEST_CURRENT_TEST')
-#    path = os.path.join(*os.path.split(path)[:-1], 'data', 'data.json')
-#
-#    if not os.path.exists(path):
-#        path = os.path.join('data', 'data.json')
-#
-#    with open(path, 'r') as file:
-#        data = json.loads(file.read())
-#
-#    return data
